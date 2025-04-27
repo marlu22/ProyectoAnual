@@ -22,10 +22,10 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore src/ProjectName.sln
+        run: dotnet restore src/UserManagementSystem
 
       - name: Build solution
-        run: dotnet build src/ProjectName.sln --no-restore --configuration Release
+        run: dotnet build src/UserManagementSystem --no-restore --configuration Release
 
       - name: Run tests
         run: dotnet test tests/ --no-build --verbosity normal

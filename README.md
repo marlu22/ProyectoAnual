@@ -15,7 +15,7 @@ Breve explicación de carpetas (ver arriba).
 
 ## 4. Cómo ejecutar localmente  
 1. Clonar repo  
-2. Restaurar paquetes: `dotnet restore src/ProjectName.sln`  
+2. Restaurar paquetes: `dotnet restore UserManagementSystem.sln`  
 3. Crear BD en SQL Server y actualizar `appsettings.json`  
 4. Ejecutar migraciones: `dotnet ef database update`  
 5. Abrir solución en VS2022 y ejecutar proyecto `Presentation`

@@ -32,10 +32,8 @@ jobs:
       #   run: dotnet test tests/ --no-build --verbosity normal
 
 
-      - name: Publish Artifacts (on main)
+      - name: Publish
         if: github.ref == 'refs/heads/main'
-        run: |
-          dotnet publish src/Presentation/Presentation.csproj \
-            --configuration Release \
-            --output ./artifacts/presentation
+        run: dotnet publish src/Presentation/Presentation.csproj --configuration Release --output ./artifacts/presentation
+
         # luego podrías subir ./artifacts con actions/upload-artifact

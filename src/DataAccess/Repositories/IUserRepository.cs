@@ -5,10 +5,10 @@ namespace DataAccess.Repositories
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetAll();
-        User GetById(int id);
-        void Add(User user);
-        void Update(User user);
-        void Delete(User user);
+        IEnumerable<Usuario> GetAll();
+        Usuario GetById(int id);
+        void Add(Usuario usuario);
+        void Update(Usuario usuario);
+        void Delete(Usuario usuario);
     }
 }

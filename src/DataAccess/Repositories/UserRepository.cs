@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataAccess.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories
 {
@@ -14,31 +13,31 @@ namespace DataAccess.Repositories
             _context = context;
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<Usuario> GetAll()
         {
-            return _context.Users.ToList();
+            return _context.Usuarios.ToList();
         }
 
-        public User GetById(int id)
+        public Usuario GetById(int id)
         {
-            return _context.Users.Find(id);
+            return _context.Usuarios.FirstOrDefault(u => u.IdUsuario == id);
         }
 
-        public void Add(User user)
+        public void Add(Usuario usuario)
         {
-            _context.Users.Add(user);
+            _context.Usuarios.Add(usuario);
             _context.SaveChanges();
         }
 
-        public void Update(User user)
+        public void Update(Usuario usuario)
         {
-            _context.Users.Update(user);
+            _context.Usuarios.Update(usuario);
             _context.SaveChanges();
         }
 
-        public void Delete(User user)
+        public void Delete(Usuario usuario)
         {
-            _context.Users.Remove(user);
+            _context.Usuarios.Remove(usuario);
             _context.SaveChanges();
         }
     }

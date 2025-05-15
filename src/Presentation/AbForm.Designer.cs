@@ -43,8 +43,17 @@
             txtNombre = new System.Windows.Forms.TextBox();
             lblNombre = new System.Windows.Forms.Label();
             tbcBaja = new System.Windows.Forms.TabPage();
+            lblBuscarDni = new System.Windows.Forms.Label();
+            txtBuscarDni = new System.Windows.Forms.TextBox();
+            btnBuscar = new System.Windows.Forms.Button();
+            gpxDatosUsuario = new System.Windows.Forms.GroupBox();
+            lblgpxNombre = new System.Windows.Forms.Label();
+            lblgpxApellido = new System.Windows.Forms.Label();
+            btnDarBaja = new System.Windows.Forms.Button();
             FrmAltayBaja.SuspendLayout();
             tbcAlta.SuspendLayout();
+            tbcBaja.SuspendLayout();
+            gpxDatosUsuario.SuspendLayout();
             SuspendLayout();
             // 
             // FrmAltayBaja
@@ -133,7 +142,7 @@
             // lblEmail
             // 
             lblEmail.AutoSize = true;
-            lblEmail.Location = new System.Drawing.Point(1, 167);
+            lblEmail.Location = new System.Drawing.Point(1, 166);
             lblEmail.Name = "lblEmail";
             lblEmail.Size = new System.Drawing.Size(46, 20);
             lblEmail.TabIndex = 6;
@@ -151,7 +160,7 @@
             // lblDni
             // 
             lblDni.AutoSize = true;
-            lblDni.Location = new System.Drawing.Point(-4, 112);
+            lblDni.Location = new System.Drawing.Point(1, 112);
             lblDni.Name = "lblDni";
             lblDni.Size = new System.Drawing.Size(35, 20);
             lblDni.TabIndex = 4;
@@ -169,7 +178,7 @@
             // lblApellido
             // 
             lblApellido.AutoSize = true;
-            lblApellido.Location = new System.Drawing.Point(4, 59);
+            lblApellido.Location = new System.Drawing.Point(3, 59);
             lblApellido.Name = "lblApellido";
             lblApellido.Size = new System.Drawing.Size(66, 20);
             lblApellido.TabIndex = 2;
@@ -197,6 +206,11 @@
             // 
             // tbcBaja
             // 
+            tbcBaja.Controls.Add(btnDarBaja);
+            tbcBaja.Controls.Add(gpxDatosUsuario);
+            tbcBaja.Controls.Add(btnBuscar);
+            tbcBaja.Controls.Add(txtBuscarDni);
+            tbcBaja.Controls.Add(lblBuscarDni);
             tbcBaja.Location = new System.Drawing.Point(4, 29);
             tbcBaja.Name = "tbcBaja";
             tbcBaja.Padding = new System.Windows.Forms.Padding(3);
@@ -205,6 +219,69 @@
             tbcBaja.Text = "Baja";
             tbcBaja.UseVisualStyleBackColor = true;
             tbcBaja.UseWaitCursor = true;
+            // 
+            // lblBuscarDni
+            // 
+            lblBuscarDni.AutoSize = true;
+            lblBuscarDni.Location = new System.Drawing.Point(17, 14);
+            lblBuscarDni.Name = "lblBuscarDni";
+            lblBuscarDni.Size = new System.Drawing.Size(109, 20);
+            lblBuscarDni.TabIndex = 0;
+            lblBuscarDni.Text = "Buscar por DNI";
+            // 
+            // txtBuscarDni
+            // 
+            txtBuscarDni.Location = new System.Drawing.Point(14, 45);
+            txtBuscarDni.Name = "txtBuscarDni";
+            txtBuscarDni.Size = new System.Drawing.Size(125, 27);
+            txtBuscarDni.TabIndex = 1;
+            // 
+            // btnBuscar
+            // 
+            btnBuscar.Location = new System.Drawing.Point(19, 80);
+            btnBuscar.Name = "btnBuscar";
+            btnBuscar.Size = new System.Drawing.Size(94, 29);
+            btnBuscar.TabIndex = 2;
+            btnBuscar.Text = "Buscar";
+            btnBuscar.UseVisualStyleBackColor = true;
+            // 
+            // gpxDatosUsuario
+            // 
+            gpxDatosUsuario.Controls.Add(lblgpxApellido);
+            gpxDatosUsuario.Controls.Add(lblgpxNombre);
+            gpxDatosUsuario.Location = new System.Drawing.Point(19, 127);
+            gpxDatosUsuario.Name = "gpxDatosUsuario";
+            gpxDatosUsuario.Size = new System.Drawing.Size(250, 125);
+            gpxDatosUsuario.TabIndex = 3;
+            gpxDatosUsuario.TabStop = false;
+            gpxDatosUsuario.Text = "Datos encontrados";
+            // 
+            // lblgpxNombre
+            // 
+            lblgpxNombre.AutoSize = true;
+            lblgpxNombre.Location = new System.Drawing.Point(12, 25);
+            lblgpxNombre.Name = "lblgpxNombre";
+            lblgpxNombre.Size = new System.Drawing.Size(64, 20);
+            lblgpxNombre.TabIndex = 0;
+            lblgpxNombre.Text = "Nombre";
+            // 
+            // lblgpxApellido
+            // 
+            lblgpxApellido.AutoSize = true;
+            lblgpxApellido.Location = new System.Drawing.Point(13, 57);
+            lblgpxApellido.Name = "lblgpxApellido";
+            lblgpxApellido.Size = new System.Drawing.Size(66, 20);
+            lblgpxApellido.TabIndex = 1;
+            lblgpxApellido.Text = "Apellido";
+            // 
+            // btnDarBaja
+            // 
+            btnDarBaja.Location = new System.Drawing.Point(21, 287);
+            btnDarBaja.Name = "btnDarBaja";
+            btnDarBaja.Size = new System.Drawing.Size(133, 29);
+            btnDarBaja.TabIndex = 4;
+            btnDarBaja.Text = "Dar de baja";
+            btnDarBaja.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -219,6 +296,10 @@
             FrmAltayBaja.ResumeLayout(false);
             tbcAlta.ResumeLayout(false);
             tbcAlta.PerformLayout();
+            tbcBaja.ResumeLayout(false);
+            tbcBaja.PerformLayout();
+            gpxDatosUsuario.ResumeLayout(false);
+            gpxDatosUsuario.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -239,5 +320,12 @@
         private System.Windows.Forms.Label lblRol;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label lblEmail;
+        private System.Windows.Forms.GroupBox gpxDatosUsuario;
+        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.TextBox txtBuscarDni;
+        private System.Windows.Forms.Label lblBuscarDni;
+        private System.Windows.Forms.Button btnDarBaja;
+        private System.Windows.Forms.Label lblgpxApellido;
+        private System.Windows.Forms.Label lblgpxNombre;
     }
 }

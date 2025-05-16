@@ -1,7 +1,7 @@
 # Sistema de Gestión de Usuarios
 
 ## 1. Descripción  
-Sistema de escritorio (.NET 8, WinForms/WPF) con arquitectura N-Capas para ABM de usuarios, autenticación SHA-256 y políticas de seguridad.
+Sistema de escritorio (.NET 9, WinForms/WPF) con arquitectura N-Capas para ABM de usuarios, autenticación SHA-256 y políticas de seguridad.
 
 ## 2. Tecnologías  
 - .NET 9, C#  

@@ -43,13 +43,13 @@
             txtNombre = new System.Windows.Forms.TextBox();
             lblNombre = new System.Windows.Forms.Label();
             tbcBaja = new System.Windows.Forms.TabPage();
-            lblBuscarDni = new System.Windows.Forms.Label();
-            txtBuscarDni = new System.Windows.Forms.TextBox();
-            btnBuscar = new System.Windows.Forms.Button();
-            gpxDatosUsuario = new System.Windows.Forms.GroupBox();
-            lblgpxNombre = new System.Windows.Forms.Label();
-            lblgpxApellido = new System.Windows.Forms.Label();
             btnDarBaja = new System.Windows.Forms.Button();
+            gpxDatosUsuario = new System.Windows.Forms.GroupBox();
+            lblgpxApellido = new System.Windows.Forms.Label();
+            lblgpxNombre = new System.Windows.Forms.Label();
+            btnBuscar = new System.Windows.Forms.Button();
+            txtBuscarDni = new System.Windows.Forms.TextBox();
+            lblBuscarDni = new System.Windows.Forms.Label();
             FrmAltayBaja.SuspendLayout();
             tbcAlta.SuspendLayout();
             tbcBaja.SuspendLayout();
@@ -62,9 +62,10 @@
             FrmAltayBaja.Controls.Add(tbcBaja);
             FrmAltayBaja.Dock = System.Windows.Forms.DockStyle.Fill;
             FrmAltayBaja.Location = new System.Drawing.Point(0, 0);
+            FrmAltayBaja.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             FrmAltayBaja.Name = "FrmAltayBaja";
             FrmAltayBaja.SelectedIndex = 0;
-            FrmAltayBaja.Size = new System.Drawing.Size(476, 405);
+            FrmAltayBaja.Size = new System.Drawing.Size(416, 304);
             FrmAltayBaja.TabIndex = 0;
             FrmAltayBaja.UseWaitCursor = true;
             // 
@@ -82,10 +83,11 @@
             tbcAlta.Controls.Add(lblApellido);
             tbcAlta.Controls.Add(txtNombre);
             tbcAlta.Controls.Add(lblNombre);
-            tbcAlta.Location = new System.Drawing.Point(4, 29);
+            tbcAlta.Location = new System.Drawing.Point(4, 24);
+            tbcAlta.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             tbcAlta.Name = "tbcAlta";
-            tbcAlta.Padding = new System.Windows.Forms.Padding(3);
-            tbcAlta.Size = new System.Drawing.Size(468, 372);
+            tbcAlta.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            tbcAlta.Size = new System.Drawing.Size(408, 276);
             tbcAlta.TabIndex = 0;
             tbcAlta.Text = "Alta";
             tbcAlta.UseVisualStyleBackColor = true;
@@ -93,9 +95,10 @@
             // 
             // btnLimpiar
             // 
-            btnLimpiar.Location = new System.Drawing.Point(334, 257);
+            btnLimpiar.Location = new System.Drawing.Point(292, 193);
+            btnLimpiar.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new System.Drawing.Size(94, 29);
+            btnLimpiar.Size = new System.Drawing.Size(82, 22);
             btnLimpiar.TabIndex = 11;
             btnLimpiar.Text = "Limpiar";
             btnLimpiar.UseVisualStyleBackColor = true;
@@ -103,9 +106,10 @@
             // 
             // btnGuardar
             // 
-            btnGuardar.Location = new System.Drawing.Point(220, 257);
+            btnGuardar.Location = new System.Drawing.Point(192, 193);
+            btnGuardar.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new System.Drawing.Size(94, 29);
+            btnGuardar.Size = new System.Drawing.Size(82, 22);
             btnGuardar.TabIndex = 10;
             btnGuardar.Text = "Guardar";
             btnGuardar.UseVisualStyleBackColor = true;
@@ -115,81 +119,86 @@
             // 
             cbxRol.FormattingEnabled = true;
             cbxRol.Items.AddRange(new object[] { "Usuario", "Administrador" });
-            cbxRol.Location = new System.Drawing.Point(-1, 252);
+            cbxRol.Location = new System.Drawing.Point(-1, 189);
+            cbxRol.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             cbxRol.Name = "cbxRol";
-            cbxRol.Size = new System.Drawing.Size(151, 28);
+            cbxRol.Size = new System.Drawing.Size(133, 23);
             cbxRol.TabIndex = 9;
             cbxRol.UseWaitCursor = true;
             // 
             // lblRol
             // 
             lblRol.AutoSize = true;
-            lblRol.Location = new System.Drawing.Point(1, 221);
+            lblRol.Location = new System.Drawing.Point(1, 166);
             lblRol.Name = "lblRol";
-            lblRol.Size = new System.Drawing.Size(31, 20);
+            lblRol.Size = new System.Drawing.Size(24, 15);
             lblRol.TabIndex = 8;
             lblRol.Text = "Rol";
             lblRol.UseWaitCursor = true;
             // 
             // txtEmail
             // 
-            txtEmail.Location = new System.Drawing.Point(3, 187);
+            txtEmail.Location = new System.Drawing.Point(3, 140);
+            txtEmail.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new System.Drawing.Size(125, 27);
+            txtEmail.Size = new System.Drawing.Size(110, 23);
             txtEmail.TabIndex = 7;
             txtEmail.UseWaitCursor = true;
             // 
             // lblEmail
             // 
             lblEmail.AutoSize = true;
-            lblEmail.Location = new System.Drawing.Point(1, 166);
+            lblEmail.Location = new System.Drawing.Point(1, 124);
             lblEmail.Name = "lblEmail";
-            lblEmail.Size = new System.Drawing.Size(46, 20);
+            lblEmail.Size = new System.Drawing.Size(36, 15);
             lblEmail.TabIndex = 6;
             lblEmail.Text = "Email";
             lblEmail.UseWaitCursor = true;
             // 
             // txtDni
             // 
-            txtDni.Location = new System.Drawing.Point(1, 136);
+            txtDni.Location = new System.Drawing.Point(1, 102);
+            txtDni.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             txtDni.Name = "txtDni";
-            txtDni.Size = new System.Drawing.Size(125, 27);
+            txtDni.Size = new System.Drawing.Size(110, 23);
             txtDni.TabIndex = 5;
             txtDni.UseWaitCursor = true;
             // 
             // lblDni
             // 
             lblDni.AutoSize = true;
-            lblDni.Location = new System.Drawing.Point(1, 112);
+            lblDni.Location = new System.Drawing.Point(1, 84);
             lblDni.Name = "lblDni";
-            lblDni.Size = new System.Drawing.Size(35, 20);
+            lblDni.Size = new System.Drawing.Size(27, 15);
             lblDni.TabIndex = 4;
             lblDni.Text = "DNI";
             lblDni.UseWaitCursor = true;
             // 
             // txtApellido
             // 
-            txtApellido.Location = new System.Drawing.Point(0, 82);
+            txtApellido.Location = new System.Drawing.Point(0, 62);
+            txtApellido.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             txtApellido.Name = "txtApellido";
-            txtApellido.Size = new System.Drawing.Size(125, 27);
+            txtApellido.Size = new System.Drawing.Size(110, 23);
             txtApellido.TabIndex = 3;
             txtApellido.UseWaitCursor = true;
             // 
             // lblApellido
             // 
             lblApellido.AutoSize = true;
-            lblApellido.Location = new System.Drawing.Point(3, 59);
+            lblApellido.Location = new System.Drawing.Point(3, 44);
             lblApellido.Name = "lblApellido";
-            lblApellido.Size = new System.Drawing.Size(66, 20);
+            lblApellido.Size = new System.Drawing.Size(51, 15);
             lblApellido.TabIndex = 2;
             lblApellido.Text = "Apellido";
             lblApellido.UseWaitCursor = true;
             // 
             // txtNombre
             // 
-            txtNombre.Location = new System.Drawing.Point(0, 29);
+            txtNombre.Location = new System.Drawing.Point(0, 22);
+            txtNombre.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             txtNombre.Name = "txtNombre";
-            txtNombre.Size = new System.Drawing.Size(125, 27);
+            txtNombre.Size = new System.Drawing.Size(110, 23);
             txtNombre.TabIndex = 1;
             txtNombre.UseWaitCursor = true;
             // 
@@ -197,9 +206,9 @@
             // 
             lblNombre.AutoSize = true;
             lblNombre.Dock = System.Windows.Forms.DockStyle.Fill;
-            lblNombre.Location = new System.Drawing.Point(3, 3);
+            lblNombre.Location = new System.Drawing.Point(3, 2);
             lblNombre.Name = "lblNombre";
-            lblNombre.Size = new System.Drawing.Size(64, 20);
+            lblNombre.Size = new System.Drawing.Size(51, 15);
             lblNombre.TabIndex = 0;
             lblNombre.Text = "Nombre";
             lblNombre.UseWaitCursor = true;
@@ -211,84 +220,98 @@
             tbcBaja.Controls.Add(btnBuscar);
             tbcBaja.Controls.Add(txtBuscarDni);
             tbcBaja.Controls.Add(lblBuscarDni);
-            tbcBaja.Location = new System.Drawing.Point(4, 29);
+            tbcBaja.Location = new System.Drawing.Point(4, 24);
+            tbcBaja.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             tbcBaja.Name = "tbcBaja";
-            tbcBaja.Padding = new System.Windows.Forms.Padding(3);
-            tbcBaja.Size = new System.Drawing.Size(468, 372);
+            tbcBaja.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            tbcBaja.Size = new System.Drawing.Size(408, 276);
             tbcBaja.TabIndex = 1;
             tbcBaja.Text = "Baja";
             tbcBaja.UseVisualStyleBackColor = true;
             tbcBaja.UseWaitCursor = true;
             // 
-            // lblBuscarDni
+            // btnDarBaja
             // 
-            lblBuscarDni.AutoSize = true;
-            lblBuscarDni.Location = new System.Drawing.Point(17, 14);
-            lblBuscarDni.Name = "lblBuscarDni";
-            lblBuscarDni.Size = new System.Drawing.Size(109, 20);
-            lblBuscarDni.TabIndex = 0;
-            lblBuscarDni.Text = "Buscar por DNI";
-            // 
-            // txtBuscarDni
-            // 
-            txtBuscarDni.Location = new System.Drawing.Point(14, 45);
-            txtBuscarDni.Name = "txtBuscarDni";
-            txtBuscarDni.Size = new System.Drawing.Size(125, 27);
-            txtBuscarDni.TabIndex = 1;
-            // 
-            // btnBuscar
-            // 
-            btnBuscar.Location = new System.Drawing.Point(19, 80);
-            btnBuscar.Name = "btnBuscar";
-            btnBuscar.Size = new System.Drawing.Size(94, 29);
-            btnBuscar.TabIndex = 2;
-            btnBuscar.Text = "Buscar";
-            btnBuscar.UseVisualStyleBackColor = true;
+            btnDarBaja.Location = new System.Drawing.Point(18, 215);
+            btnDarBaja.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            btnDarBaja.Name = "btnDarBaja";
+            btnDarBaja.Size = new System.Drawing.Size(116, 22);
+            btnDarBaja.TabIndex = 4;
+            btnDarBaja.Text = "Dar de baja";
+            btnDarBaja.UseVisualStyleBackColor = true;
+            btnDarBaja.UseWaitCursor = true;
             // 
             // gpxDatosUsuario
             // 
             gpxDatosUsuario.Controls.Add(lblgpxApellido);
             gpxDatosUsuario.Controls.Add(lblgpxNombre);
-            gpxDatosUsuario.Location = new System.Drawing.Point(19, 127);
+            gpxDatosUsuario.Location = new System.Drawing.Point(17, 95);
+            gpxDatosUsuario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             gpxDatosUsuario.Name = "gpxDatosUsuario";
-            gpxDatosUsuario.Size = new System.Drawing.Size(250, 125);
+            gpxDatosUsuario.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            gpxDatosUsuario.Size = new System.Drawing.Size(219, 94);
             gpxDatosUsuario.TabIndex = 3;
             gpxDatosUsuario.TabStop = false;
             gpxDatosUsuario.Text = "Datos encontrados";
-            // 
-            // lblgpxNombre
-            // 
-            lblgpxNombre.AutoSize = true;
-            lblgpxNombre.Location = new System.Drawing.Point(12, 25);
-            lblgpxNombre.Name = "lblgpxNombre";
-            lblgpxNombre.Size = new System.Drawing.Size(64, 20);
-            lblgpxNombre.TabIndex = 0;
-            lblgpxNombre.Text = "Nombre";
+            gpxDatosUsuario.UseWaitCursor = true;
             // 
             // lblgpxApellido
             // 
             lblgpxApellido.AutoSize = true;
-            lblgpxApellido.Location = new System.Drawing.Point(13, 57);
+            lblgpxApellido.Location = new System.Drawing.Point(11, 43);
             lblgpxApellido.Name = "lblgpxApellido";
-            lblgpxApellido.Size = new System.Drawing.Size(66, 20);
+            lblgpxApellido.Size = new System.Drawing.Size(51, 15);
             lblgpxApellido.TabIndex = 1;
             lblgpxApellido.Text = "Apellido";
+            lblgpxApellido.UseWaitCursor = true;
             // 
-            // btnDarBaja
+            // lblgpxNombre
             // 
-            btnDarBaja.Location = new System.Drawing.Point(21, 287);
-            btnDarBaja.Name = "btnDarBaja";
-            btnDarBaja.Size = new System.Drawing.Size(133, 29);
-            btnDarBaja.TabIndex = 4;
-            btnDarBaja.Text = "Dar de baja";
-            btnDarBaja.UseVisualStyleBackColor = true;
+            lblgpxNombre.AutoSize = true;
+            lblgpxNombre.Location = new System.Drawing.Point(10, 19);
+            lblgpxNombre.Name = "lblgpxNombre";
+            lblgpxNombre.Size = new System.Drawing.Size(51, 15);
+            lblgpxNombre.TabIndex = 0;
+            lblgpxNombre.Text = "Nombre";
+            lblgpxNombre.UseWaitCursor = true;
+            // 
+            // btnBuscar
+            // 
+            btnBuscar.Location = new System.Drawing.Point(17, 60);
+            btnBuscar.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            btnBuscar.Name = "btnBuscar";
+            btnBuscar.Size = new System.Drawing.Size(82, 22);
+            btnBuscar.TabIndex = 2;
+            btnBuscar.Text = "Buscar";
+            btnBuscar.UseVisualStyleBackColor = true;
+            btnBuscar.UseWaitCursor = true;
+            // 
+            // txtBuscarDni
+            // 
+            txtBuscarDni.Location = new System.Drawing.Point(12, 34);
+            txtBuscarDni.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            txtBuscarDni.Name = "txtBuscarDni";
+            txtBuscarDni.Size = new System.Drawing.Size(110, 23);
+            txtBuscarDni.TabIndex = 1;
+            txtBuscarDni.UseWaitCursor = true;
+            // 
+            // lblBuscarDni
+            // 
+            lblBuscarDni.AutoSize = true;
+            lblBuscarDni.Location = new System.Drawing.Point(15, 10);
+            lblBuscarDni.Name = "lblBuscarDni";
+            lblBuscarDni.Size = new System.Drawing.Size(86, 15);
+            lblBuscarDni.TabIndex = 0;
+            lblBuscarDni.Text = "Buscar por DNI";
+            lblBuscarDni.UseWaitCursor = true;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(476, 405);
+            ClientSize = new System.Drawing.Size(416, 304);
             Controls.Add(FrmAltayBaja);
+            Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "Form1";
             Text = "Alta y Baja ";
             TransparencyKey = System.Drawing.Color.FromArgb(128, 128, 255);

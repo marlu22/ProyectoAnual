@@ -1,4 +1,7 @@
+using DataAccess;
+using DataAccess.Repositories;
 using BusinessLogic.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -19,14 +22,14 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-// Registrar servicios de negocio
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-
-// Agregar controladores
 builder.Services.AddControllers();
 
-// Construir la aplicación
 var app = builder.Build();
 
 // Configurar middleware

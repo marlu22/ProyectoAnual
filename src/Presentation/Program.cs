@@ -2,9 +2,9 @@
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
-using DataAccess.Repositories; // Add this namespace if needed
+using DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
-using YourNamespace.Data; // Replace with the actual namespace for ApplicationDbContext
+using DataAccess;
 
 internal static class Program
 {
@@ -15,15 +15,13 @@ internal static class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        // Create an instance of IUserRepository and pass it to UserService
-        IUserRepository userRepository = new UserRepository(); // Replace with your actual implementation
+        // Lee la cadena de conexión desde appsettings.json si lo prefieres
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        optionsBuilder.UseSqlServer("Server=local;Database=login;Trusted_Connection=True;");
+
+        var context = new ApplicationDbContext(optionsBuilder.Options);
+        IUserRepository userRepository = new UserRepository(context);
         IUserService userService = new UserService(userRepository);
-
-        var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         Application.Run(new MainForm(userService));
     }

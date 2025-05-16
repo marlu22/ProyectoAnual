@@ -17,12 +17,12 @@ namespace BusinessLogic.Services
 
         public IEnumerable<UserDto> GetAllUsers()
         {
-            var users = _userRepository.GetAll();
-            return users.Select(u => new UserDto
+            var usuarios = _userRepository.GetAll();
+            return usuarios.Select(u => new UserDto
             {
-                Id = u.Id,
-                Username = u.Username,
-                Email = u.Email
+                Id = u.IdUsuario,
+                Username = u.UsuarioNombre,
+                // Agrega aquí otros campos que tengas en UserDto
             });
         }
 
@@ -31,47 +31,49 @@ namespace BusinessLogic.Services
             if (string.IsNullOrEmpty(request.Password))
                 throw new ArgumentException("Password is required.", nameof(request.Password));
 
-            var user = new User
+            var usuario = new Usuario
             {
-                Username = request.Username,
-                Password = request.Password,
-                Email = request.Email
+                UsuarioNombre = request.Username,
+                ContrasenaScript = System.Text.Encoding.UTF8.GetBytes(request.Password),
+                // Asigna aquí otros campos requeridos, por ejemplo:
+                // IdPersona = ...,
+                // IdRol = ...,
             };
 
-            _userRepository.Add(user);
+            _userRepository.Add(usuario);
 
             return new UserDto
             {
-                Id = user.Id,
-                Username = user.Username,
-                Email = user.Email
+                Id = usuario.IdUsuario,
+                Username = usuario.UsuarioNombre,
+                // Otros campos
             };
         }
 
         public UserDto UpdateUser(int id, UserRequest request)
         {
-            var user = _userRepository.GetById(id);
-            if (user == null) throw new KeyNotFoundException("Usuario no encontrado.");
+            var usuario = _userRepository.GetById(id);
+            if (usuario == null) throw new KeyNotFoundException("Usuario no encontrado.");
 
-            user.Username = request.Username;
-            user.Email = request.Email;
+            usuario.UsuarioNombre = request.Username;
+            // Actualiza otros campos si es necesario
 
-            _userRepository.Update(user);
+            _userRepository.Update(usuario);
 
             return new UserDto
             {
-                Id = user.Id,
-                Username = user.Username,
-                Email = user.Email
+                Id = usuario.IdUsuario,
+                Username = usuario.UsuarioNombre,
+                // Otros campos
             };
         }
 
         public void DeleteUser(int id)
         {
-            var user = _userRepository.GetById(id);
-            if (user == null) throw new KeyNotFoundException("Usuario no encontrado.");
+            var usuario = _userRepository.GetById(id);
+            if (usuario == null) throw new KeyNotFoundException("Usuario no encontrado.");
 
-            _userRepository.Delete(user);
+            _userRepository.Delete(usuario);
         }
     }
 }

@@ -1,41 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
+using BusinessLogic.Services;
+using BusinessLogic.Models;
 
 [ApiController]
-[Route("api/users")]
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult GetAllUsers()
+    private readonly IUserService _userService;
+
+    public UsersController(IUserService userService)
     {
-        // Lógica para obtener todos los usuarios
-        return Ok(new { Message = "Lista de usuarios." });
+        _userService = userService;
+    }
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var users = _userService.GetAllUsers();
+        return Ok(users);
     }
 
     [HttpPost]
-    public IActionResult CreateUser([FromBody] UserRequest request)
+    public IActionResult Create(UserRequest request)
     {
-        // Lógica para crear un usuario
-        return Created("", new { Message = "Usuario creado." });
+        var user = _userService.CreateUser(request);
+        return CreatedAtAction(nameof(GetAll), new { id = user.Id }, user);
     }
-
-    [HttpPut("{id}")]
-    public IActionResult UpdateUser(int id, [FromBody] UserRequest request)
-    {
-        // Lógica para actualizar un usuario
-        return Ok(new { Message = "Usuario actualizado." });
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult DeleteUser(int id)
-    {
-        // Lógica para eliminar un usuario
-        return Ok(new { Message = "Usuario eliminado." });
-    }
-}
-
-public class UserRequest
-{
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public string Email { get; set; }
 }

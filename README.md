@@ -22,7 +22,7 @@ Sistema de escritorio (.NET 8, WinForms/WPF) con arquitectura N-Capas para ABM d
 1. Clonar repo  
 2. Restaurar paquetes: `dotnet restore UserManagementSystem.sln`  
 3. Crear BD en SQL Server y actualizar `appsettings.json`  
-4. Ejecutar migraciones: `dotnet ef database update`  
+4. Ejecutar migraciones: `dotnet ef database update --project src/DataAccess/DataAccess.csproj --startup-project src/Services/Services.csproj`  
 5. Abrir solución en VS2022 y ejecutar proyecto `Presentation`
 
 ## 5. Branching model  

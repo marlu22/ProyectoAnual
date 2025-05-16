@@ -4,14 +4,19 @@
 Sistema de escritorio (.NET 8, WinForms/WPF) con arquitectura N-Capas para ABM de usuarios, autenticación SHA-256 y políticas de seguridad.
 
 ## 2. Tecnologías  
-- .NET 8, C#  
+- .NET 9, C#  
 - Entity Framework Core + SQL Server  
 - JWT para sesión  
 - NUnit/xUnit para pruebas  
 - GitHub Actions para CI
 
-## 3. Estructura del repositorio  
-Breve explicación de carpetas (ver arriba).
+## 3. Estructura del repositorio
+- `src/Presentation`: Interfaz de usuario (WinForms/WPF)
+- `src/BusinessLogic`: Lógica de negocio
+- `src/DataAccess`: Acceso a datos y modelos EF Core
+- `src/Services`: Servicios de aplicación y APIs
+- `src/Common`: Utilidades y modelos compartidos
+- `src/Session`: Gestión de sesión y autenticación
 
 ## 4. Cómo ejecutar localmente  
 1. Clonar repo  

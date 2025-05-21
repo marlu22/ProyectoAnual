@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using DataAccess.Entities;
+using System;
+using System.Linq;
 
 namespace DataAccess
 {
@@ -190,6 +192,23 @@ namespace DataAccess
             {
                 // Usa la cadena de conexión de tu appsettings.json o ponla aquí directamente para pruebas
                 optionsBuilder.UseSqlServer("Server=localhost;Database=login2;Trusted_Connection=True;TrustServerCertificate=True;");
+            }
+        }
+
+        public void TestConnection()
+        {
+            try
+            {
+                using (var context = new ApplicationDbContext())
+                {
+                    var usuarios = context.Usuarios.ToList();
+                    // ...
+                }
+            }
+            catch (Exception ex)
+            {
+                // Lanza la excepción para que la maneje la capa de presentación
+                throw new Exception($"Error: {ex.Message}\nUsuario: {Environment.UserName}", ex);
             }
         }
     }

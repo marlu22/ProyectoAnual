@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,9 +8,8 @@ namespace DataAccess.Entities
     {
         [Key]
         public int Id { get; set; }
-        [Required]
         public int IdUsuario { get; set; }
-        [ForeignKey("IdUsuario")]
-        public Usuario Usuario { get; set; }
+        public DateTime FechaCambio { get; set; }
+        public byte[] ContrasenaScript { get; set; }
     }
 }

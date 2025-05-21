@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using BusinessLogic.Services;
 using BusinessLogic.Models;
+using Presentation;
 
 public partial class MainForm : Form
 {
@@ -23,8 +24,8 @@ public partial class MainForm : Form
 
     private void btnCreateUser_Click(object sender, EventArgs e)
     {
-        var createUserForm = new CreateUserForm(_userService);
-        createUserForm.ShowDialog();
+        var form = new AbForm();
+        form.ShowDialog();
         LoadUsers(); // Recargar la lista de usuarios
     }
 

@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Presentation;
 
 namespace Presentation
 {
-    public partial class Form1 : Form
+    public partial class AbForm : Form
     {
-        public Form1()
+        public AbForm()
         {
             InitializeComponent();
         }

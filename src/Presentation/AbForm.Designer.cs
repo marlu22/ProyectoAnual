@@ -1,6 +1,6 @@
 ﻿namespace Presentation
 {
-    partial class Form1
+    partial class AbForm
     {
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.TabControl tabControl;
@@ -292,7 +292,7 @@
             btnBuscar.TabIndex = 1;
             btnBuscar.Text = "Buscar";
             // 
-            // Form1
+            // AbForm
             // 
             ClientSize = new System.Drawing.Size(400, 300);
             Controls.Add(tabControl);
@@ -300,7 +300,7 @@
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "Form1";
+            Name = "AbForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "Alta y Baja de Usuario";
             tabControl.ResumeLayout(false);

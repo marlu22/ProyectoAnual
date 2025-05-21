@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250516154404_InitialCreate")]
+    [Migration("20250521140639_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -29,7 +29,8 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdContacto")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_contacto");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdContacto"));
 
@@ -40,129 +41,157 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("IdPersona");
 
-                    b.ToTable("Contactos");
+                    b.ToTable("contactos", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Genero", b =>
                 {
                     b.Property<int>("IdGenero")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_genero");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdGenero"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
+                        .HasColumnType("nvarchar(25)")
+                        .HasColumnName("genero");
 
                     b.HasKey("IdGenero");
 
-                    b.ToTable("Generos");
+                    b.ToTable("generos", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.HistorialContrasena", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<byte[]>("ContrasenaScript")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("contrasena_script");
+
+                    b.Property<DateTime>("FechaCambio")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("fecha_cambio");
+
                     b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_usuario");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("HistorialContrasenas");
+                    b.ToTable("historial_contrasena", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Localidad", b =>
                 {
                     b.Property<int>("IdLocalidad")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_localidad");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLocalidad"));
 
                     b.Property<int>("IdPartido")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_partido");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("localidad");
 
                     b.HasKey("IdLocalidad");
 
                     b.HasIndex("IdPartido");
 
-                    b.ToTable("Localidades");
+                    b.ToTable("localidades", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Partido", b =>
                 {
                     b.Property<int>("IdPartido")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_partido");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPartido"));
 
                     b.Property<int>("IdProvincia")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_provincia");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("partido");
 
                     b.HasKey("IdPartido");
 
                     b.HasIndex("IdProvincia");
 
-                    b.ToTable("Partidos");
+                    b.ToTable("partidos", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Permiso", b =>
                 {
                     b.Property<int>("IdPermiso")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_permiso");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPermiso"));
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("descripcion");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("permiso");
 
                     b.HasKey("IdPermiso");
 
-                    b.ToTable("Permisos");
+                    b.ToTable("permisos", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.PermisoUsuario", b =>
                 {
                     b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_usuario");
 
                     b.Property<int>("IdPermiso")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_permiso");
 
                     b.HasKey("IdUsuario", "IdPermiso");
 
                     b.HasIndex("IdPermiso");
 
-                    b.ToTable("PermisosUsuarios");
+                    b.ToTable("permiso_usuario", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Persona", b =>
                 {
                     b.Property<int>("IdPersona")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_persona");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPersona"));
 
@@ -224,14 +253,15 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("IdTipoDoc");
 
-                    b.ToTable("Personas");
+                    b.ToTable("personas", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.PoliticaSeguridad", b =>
                 {
                     b.Property<int>("IdPolitica")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_politica");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPolitica"));
 
@@ -246,116 +276,129 @@ namespace DataAccess.Migrations
 
                     b.HasKey("IdPolitica");
 
-                    b.ToTable("PoliticasSeguridad");
+                    b.ToTable("politicas_seguridad", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.PreguntaSeguridad", b =>
                 {
                     b.Property<int>("IdPregunta")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_pregunta");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPregunta"));
 
                     b.Property<string>("Pregunta")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("pregunta");
 
                     b.HasKey("IdPregunta");
 
-                    b.ToTable("PreguntasSeguridad");
+                    b.ToTable("preguntas_seguridad", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Provincia", b =>
                 {
                     b.Property<int>("IdProvincia")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_provincia");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProvincia"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("provincia");
 
                     b.HasKey("IdProvincia");
 
-                    b.ToTable("Provincias");
+                    b.ToTable("provincias", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.RespuestaSeguridad", b =>
                 {
                     b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_usuario");
 
                     b.Property<int>("IdPregunta")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_pregunta");
 
                     b.HasKey("IdUsuario", "IdPregunta");
 
                     b.HasIndex("IdPregunta");
 
-                    b.ToTable("RespuestasSeguridad");
+                    b.ToTable("respuestas_seguridad", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Rol", b =>
                 {
                     b.Property<int>("IdRol")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_rol");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRol"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("rol");
 
                     b.HasKey("IdRol");
 
-                    b.ToTable("Roles");
+                    b.ToTable("roles", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.RolPermiso", b =>
                 {
                     b.Property<int>("IdRol")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_rol");
 
                     b.Property<int>("IdPermiso")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_permiso");
 
                     b.HasKey("IdRol", "IdPermiso");
 
                     b.HasIndex("IdPermiso");
 
-                    b.ToTable("RolPermisos");
+                    b.ToTable("rol_permiso", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.TipoDoc", b =>
                 {
                     b.Property<int>("IdTipoDoc")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_tipo_doc");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoDoc"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(30)")
+                        .HasColumnName("tipo_doc");
 
                     b.HasKey("IdTipoDoc");
 
-                    b.ToTable("TiposDoc");
+                    b.ToTable("tipo_doc", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Usuario", b =>
                 {
                     b.Property<int>("IdUsuario")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id_usuario");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
 
@@ -389,7 +432,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("IdRol");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("usuarios", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Contacto", b =>
@@ -401,17 +444,6 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Persona");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.HistorialContrasena", b =>
-                {
-                    b.HasOne("DataAccess.Entities.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Localidad", b =>

@@ -24,7 +24,7 @@ public partial class MainForm : Form
 
     private void btnCreateUser_Click(object sender, EventArgs e)
     {
-        var form = new AbForm();
+        var form = new AbForm(_userService); // Pasa la dependencia
         form.ShowDialog();
         LoadUsers(); // Recargar la lista de usuarios
     }

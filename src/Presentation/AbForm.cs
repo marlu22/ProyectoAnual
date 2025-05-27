@@ -8,14 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Presentation;
+using BusinessLogic.Services;
 
 namespace Presentation
 {
     public partial class AbForm : Form
     {
-        public AbForm()
+        private readonly IUserService _userService;
+
+        public AbForm(IUserService userService)
         {
             InitializeComponent();
+            _userService = userService;
         }
     }
 }

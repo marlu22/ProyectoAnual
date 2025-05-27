@@ -1,81 +1,46 @@
-
 -- 1. provincias
 
-------- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_prov;
+GO
 CREATE PROCEDURE sp_insert_prov
--- El parametro que le vamos a pasar (la provincia)
-	@provincia VARCHAR(50)
-
-AS 
--- Lo que hace el store procedure
-BEGIN
--- Guarda lo que le pasemos en provincias (provincia)
-	INSERT INTO provincias (provincia)
-	VALUES (@provincia)
-END
-
-------- UPDATE
-
-CREATE PROCEDURE sp_update_prov
-    @id_provincia INT,         -- seleccionamos el id (provincia) que vamos a actualizar
-    @provincia VARCHAR(50)     -- le pasamos la nueva actualizacion
+    @provincia VARCHAR(50)
 AS
 BEGIN
-    UPDATE provincias -- seleccionamos la provincia que queremos modificar
-    SET provincia = @provincia -- cambiamos el contenido de la columna provincia por lo que le hayamos puesto al parametro @provincia
-    WHERE id_provincia = @id_provincia -- y que solo cambie el id de la columna/fila que le hayamos pasado
+    INSERT INTO provincias (provincia)
+    VALUES (@provincia)
 END
+GO
 
--- Llamamos al procedimento y llamamos dos parametros, @id_provincia para pasarle la fila que vamos a actualizar y @provincia para pasarle el nuevo nombre de la provincia
-EXEC sp_update_prov @id_provincia = 1, @provincia = 'Santa Fe'
+DROP PROCEDURE IF EXISTS sp_update_prov;
+GO
+CREATE PROCEDURE sp_update_prov
+    @id_provincia INT,
+    @provincia VARCHAR(50)
+AS
+BEGIN
+    UPDATE provincias
+    SET provincia = @provincia
+    WHERE id_provincia = @id_provincia
+END
+GO
 
 -- 2. partidos
 
-------- INSERT INTO
-
- CREATE PROCEDURE sp_insert_partido
-    @partido VARCHAR(50), -- creamos el parametro partido
-    @id_provincia INT -- creamos el parametro id_provincia porque existe una relacion con provincias por la clave foranea id_provincia.
---   esto significa que cada partido esta en una provincia especifica y existente, basicamente le tenemos que indicar a que prov pertenece este part.
-AS
-BEGIN
-    INSERT INTO partidos (partido, id_provincia) -- agregamos un nuevo registro en partidos y llenamos las columnas partido e id_provincia 
-    VALUES (@partido, @id_provincia) -- especificamos los valores que vamos a almacenar en estas columnas. Seleccionamos el partido a insertar y la provincia que va a tener este partido almacenado.
-END
-
-
-------- UPDATE
-
-CREATE PROCEDURE sp_update_partido
-    @id_partido INT,
+DROP PROCEDURE IF EXISTS sp_insert_partido;
+GO
+CREATE PROCEDURE sp_insert_partido
     @partido VARCHAR(50),
     @id_provincia INT
 AS
 BEGIN
-    UPDATE partidos
-    SET partido = @partido,  
-        id_provincia = @id_provincia -- siginfica que cuando yo ingrece un valor en el parametro de partido y el id provincia va a cambiarse siempre y cuando se cumpla la condicion where
-    WHERE id_partido = @id_partido -- la condicion where se va a efectuar cuando el parametro @id_partido sea llenado por un id existente
+    INSERT INTO partidos (partido, id_provincia)
+    VALUES (@partido, @id_provincia)
 END
+GO
 
-
--- 3. localidades
-
-------- INSERT INTO
-
-CREATE PROCEDURE sp_insert_localidad
-    @localidad VARCHAR(50),
-    @id_partido INT
-AS
-BEGIN
-    INSERT INTO localidades (localidad, id_partido)
-    VALUES (@localidad, @id_partido)
-END
-
-------- UPDATE
-
-CREATE PROCEDURE sp_update_localidad
+DROP PROCEDURE IF EXISTS sp_update_partido;
+GO
+CREATE PROCEDURE sp_update_partido
     @id_partido INT,
     @partido VARCHAR(50),
     @id_provincia INT
@@ -86,12 +51,41 @@ BEGIN
         id_provincia = @id_provincia
     WHERE id_partido = @id_partido
 END
+GO
 
+-- 3. localidades
+
+DROP PROCEDURE IF EXISTS sp_insert_localidad;
+GO
+CREATE PROCEDURE sp_insert_localidad
+    @localidad VARCHAR(50),
+    @id_partido INT
+AS
+BEGIN
+    INSERT INTO localidades (localidad, id_partido)
+    VALUES (@localidad, @id_partido)
+END
+GO
+
+DROP PROCEDURE IF EXISTS sp_update_localidad;
+GO
+CREATE PROCEDURE sp_update_localidad
+    @id_localidad INT,
+    @localidad VARCHAR(50),
+    @id_partido INT
+AS
+BEGIN
+    UPDATE localidades
+    SET localidad = @localidad,
+        id_partido = @id_partido
+    WHERE id_localidad = @id_localidad
+END
+GO
 
 -- 4. tipo_doc
 
-
-------- INSERT INTO
+DROP PROCEDURE IF EXISTS sp_insert_tipo_doc;
+GO
 CREATE PROCEDURE sp_insert_tipo_doc
     @tipo_doc VARCHAR(30)
 AS
@@ -99,8 +93,10 @@ BEGIN
     INSERT INTO tipo_doc (tipo_doc)
     VALUES (@tipo_doc)
 END
+GO
 
-------- UPDATE
+DROP PROCEDURE IF EXISTS sp_update_tipo_doc;
+GO
 CREATE PROCEDURE sp_update_tipo_doc
     @id_tipo_doc INT,
     @tipo_doc VARCHAR(30)
@@ -110,13 +106,12 @@ BEGIN
     SET tipo_doc = @tipo_doc
     WHERE id_tipo_doc = @id_tipo_doc
 END
-
+GO
 
 -- 5. generos
 
-
-------- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_genero;
+GO
 CREATE PROCEDURE sp_insert_genero
     @genero VARCHAR(25)
 AS
@@ -124,9 +119,10 @@ BEGIN
     INSERT INTO generos (genero)
     VALUES (@genero)
 END
+GO
 
-------- UPDATE
-
+DROP PROCEDURE IF EXISTS sp_update_genero;
+GO
 CREATE PROCEDURE sp_update_genero
     @id_genero INT,
     @genero VARCHAR(25)
@@ -136,12 +132,12 @@ BEGIN
     SET genero = @genero
     WHERE id_genero = @id_genero
 END
-
+GO
 
 -- 6. personas
 
-------- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_persona;
+GO
 CREATE PROCEDURE sp_insert_persona
     @legajo INT,
     @nombre VARCHAR(30),
@@ -165,8 +161,10 @@ BEGIN
         @cuil, @calle, @altura, @id_localidad, @id_genero, @correo
     )
 END
-------- UPDATE 
+GO
 
+DROP PROCEDURE IF EXISTS sp_update_persona;
+GO
 CREATE PROCEDURE sp_update_persona
     @id_persona INT,
     @legajo INT,
@@ -196,13 +194,12 @@ BEGIN
         correo = @correo
     WHERE id_persona = @id_persona
 END
-
+GO
 
 -- 7. contactos
 
-
--- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_contacto;
+GO
 CREATE PROCEDURE sp_insert_contacto
     @email VARCHAR(100),
     @celular VARCHAR(30),
@@ -212,9 +209,10 @@ BEGIN
     INSERT INTO contactos (email, celular, id_persona)
     VALUES (@email, @celular, @id_persona)
 END
+GO
 
-------- UPDATE 
-
+DROP PROCEDURE IF EXISTS sp_update_contacto;
+GO
 CREATE PROCEDURE sp_update_contacto
     @id_contacto INT,
     @email VARCHAR(100),
@@ -228,12 +226,12 @@ BEGIN
         id_persona = @id_persona
     WHERE id_contacto = @id_contacto
 END
-
+GO
 
 -- 8. roles
 
--- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_rol;
+GO
 CREATE PROCEDURE sp_insert_rol
     @rol VARCHAR(50)
 AS
@@ -241,10 +239,10 @@ BEGIN
     INSERT INTO roles (rol)
     VALUES (@rol)
 END
+GO
 
-
-------- UPDATE 
-
+DROP PROCEDURE IF EXISTS sp_update_rol;
+GO
 CREATE PROCEDURE sp_update_rol
     @id_rol INT,
     @rol VARCHAR(50)
@@ -254,11 +252,12 @@ BEGIN
     SET rol = @rol
     WHERE id_rol = @id_rol
 END
+GO
 
 -- 9. usuarios
 
--- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_usuario;
+GO
 CREATE PROCEDURE sp_insert_usuario
     @usuario VARCHAR(30),
     @contrasena_script VARBINARY(512),
@@ -278,9 +277,10 @@ BEGIN
         @nombre_usuario_bloqueo, @fecha_ultimo_cambio, @id_rol
     )
 END
+GO
 
-------- UPDATE 
-
+DROP PROCEDURE IF EXISTS sp_actualizar_usuario;
+GO
 CREATE PROCEDURE sp_actualizar_usuario
     @id_usuario INT,
     @usuario VARCHAR(30),
@@ -302,12 +302,12 @@ BEGIN
         id_rol = @id_rol
     WHERE id_usuario = @id_usuario
 END
-
+GO
 
 -- 10. permisos
 
--- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_permiso;
+GO
 CREATE PROCEDURE sp_insert_permiso
     @permiso VARCHAR(50),
     @descripcion VARCHAR(200)
@@ -316,9 +316,10 @@ BEGIN
     INSERT INTO permisos (permiso, descripcion)
     VALUES (@permiso, @descripcion)
 END
+GO
 
-------- UPDATE 
-
+DROP PROCEDURE IF EXISTS sp_update_permiso;
+GO
 CREATE PROCEDURE sp_update_permiso
     @id_permiso INT,
     @permiso VARCHAR(50),
@@ -330,12 +331,12 @@ BEGIN
         descripcion = @descripcion
     WHERE id_permiso = @id_permiso
 END
-
+GO
 
 -- 11. rol_permiso
 
--- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_rol_permiso;
+GO
 CREATE PROCEDURE sp_insert_rol_permiso
     @id_rol INT,
     @id_permiso INT
@@ -344,14 +345,12 @@ BEGIN
     INSERT INTO rol_permiso (id_rol, id_permiso)
     VALUES (@id_rol, @id_permiso)
 END
-
--- No tiene UPDATE porque la PK está compuesta y no se cambia
-
+GO
 
 -- 12. permisos_usuarios
 
--- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insertar_permiso;
+GO
 CREATE PROCEDURE sp_insertar_permiso
     @id_usuario INT,
     @id_permiso INT,
@@ -361,10 +360,11 @@ BEGIN
     INSERT INTO permisos_usuarios (id_usuario, id_permiso, fecha_vencimiento)
     VALUES (@id_usuario, @id_permiso, @fecha_vencimiento)
 END
+GO
 
-------- UPDATE 
-
-CREATE PROCEDURE sp_update_permiso
+DROP PROCEDURE IF EXISTS sp_update_permiso_usuario;
+GO
+CREATE PROCEDURE sp_update_permiso_usuario
     @id_usuario INT,
     @id_permiso INT,
     @fecha_vencimiento DATE
@@ -374,12 +374,12 @@ BEGIN
     SET fecha_vencimiento = @fecha_vencimiento
     WHERE id_usuario = @id_usuario AND id_permiso = @id_permiso
 END
-
+GO
 
 -- 13. historial_contrasena
 
--- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_historial_contrasena;
+GO
 CREATE PROCEDURE sp_historial_contrasena
     @id_usuario INT,
     @contrasena_script VARBINARY(512)
@@ -388,14 +388,12 @@ BEGIN
     INSERT INTO historial_contrasena (id_usuario, contrasena_script)
     VALUES (@id_usuario, @contrasena_script)
 END
-
--- No se actualiza historial, solo se insertan registros
-
+GO
 
 -- 14. preguntas_seguridad
 
-- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_pregunta_seguridad;
+GO
 CREATE PROCEDURE sp_insert_pregunta_seguridad
     @pregunta VARCHAR(255)
 AS
@@ -403,9 +401,10 @@ BEGIN
     INSERT INTO preguntas_seguridad (pregunta)
     VALUES (@pregunta)
 END
+GO
 
-------- UPDATE 
-
+DROP PROCEDURE IF EXISTS sp_update_pregunta_seguridad;
+GO
 CREATE PROCEDURE sp_update_pregunta_seguridad
     @id_pregunta INT,
     @pregunta VARCHAR(255)
@@ -415,12 +414,12 @@ BEGIN
     SET pregunta = @pregunta
     WHERE id_pregunta = @id_pregunta
 END
-
+GO
 
 -- 15. respuestas_seguridad
 
-- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_respuesta_seguridad;
+GO
 CREATE PROCEDURE sp_insert_respuesta_seguridad
     @id_usuario INT,
     @id_pregunta INT,
@@ -430,9 +429,10 @@ BEGIN
     INSERT INTO respuestas_seguridad (id_usuario, id_pregunta, respuesta)
     VALUES (@id_usuario, @id_pregunta, @respuesta)
 END
+GO
 
-------- UPDATE 
-
+DROP PROCEDURE IF EXISTS sp_update_respuesta_seguridad;
+GO
 CREATE PROCEDURE sp_update_respuesta_seguridad
     @id_usuario INT,
     @id_pregunta INT,
@@ -443,11 +443,12 @@ BEGIN
     SET respuesta = @respuesta
     WHERE id_usuario = @id_usuario AND id_pregunta = @id_pregunta
 END
+GO
 
 -- 16. politicas_seguridad
 
-- INSERT INTO
-
+DROP PROCEDURE IF EXISTS sp_insert_politica_seguridad;
+GO
 CREATE PROCEDURE sp_insert_politica_seguridad
     @min_caracteres INT,
     @cant_preguntas INT,
@@ -468,9 +469,10 @@ BEGIN
         @caracter_especial, @autenticacion_2fa, @no_repetir_anteriores, @sin_datos_personales
     )
 END
+GO
 
-------- UPDATE 
-
+DROP PROCEDURE IF EXISTS sp_update_politica_seguridad;
+GO
 CREATE PROCEDURE sp_update_politica_seguridad
     @id_politica INT,
     @min_caracteres INT,
@@ -494,6 +496,7 @@ BEGIN
         sin_datos_personales = @sin_datos_personales
     WHERE id_politica = @id_politica
 END
+GO
 
 
 

@@ -6,10 +6,8 @@ namespace DataAccess.Entities
 {
     public class HistorialContrasena
     {
-        [Key]
-        public int Id { get; set; }
+        public int IdHistorial { get; set; } // <--- Cambia de Id a IdHistorial
         public int IdUsuario { get; set; }
-        public DateTime FechaCambio { get; set; }
         public byte[] ContrasenaScript { get; set; }
     }
 }

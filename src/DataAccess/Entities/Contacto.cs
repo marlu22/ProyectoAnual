@@ -7,6 +7,8 @@ namespace DataAccess.Entities
     {
         [Key]
         public int IdContacto { get; set; }
+        public string Email { get; set; }
+        public string Celular { get; set; }
         [Required]
         public int IdPersona { get; set; }
         [ForeignKey("IdPersona")]

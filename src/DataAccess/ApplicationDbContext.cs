@@ -64,7 +64,7 @@ namespace DataAccess
                 entity.Property(e => e.IdPartido).HasColumnName("id_partido");
             });
 
-            // Tipos de documento
+            // TipoDoc
             modelBuilder.Entity<TipoDoc>(entity =>
             {
                 entity.ToTable("tipo_doc");
@@ -73,7 +73,7 @@ namespace DataAccess
                 entity.Property(e => e.Nombre).HasColumnName("tipo_doc");
             });
 
-            // Géneros
+            // Generos
             modelBuilder.Entity<Genero>(entity =>
             {
                 entity.ToTable("generos");
@@ -88,7 +88,17 @@ namespace DataAccess
                 entity.ToTable("personas");
                 entity.HasKey(e => e.IdPersona);
                 entity.Property(e => e.IdPersona).HasColumnName("id_persona");
-                // Agrega aquí el mapeo de las demás columnas según tu modelo y SQL
+                entity.Property(e => e.Legajo).HasColumnName("legajo");
+                entity.Property(e => e.Nombre).HasColumnName("nombre");
+                entity.Property(e => e.Apellido).HasColumnName("apellido");
+                entity.Property(e => e.IdTipoDoc).HasColumnName("id_tipo_doc");
+                entity.Property(e => e.NumDoc).HasColumnName("num_doc");
+                entity.Property(e => e.Cuil).HasColumnName("cuil");
+                entity.Property(e => e.Calle).HasColumnName("calle");
+                entity.Property(e => e.Altura).HasColumnName("altura");
+                entity.Property(e => e.IdLocalidad).HasColumnName("id_localidad");
+                entity.Property(e => e.IdGenero).HasColumnName("id_genero");
+                entity.Property(e => e.Correo).HasColumnName("correo");
             });
 
             // Contactos
@@ -97,7 +107,9 @@ namespace DataAccess
                 entity.ToTable("contactos");
                 entity.HasKey(e => e.IdContacto);
                 entity.Property(e => e.IdContacto).HasColumnName("id_contacto");
-                // Agrega aquí el mapeo de las demás columnas según tu modelo y SQL
+                entity.Property(e => e.Email).HasColumnName("email");
+                entity.Property(e => e.Celular).HasColumnName("celular");
+                entity.Property(e => e.IdPersona).HasColumnName("id_persona");
             });
 
             // Roles
@@ -115,7 +127,13 @@ namespace DataAccess
                 entity.ToTable("usuarios");
                 entity.HasKey(e => e.IdUsuario);
                 entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-                // Agrega aquí el mapeo de las demás columnas según tu modelo y SQL
+                entity.Property(e => e.UsuarioNombre).HasColumnName("usuario");
+                entity.Property(e => e.ContrasenaScript).HasColumnName("contrasena_script");
+                entity.Property(e => e.IdPersona).HasColumnName("id_persona");
+                entity.Property(e => e.FechaBloqueo).HasColumnName("fecha_bloqueo");
+                entity.Property(e => e.NombreUsuarioBloqueo).HasColumnName("nombre_usuario_bloqueo");
+                entity.Property(e => e.FechaUltimoCambio).HasColumnName("fecha_ultimo_cambio");
+                entity.Property(e => e.IdRol).HasColumnName("id_rol");
             });
 
             // Permisos
@@ -128,7 +146,7 @@ namespace DataAccess
                 entity.Property(e => e.Descripcion).HasColumnName("descripcion");
             });
 
-            // RolPermiso (tabla intermedia)
+            // RolPermiso
             modelBuilder.Entity<RolPermiso>(entity =>
             {
                 entity.ToTable("rol_permiso");
@@ -137,23 +155,23 @@ namespace DataAccess
                 entity.Property(e => e.IdPermiso).HasColumnName("id_permiso");
             });
 
-            // PermisoUsuario (tabla intermedia)
+            // PermisoUsuario
             modelBuilder.Entity<PermisoUsuario>(entity =>
             {
-                entity.ToTable("permiso_usuario");
+                entity.ToTable("permisos_usuarios");
                 entity.HasKey(e => new { e.IdUsuario, e.IdPermiso });
                 entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
                 entity.Property(e => e.IdPermiso).HasColumnName("id_permiso");
+                entity.Property(e => e.FechaVencimiento).HasColumnName("fecha_vencimiento");
             });
 
             // HistorialContrasena
             modelBuilder.Entity<HistorialContrasena>(entity =>
             {
                 entity.ToTable("historial_contrasena");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.HasKey(e => e.IdHistorial);
+                entity.Property(e => e.IdHistorial).HasColumnName("id");
                 entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-                entity.Property(e => e.FechaCambio).HasColumnName("fecha_cambio");
                 entity.Property(e => e.ContrasenaScript).HasColumnName("contrasena_script");
             });
 
@@ -166,14 +184,14 @@ namespace DataAccess
                 entity.Property(e => e.Pregunta).HasColumnName("pregunta");
             });
 
-            // RespuestaSeguridad (tabla intermedia)
+            // RespuestaSeguridad
             modelBuilder.Entity<RespuestaSeguridad>(entity =>
             {
                 entity.ToTable("respuestas_seguridad");
                 entity.HasKey(e => new { e.IdUsuario, e.IdPregunta });
                 entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
                 entity.Property(e => e.IdPregunta).HasColumnName("id_pregunta");
-                // Agrega aquí el mapeo de las demás columnas según tu modelo y SQL
+                entity.Property(e => e.Respuesta).HasColumnName("respuesta");
             });
 
             // PoliticaSeguridad
@@ -182,7 +200,14 @@ namespace DataAccess
                 entity.ToTable("politicas_seguridad");
                 entity.HasKey(e => e.IdPolitica);
                 entity.Property(e => e.IdPolitica).HasColumnName("id_politica");
-                // Agrega aquí el mapeo de las demás columnas según tu modelo y SQL
+                entity.Property(e => e.MinCaracteres).HasColumnName("min_caracteres");
+                entity.Property(e => e.CantPreguntas).HasColumnName("cant_preguntas");
+                entity.Property(e => e.MayusYMinus).HasColumnName("mayus_y_minus");
+                entity.Property(e => e.LetrasYNumeros).HasColumnName("letras_y_numeros");
+                entity.Property(e => e.CaracterEspecial).HasColumnName("caracter_especial");
+                entity.Property(e => e.Autenticacion2FA).HasColumnName("autenticacion_2fa");
+                entity.Property(e => e.NoRepetirAnteriores).HasColumnName("no_repetir_anteriores");
+                entity.Property(e => e.SinDatosPersonales).HasColumnName("sin_datos_personales");
             });
         }
 

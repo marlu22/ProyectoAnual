@@ -1,10 +1,11 @@
 // Assuming this is in your Program.cs or wherever the MainForm is instantiated
 using System;
 using System.Windows.Forms;
-using BusinessLogic.Services;
-using DataAccess.Repositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using DataAccess;
+using DataAccess.Repositories;
+using BusinessLogic.Services;
 
 internal static class Program
 {
@@ -15,9 +16,16 @@ internal static class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        // Lee la cadena de conexión desde appsettings.json si lo prefieres
+        // Leer configuración
+        var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false)
+            .Build();
+
+        var connectionString = config.GetConnectionString("DefaultConnection");
+
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseSqlServer("Server=local;Database=login;Trusted_Connection=True;");
+        optionsBuilder.UseSqlServer(connectionString);
 
         var context = new ApplicationDbContext(optionsBuilder.Options);
         IUserRepository userRepository = new UserRepository(context);

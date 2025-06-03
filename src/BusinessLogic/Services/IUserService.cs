@@ -1,13 +1,18 @@
 using System.Collections.Generic;
 using BusinessLogic.Models;
+using DataAccess.Entities;
 
-namespace BusinessLogic.Services
+public interface IUserService
 {
-    public interface IUserService
-    {
-        IEnumerable<UserDto> GetAllUsers();
-        UserDto CreateUser(UserRequest request);
-        UserDto UpdateUser(int id, UserRequest request);
-        void DeleteUser(int id);
-    }
+    IEnumerable<UserDto> GetAllUsers();
+    UserDto CreateUser(UserRequest request);
+
+    void CrearPersona(PersonaRequest persona);
+    void CrearUsuario(UserRequest usuario);
+    List<PersonaDto> GetPersonas();
+
+    List<TipoDoc> GetTiposDoc();
+    List<Localidad> GetLocalidades();
+    List<Genero> GetGeneros();
+    List<Rol> GetRoles();
 }

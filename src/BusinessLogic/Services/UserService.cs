@@ -75,5 +75,63 @@ namespace BusinessLogic.Services
 
             _userRepository.Delete(usuario);
         }
+
+        public void CrearPersona(PersonaRequest persona)
+        {
+            // Busca los objetos relacionados en la base de datos
+            var tipoDoc = _userRepository.GetTipoDocByNombre(persona.TipoDoc);
+            var localidad = _userRepository.GetLocalidadByNombre(persona.Localidad);
+            var genero = _userRepository.GetGeneroByNombre(persona.Genero);
+
+            var nuevaPersona = new DataAccess.Entities.Persona
+            {
+                Legajo = int.Parse(persona.Legajo),
+                Nombre = persona.Nombre,
+                Apellido = persona.Apellido,
+                IdTipoDoc = tipoDoc.IdTipoDoc,
+                TipoDoc = tipoDoc,
+                NumDoc = persona.NumDoc,
+                Cuil = persona.Cuil,
+                Calle = persona.Calle,
+                Altura = persona.Altura,
+                IdLocalidad = localidad.IdLocalidad,
+                Localidad = localidad,
+                IdGenero = genero.IdGenero,
+                Genero = genero,
+                Correo = persona.Correo
+            };
+            _userRepository.AddPersona(nuevaPersona);
+        }
+
+        public void CrearUsuario(UserRequest usuario)
+        {
+            var persona = _userRepository.GetPersonaById(int.Parse(usuario.PersonaId));
+            var rol = _userRepository.GetRolByNombre(usuario.Rol);
+
+            var nuevoUsuario = new Usuario
+            {
+                IdPersona = persona.IdPersona,
+                UsuarioNombre = usuario.Username,
+                ContrasenaScript = System.Text.Encoding.UTF8.GetBytes(usuario.Password),
+                IdRol = rol.IdRol,
+                FechaUltimoCambio = DateTime.Now
+            };
+            _userRepository.AddUsuario(nuevoUsuario);
+        }
+
+        public List<PersonaDto> GetPersonas()
+        {
+            var personas = _userRepository.GetAllPersonas();
+            return personas.Select(p => new PersonaDto
+            {
+                Id = p.IdPersona, // CORREGIDO: usar IdPersona
+                NombreCompleto = $"{p.Nombre} {p.Apellido}"
+            }).ToList();
+        }
+
+        public List<TipoDoc> GetTiposDoc() => _userRepository.GetAllTipoDocs().ToList();
+        public List<Localidad> GetLocalidades() => _userRepository.GetAllLocalidades().ToList();
+        public List<Genero> GetGeneros() => _userRepository.GetAllGeneros().ToList();
+        public List<Rol> GetRoles() => _userRepository.GetAllRoles().ToList();
     }
 }

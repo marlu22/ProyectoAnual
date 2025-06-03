@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using DataAccess;
 using DataAccess.Repositories;
 using BusinessLogic.Services;
+using Presentation; // Add this if LoginForm is in Presentation.Forms namespace
 
 internal static class Program
 {
@@ -16,14 +17,13 @@ internal static class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        // Leer configuración
+        // Configuración y DI
         var config = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false)
             .Build();
 
         var connectionString = config.GetConnectionString("DefaultConnection");
-
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         optionsBuilder.UseSqlServer(connectionString);
 
@@ -31,6 +31,6 @@ internal static class Program
         IUserRepository userRepository = new UserRepository(context);
         IUserService userService = new UserService(userRepository);
 
-        Application.Run(new MainForm(userService));
+        Application.Run(new LoginForm(userService));
     }
 }

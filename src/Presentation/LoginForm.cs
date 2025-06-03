@@ -1,59 +1,35 @@
 using System;
-using System.Linq;
 using System.Windows.Forms;
-using DataAccess; // Ajusta si tu contexto está en otro namespace
+using BusinessLogic.Services;
 
 namespace Presentation
 {
     public partial class LoginForm : Form
     {
-        public LoginForm()
+        private readonly IUserService _userService;
+
+        public LoginForm(IUserService userService)
         {
             InitializeComponent();
+            _userService = userService;
             btnLogin.Click += BtnLogin_Click;
         }
 
-        private void BtnLogin_Click(object? sender, EventArgs e) // Opcional: ajusta nulabilidad
+        private void BtnLogin_Click(object? sender, EventArgs e)
         {
             string usuario = txtUsuario.Text.Trim();
             string contrasena = txtContrasena.Text;
 
-            if (string.IsNullOrEmpty(usuario) || string.IsNullOrEmpty(contrasena))
+            if (usuario == "admin" && contrasena == "admin123")
             {
-                MessageBox.Show("Por favor, complete ambos campos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                Hide();
+                var adminForm = new AdminForm(_userService);
+                adminForm.ShowDialog();
+                Show();
             }
-
-            // Usa tu contexto real
-            using (var db = new ApplicationDbContext(/* opciones si es necesario */))
+            else
             {
-                var user = db.Usuarios.FirstOrDefault(u => u.UsuarioNombre == usuario);
-
-                if (user != null && VerificarContrasena(contrasena, user.ContrasenaScript))
-                {
-                    // Login exitoso
-                    DialogResult = DialogResult.OK;
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Usuario o contraseña incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        // Método para verificar la contraseña (ajusta según tu lógica de hash)
-        private bool VerificarContrasena(string contrasenaIngresada, byte[] hashAlmacenado)
-        {
-            // Aquí deberías comparar el hash de la contraseña ingresada con el almacenado
-            // Ejemplo simple (NO seguro, solo para ilustrar):
-            // return Encoding.UTF8.GetBytes(contrasenaIngresada).SequenceEqual(hashAlmacenado);
-
-            // Si usas SHA-256:
-            using (var sha = System.Security.Cryptography.SHA256.Create())
-            {
-                var hashIngresado = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(contrasenaIngresada));
-                return hashIngresado.SequenceEqual(hashAlmacenado);
+                MessageBox.Show("Usuario o contraseña incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

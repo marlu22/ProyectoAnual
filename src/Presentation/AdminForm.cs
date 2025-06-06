@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BusinessLogic.Services;
 using BusinessLogic.Models;
+using BusinessLogic.Exceptions;
 
 namespace Presentation
 {
@@ -64,36 +65,58 @@ namespace Presentation
 
         private void BtnGuardarPersona_Click(object sender, EventArgs e)
         {
-            var persona = new PersonaRequest
+            try
             {
-                Legajo = txtLegajo.Text,
-                Nombre = txtNombre.Text,
-                Apellido = txtApellido.Text,
-                TipoDoc = cbxTipoDoc.SelectedItem?.ToString(),
-                NumDoc = txtNumDoc.Text,
-                Cuil = txtCuil.Text,
-                Calle = txtCalle.Text,
-                Altura = txtAltura.Text,
-                Localidad = cbxLocalidad.SelectedItem?.ToString(),
-                Genero = cbxGenero.SelectedItem?.ToString(),
-                Correo = txtCorreo.Text
-            };
-            _userService.CrearPersona(persona);
-            MessageBox.Show("Persona guardada correctamente", "Info");
-            LoadPersonas();
+                var persona = new PersonaRequest
+                {
+                    Legajo = txtLegajo.Text,
+                    Nombre = txtNombre.Text,
+                    Apellido = txtApellido.Text,
+                    TipoDoc = cbxTipoDoc.SelectedItem?.ToString(),
+                    NumDoc = txtNumDoc.Text,
+                    Cuil = txtCuil.Text,
+                    Calle = txtCalle.Text,
+                    Altura = txtAltura.Text,
+                    Localidad = cbxLocalidad.SelectedItem?.ToString(),
+                    Genero = cbxGenero.SelectedItem?.ToString(),
+                    Correo = txtCorreo.Text
+                };
+                _userService.CrearPersona(persona);
+                MessageBox.Show("Persona guardada correctamente", "Info");
+                LoadPersonas();
+            }
+            catch (ValidationException ex)
+            {
+                MessageBox.Show(ex.Message, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error inesperado: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void BtnCrearUsuario_Click(object sender, EventArgs e)
         {
-            var usuario = new UserRequest
+            try
             {
-                PersonaId = cbxPersona.SelectedValue?.ToString(),
-                Username = txtUsuario.Text,
-                Password = txtPassword.Text,
-                Rol = cbxRolUsuario.SelectedItem?.ToString()
-            };
-            _userService.CrearUsuario(usuario);
-            MessageBox.Show("Usuario creado correctamente", "Info");
+                var usuario = new UserRequest
+                {
+                    PersonaId = cbxPersona.SelectedValue?.ToString(),
+                    Username = txtUsuario.Text,
+                    Password = txtPassword.Text,
+                    Rol = cbxRolUsuario.SelectedItem?.ToString()
+                };
+                _userService.CrearUsuario(usuario);
+                MessageBox.Show("Usuario creado correctamente", "Info");
+            }
+            catch (ValidationException ex)
+            {
+                MessageBox.Show(ex.Message, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error inesperado: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

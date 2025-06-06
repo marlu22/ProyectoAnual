@@ -3,6 +3,7 @@ using System.Linq;
 using DataAccess.Repositories;
 using DataAccess.Entities;
 using BusinessLogic.Models;
+using BusinessLogic.Exceptions;
 
 namespace BusinessLogic.Services
 {
@@ -105,6 +106,12 @@ namespace BusinessLogic.Services
 
         public void CrearUsuario(UserRequest usuario)
         {
+            if (string.IsNullOrWhiteSpace(usuario.Username))
+                throw new ValidationException("El nombre de usuario es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(usuario.Password) || usuario.Password.Length < 8)
+                throw new ValidationException("La contraseña debe tener al menos 8 caracteres.");
+
             var persona = _userRepository.GetPersonaById(int.Parse(usuario.PersonaId));
             var rol = _userRepository.GetRolByNombre(usuario.Rol);
 

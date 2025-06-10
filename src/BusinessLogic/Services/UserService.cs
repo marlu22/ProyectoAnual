@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using DataAccess.Repositories;
 using DataAccess.Entities;
 using BusinessLogic.Models;
@@ -140,5 +142,61 @@ namespace BusinessLogic.Services
         public List<Localidad> GetLocalidades() => _userRepository.GetAllLocalidades().ToList();
         public List<Genero> GetGeneros() => _userRepository.GetAllGeneros().ToList();
         public List<Rol> GetRoles() => _userRepository.GetAllRoles().ToList();
+
+        public void CambiarContrasena(string usuario, string nuevaContrasena)
+        {
+            // Validar políticas de seguridad aquí (longitud, complejidad, etc.)
+            if (string.IsNullOrWhiteSpace(nuevaContrasena) || nuevaContrasena.Length < 8)
+                throw new ValidationException("La contraseña debe tener al menos 8 caracteres.");
+
+            var user = _userRepository.GetByUsername(usuario);
+            if (user == null)
+                throw new ValidationException("Usuario no encontrado.");
+
+            // Hashear usuario+contraseña
+            var hash = HashUsuarioContrasena(usuario, nuevaContrasena);
+            user.ContrasenaScript = Encoding.UTF8.GetBytes(hash);
+            user.FechaUltimoCambio = DateTime.Now;
+
+            _userRepository.Update(user);
+            // Opcional: guardar en historial_contrasena
+        }
+
+        public void RecuperarContrasena(string usuario, string[] respuestas)
+        {
+            var user = _userRepository.GetByUsername(usuario);
+            if (user == null)
+                throw new ValidationException("Usuario no encontrado.");
+
+            // Validar respuestas de seguridad (deberías tener un método para esto)
+            if (!_userRepository.ValidarRespuestasSeguridad(user.IdUsuario, respuestas))
+                throw new ValidationException("Respuestas de seguridad incorrectas.");
+
+            // Generar nueva contraseña aleatoria
+            var nueva = GenerarContrasenaAleatoria();
+            var hash = HashUsuarioContrasena(usuario, nueva);
+            user.ContrasenaScript = Encoding.UTF8.GetBytes(hash);
+            user.FechaUltimoCambio = DateTime.Now;
+            _userRepository.Update(user);
+
+            // Enviar por correo (implementa el envío real en un helper o servicio)
+            _userRepository.EnviarCorreoRecuperacion(user, nueva);
+        }
+
+        private string HashUsuarioContrasena(string usuario, string contrasena)
+        {
+            using var sha = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(usuario + contrasena);
+            var hash = sha.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
+
+        private string GenerarContrasenaAleatoria(int longitud = 10)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, longitud)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
     }
 }

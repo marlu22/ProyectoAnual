@@ -15,4 +15,6 @@ public interface IUserService
     List<Localidad> GetLocalidades();
     List<Genero> GetGeneros();
     List<Rol> GetRoles();
+    void CambiarContrasena(string usuario, string nuevaContrasena);
+    void RecuperarContrasena(string usuario, string[] respuestas);
 }

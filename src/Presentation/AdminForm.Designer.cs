@@ -17,7 +17,7 @@ namespace Presentation
         private System.Windows.Forms.TableLayoutPanel usuarioLayout;
         private System.Windows.Forms.ComboBox cbxPersona, cbxRolUsuario;
         private System.Windows.Forms.TextBox txtUsuario, txtPassword;
-        private System.Windows.Forms.Button btnCrearUsuario;
+        private System.Windows.Forms.Button btnCrearUsuario, btnRecuperarContrasena;
 
         protected override void Dispose(bool disposing)
         {
@@ -91,13 +91,14 @@ namespace Presentation
             txtPassword = new System.Windows.Forms.TextBox();
             cbxRolUsuario = new System.Windows.Forms.ComboBox();
             btnCrearUsuario = new System.Windows.Forms.Button();
+            btnRecuperarContrasena = new System.Windows.Forms.Button();
 
             usuarioLayout.ColumnCount = 2;
-            usuarioLayout.RowCount = 5;
+            usuarioLayout.RowCount = 6;
             usuarioLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             usuarioLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             usuarioLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
                 usuarioLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 
             usuarioLayout.Controls.Add(new System.Windows.Forms.Label() { Text = "Persona:" }, 0, 0);
@@ -111,6 +112,11 @@ namespace Presentation
 
             btnCrearUsuario.Text = "Crear Usuario";
             usuarioLayout.Controls.Add(btnCrearUsuario, 1, 4);
+
+            btnRecuperarContrasena.Text = "¿Olvidaste tu contraseña?";
+            btnRecuperarContrasena.Dock = System.Windows.Forms.DockStyle.Right;
+            btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
+            usuarioLayout.Controls.Add(btnRecuperarContrasena, 1, 5);
 
             tabUsuarios.Text = "Crear Usuario";
             tabUsuarios.Controls.Add(usuarioLayout);

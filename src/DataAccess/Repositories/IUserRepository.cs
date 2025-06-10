@@ -22,4 +22,8 @@ public interface IUserRepository
     IEnumerable<Localidad> GetAllLocalidades();
     IEnumerable<Genero> GetAllGeneros();
     IEnumerable<Rol> GetAllRoles();
+
+    Usuario GetByUsername(string username);
+    bool ValidarRespuestasSeguridad(int idUsuario, string[] respuestas);
+    void EnviarCorreoRecuperacion(Usuario user, string nuevaContrasena);
 }

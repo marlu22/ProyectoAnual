@@ -25,6 +25,7 @@ namespace Presentation
 
             btnGuardarPersona.Click += BtnGuardarPersona_Click;
             btnCrearUsuario.Click += BtnCrearUsuario_Click;
+            btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
         }
 
         private void LoadTipoDoc()
@@ -117,6 +118,12 @@ namespace Presentation
             {
                 MessageBox.Show("Ocurrió un error inesperado: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void BtnRecuperarContrasena_Click(object? sender, EventArgs e)
+        {
+            var form = new RecuperarContrasenaForm(_userService);
+            form.ShowDialog();
         }
     }
 }

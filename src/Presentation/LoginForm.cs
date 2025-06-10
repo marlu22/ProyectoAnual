@@ -13,6 +13,7 @@ namespace Presentation
             InitializeComponent();
             _userService = userService;
             btnLogin.Click += BtnLogin_Click;
+            btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
         }
 
         private void BtnLogin_Click(object? sender, EventArgs e)
@@ -31,6 +32,12 @@ namespace Presentation
             {
                 MessageBox.Show("Usuario o contraseña incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void BtnRecuperarContrasena_Click(object sender, EventArgs e)
+        {
+            var form = new RecuperarContrasenaForm(_userService);
+            form.ShowDialog();
         }
     }
 }

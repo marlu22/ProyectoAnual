@@ -42,6 +42,36 @@ namespace DataAccess.Repositories
             _context.SaveChanges();
         }
 
+        public Usuario GetByUsername(string username)
+        {
+            return _context.Usuarios.FirstOrDefault(u => u.UsuarioNombre == username);
+        }
+
+        public bool ValidarRespuestasSeguridad(int idUsuario, string[] respuestas)
+        {
+            // Ejemplo simple: compara respuestas con las almacenadas
+            var respuestasDb = _context.RespuestasSeguridad
+                .Where(r => r.IdUsuario == idUsuario)
+                .OrderBy(r => r.IdPregunta)
+                .Select(r => r.Respuesta)
+                .ToArray();
+
+            if (respuestasDb.Length != respuestas.Length)
+                return false;
+
+            for (int i = 0; i < respuestas.Length; i++)
+                if (!string.Equals(respuestasDb[i], respuestas[i], StringComparison.OrdinalIgnoreCase))
+                    return false;
+
+            return true;
+        }
+
+        public void EnviarCorreoRecuperacion(Usuario user, string nuevaContrasena)
+        {
+            // Implementa el envío real de correo aquí (puedes usar SmtpClient)
+            // Ejemplo: Console.WriteLine($"Enviar a {user.Persona.Correo}: {nuevaContrasena}");
+        }
+
         // Personas
         public void AddPersona(Persona persona)
         {

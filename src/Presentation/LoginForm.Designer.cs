@@ -9,6 +9,7 @@ namespace Presentation
         private System.Windows.Forms.Label lblContrasena;
         private System.Windows.Forms.TextBox txtContrasena;
         private System.Windows.Forms.Button btnLogin;
+        private System.Windows.Forms.Button btnRecuperarContrasena;
 
         protected override void Dispose(bool disposing)
         {
@@ -27,6 +28,7 @@ namespace Presentation
             lblContrasena = new System.Windows.Forms.Label();
             txtContrasena = new System.Windows.Forms.TextBox();
             btnLogin = new System.Windows.Forms.Button();
+            btnRecuperarContrasena = new System.Windows.Forms.Button();
             tableLayoutPanel.SuspendLayout();
             SuspendLayout();
             // 
@@ -48,7 +50,7 @@ namespace Presentation
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            tableLayoutPanel.Size = new System.Drawing.Size(350, 140);
+            tableLayoutPanel.Size = new System.Drawing.Size(350, 180);
             tableLayoutPanel.TabIndex = 0;
             // 
             // lblUsuario
@@ -93,14 +95,25 @@ namespace Presentation
             btnLogin.Dock = System.Windows.Forms.DockStyle.Right;
             btnLogin.Location = new System.Drawing.Point(217, 83);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new System.Drawing.Size(120, 44);
+            btnLogin.Size = new System.Drawing.Size(120, 84);
             btnLogin.TabIndex = 4;
             btnLogin.Text = "Iniciar sesión";
+            // 
+            // btnRecuperarContrasena
+            // 
+            btnRecuperarContrasena.Dock = System.Windows.Forms.DockStyle.Fill;
+            btnRecuperarContrasena.Location = new System.Drawing.Point(128, 133);
+            btnRecuperarContrasena.Name = "btnRecuperarContrasena";
+            btnRecuperarContrasena.Size = new System.Drawing.Size(209, 29);
+            btnRecuperarContrasena.TabIndex = 5;
+            btnRecuperarContrasena.Text = "¿Olvidaste tu contraseña?";
+            btnRecuperarContrasena.UseVisualStyleBackColor = true;
+            btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
             // 
             // LoginForm
             // 
             AcceptButton = btnLogin;
-            ClientSize = new System.Drawing.Size(350, 140);
+            ClientSize = new System.Drawing.Size(350, 180);
             Controls.Add(tableLayoutPanel);
             Font = new System.Drawing.Font("Segoe UI", 10F);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

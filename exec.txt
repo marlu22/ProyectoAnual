@@ -1,0 +1,108 @@
+Creamos los EXEC
+
+
+tipo_doc: 
+ 
+ EXEC sp_insert_tipo_doc 1, ´DNI´;
+ EXEC sp_insert_tipo_doc 2, ´Pasaporte´; 
+__________________________________________________________________________________
+
+géneros:
+
+ EXEC sp_insert_genero @genero = ´Masculino´
+ EXEC sp_insert_genero @genero = ´Femenino ´
+__________________________________________________________________________________
+
+Provincias:
+ EXEC sp_insertar_provincia @provincia= ´CABA´
+ EXEC sp_insertar_provincia @provincia = 'Buenos Aires';
+ EXEC sp_insertar_provincia @provincia = 'Catamarca';
+ EXEC sp_insertar_provincia @provincia = 'Chaco';
+ EXEC sp_insertar_provincia @provincia = 'Chubut';
+ EXEC sp_insertar_provincia @provincia = 'Córdoba';
+ EXEC sp_insertar_provincia @provincia = 'Corrientes';
+ EXEC sp_insertar_provincia @provincia = 'Entre Ríos';
+ EXEC sp_insertar_provincia @provincia = 'Formosa';
+ EXEC sp_insertar_provincia @provincia = 'Jujuy';
+ EXEC sp_insertar_provincia @provincia = 'La Pampa';
+ EXEC sp_insertar_provincia @provincia = 'La Rioja';
+ EXEC sp_insertar_provincia @provincia = 'Mendoza';
+ EXEC sp_insertar_provincia @provincia = 'Misiones';
+ EXEC sp_insertar_provincia @provincia = 'Neuquén';
+ EXEC sp_insertar_provincia @provincia = 'Río Negro';
+ EXEC sp_insertar_provincia @provincia = 'Salta';
+ EXEC sp_insertar_provincia @provincia = 'San Juan';
+ EXEC sp_insertar_provincia @provincia = 'San Luis';
+ EXEC sp_insertar_provincia @provincia = 'Santa Cruz';
+ EXEC sp_insertar_provincia @provincia = 'Santa Fe';
+ EXEC sp_insertar_provincia @provincia = 'Santiago del Estero';
+ EXEC sp_insertar_provincia @provincia = 'Tierra del Fuego';
+ EXEC sp_insertar_provincia @provincia = 'Tucumán';
+__________________________________________________________________________________
+
+Partidos:
+ EXEC sp_insertar_partido @partido = 'Almirante Brown', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Avellaneda', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Berazategui', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Esteban Echeverría', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Ezeiza', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Florencio Varela', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Lanús', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Lomas de Zamora', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Presidente Perón', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+ EXEC sp_insertar_partido @partido = 'Quilmes', @id_provincia = (SELECT id FROM Provincias WHERE Nombre = 'Buenos Aires');
+_________________________________________________________________________________
+
+Localidades:
+-- Lanús
+EXEC sp_insert_localidad @localidad = 'Lanús Este', @id_partido = 1;
+EXEC sp_insert_localidad @localidad = 'Lanús Oeste', @id_partido = 1;
+EXEC sp_insert_localidad @localidad = 'Villa Caraza', @id_partido = 1;
+EXEC sp_insert_localidad @localidad = 'Remedios de Escalada', @id_partido = 1;
+
+-- Avellaneda
+EXEC sp_insert_localidad @localidad = 'Avellaneda', @id_partido = 2;
+EXEC sp_insert_localidad @localidad = 'Dock Sud', @id_partido = 2;
+EXEC sp_insert_localidad @localidad = 'Sarandí', @id_partido = 2;
+EXEC sp_insert_localidad @localidad = 'Villa Domínico', @id_partido = 2;
+
+-- Quilmes
+EXEC sp_insert_localidad @localidad = 'Quilmes', @id_partido = 3;
+EXEC sp_insert_localidad @localidad = 'Bernal', @id_partido = 3;
+EXEC sp_insert_localidad @localidad = 'Ezpeleta', @id_partido = 3;
+EXEC sp_insert_localidad @localidad = 'San Francisco Solano', @id_partido = 3;
+
+-- Lomas de Zamora
+EXEC sp_insert_localidad @localidad = 'Lomas de Zamora', @id_partido = 4;
+EXEC sp_insert_localidad @localidad = 'Banfield', @id_partido = 4;
+EXEC sp_insert_localidad @localidad = 'Temperley', @id_partido = 4;
+EXEC sp_insert_localidad @localidad = 'Villa Centenario', @id_partido = 4;
+
+-- Almirante Brown
+EXEC sp_insert_localidad @localidad = 'Adrogué', @id_partido = 5;
+EXEC sp_insert_localidad @localidad = 'Burzaco', @id_partido = 5;
+EXEC sp_insert_localidad @localidad = 'Claypole', @id_partido = 5;
+EXEC sp_insert_localidad @localidad = 'Glew', @id_partido = 5;
+
+-- Esteban Echeverría
+EXEC sp_insert_localidad @localidad = 'Monte Grande', @id_partido = 6;
+EXEC sp_insert_localidad @localidad = 'El Jagüel', @id_partido = 6;
+EXEC sp_insert_localidad @localidad = 'Canning', @id_partido = 6;
+
+-- Ezeiza
+EXEC sp_insert_localidad @localidad = 'Ezeiza', @id_partido = 7;
+EXEC sp_insert_localidad @localidad = 'Tristán Suárez', @id_partido = 7;
+EXEC sp_insert_localidad @localidad = 'Carlos Spegazzini', @id_partido = 7;
+
+-- Florencio Varela
+EXEC sp_insert_localidad @localidad = 'Florencio Varela', @id_partido = 8;
+EXEC sp_insert_localidad @localidad = 'Bosques', @id_partido = 8;
+EXEC sp_insert_localidad @localidad = 'Ingeniero Allan', @id_partido = 8;
+
+-- Presidente Perón
+EXEC sp_insert_localidad @localidad = 'Guernica', @id_partido = 9;
+
+-- Berazategui
+EXEC sp_insert_localidad @localidad = 'Berazategui', @id_partido = 10;
+EXEC sp_insert_localidad @localidad = 'Hudson', @id_partido = 10;
+EXEC sp_insert_localidad @localidad = 'Ranelagh', @id_partido = 10;

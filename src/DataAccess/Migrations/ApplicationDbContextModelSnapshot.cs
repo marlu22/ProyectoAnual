@@ -480,7 +480,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("IdUsuario");
 
-                    b.Property<bool>("CambioContrasenaObligatorio")
+                    b.Property<bool?>("CambioContrasenaObligatorio")
                         .HasColumnType("bit")
                         .HasColumnName("cambio_contrasena_obligatorio");
 

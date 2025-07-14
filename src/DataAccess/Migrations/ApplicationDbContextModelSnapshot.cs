@@ -480,15 +480,13 @@ namespace DataAccess.Migrations
 
                     b.HasKey("IdUsuario");
 
+                    b.Property<bool>("CambioContrasenaObligatorio")
+                        .HasColumnType("bit")
+                        .HasColumnName("cambio_contrasena_obligatorio");
+
                     b.HasIndex("IdRol");
 
                     b.ToTable("usuarios", (string)null);
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.Usuario", b =>
-                {
-                    b.Property<bool>("CambioContrasenaObligatorio")
-                        .HasColumnType("bit");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Contacto", b =>

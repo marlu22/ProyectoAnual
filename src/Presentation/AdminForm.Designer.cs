@@ -17,7 +17,7 @@ namespace Presentation
         private System.Windows.Forms.TableLayoutPanel usuarioLayout;
         private System.Windows.Forms.ComboBox cbxPersona, cbxRolUsuario;
         private System.Windows.Forms.TextBox txtUsuario, txtPassword;
-        private System.Windows.Forms.Button btnCrearUsuario, btnRecuperarContrasena;
+        private System.Windows.Forms.Button btnCrearUsuario, btnRecuperarContrasena, btnConfiguracion;
 
         protected override void Dispose(bool disposing)
         {
@@ -123,12 +123,8 @@ namespace Presentation
 
             // ----------- TAB CONTROL PRINCIPAL -----------
             var tabConfiguracion = new System.Windows.Forms.TabPage();
-            var btnConfiguracion = new System.Windows.Forms.Button();
+            btnConfiguracion = new System.Windows.Forms.Button();
             btnConfiguracion.Text = "Abrir Configuración";
-            btnConfiguracion.Click += (s, e) => {
-                var form = new ConfiguracionForm(_userService);
-                form.ShowDialog();
-            };
             tabConfiguracion.Controls.Add(btnConfiguracion);
             tabConfiguracion.Text = "Configuración";
 

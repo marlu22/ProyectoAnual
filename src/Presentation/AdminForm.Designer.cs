@@ -122,8 +122,19 @@ namespace Presentation
             tabUsuarios.Controls.Add(usuarioLayout);
 
             // ----------- TAB CONTROL PRINCIPAL -----------
+            var tabConfiguracion = new System.Windows.Forms.TabPage();
+            var btnConfiguracion = new System.Windows.Forms.Button();
+            btnConfiguracion.Text = "Abrir Configuración";
+            btnConfiguracion.Click += (s, e) => {
+                var form = new ConfiguracionForm(_userService);
+                form.ShowDialog();
+            };
+            tabConfiguracion.Controls.Add(btnConfiguracion);
+            tabConfiguracion.Text = "Configuración";
+
             tabControl.Controls.Add(tabPersonas);
             tabControl.Controls.Add(tabUsuarios);
+            tabControl.Controls.Add(tabConfiguracion);
             tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 
             // ----------- FORM PRINCIPAL -----------

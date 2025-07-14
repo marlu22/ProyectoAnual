@@ -485,6 +485,12 @@ namespace DataAccess.Migrations
                     b.ToTable("usuarios", (string)null);
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.Usuario", b =>
+                {
+                    b.Property<bool>("CambioContrasenaObligatorio")
+                        .HasColumnType("bit");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.Contacto", b =>
                 {
                     b.HasOne("DataAccess.Entities.Persona", "Persona")

@@ -17,4 +17,7 @@ public interface IUserService
     List<Rol> GetRoles();
     void CambiarContrasena(string usuario, string nuevaContrasena);
     void RecuperarContrasena(string usuario, string[] respuestas);
+    UserDto Authenticate(string username, string password);
+    PoliticaSeguridad GetPoliticaSeguridad();
+    void UpdatePoliticaSeguridad(PoliticaSeguridad politica);
 }

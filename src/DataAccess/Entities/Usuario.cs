@@ -32,6 +32,8 @@ namespace DataAccess.Entities
         [ForeignKey("IdRol")]
         public Rol Rol { get; set; }
 
+        public bool CambioContrasenaObligatorio { get; set; } = false;
+
         // Relaciones de navegación (opcional, si tienes las entidades Persona y Rol)
         // public Persona Persona { get; set; }
         // public Rol Rol { get; set; }

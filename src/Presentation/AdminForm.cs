@@ -26,6 +26,13 @@ namespace Presentation
             btnGuardarPersona.Click += BtnGuardarPersona_Click;
             btnCrearUsuario.Click += BtnCrearUsuario_Click;
             btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
+            btnConfiguracion.Click += BtnConfiguracion_Click;
+        }
+
+        private void BtnConfiguracion_Click(object sender, EventArgs e)
+        {
+            var form = new ConfiguracionForm(_userService);
+            form.ShowDialog();
         }
 
         private void LoadTipoDoc()

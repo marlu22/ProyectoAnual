@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories
 {
@@ -44,7 +45,7 @@ namespace DataAccess.Repositories
 
         public Usuario GetByUsername(string username)
         {
-            return _context.Usuarios.FirstOrDefault(u => u.UsuarioNombre == username);
+            return _context.Usuarios.Include(u => u.Rol).FirstOrDefault(u => u.UsuarioNombre == username);
         }
 
         public bool ValidarRespuestasSeguridad(int idUsuario, string[] respuestas)
@@ -69,7 +70,7 @@ namespace DataAccess.Repositories
         public void EnviarCorreoRecuperacion(Usuario user, string nuevaContrasena)
         {
             // Implementa el envío real de correo aquí (puedes usar SmtpClient)
-            // Ejemplo: Console.WriteLine($"Enviar a {user.Persona.Correo}: {nuevaContrasena}");
+            Console.WriteLine($"Enviar a {user.UsuarioNombre}: {nuevaContrasena}");
         }
 
         // Personas
@@ -103,5 +104,15 @@ namespace DataAccess.Repositories
 
         public IEnumerable<Rol> GetAllRoles() => _context.Roles.ToList();
 
+        public PoliticaSeguridad GetPoliticaSeguridad()
+        {
+            return _context.PoliticasSeguridad.FirstOrDefault();
+        }
+
+        public void UpdatePoliticaSeguridad(PoliticaSeguridad politica)
+        {
+            _context.PoliticasSeguridad.Update(politica);
+            _context.SaveChanges();
+        }
     }
 }

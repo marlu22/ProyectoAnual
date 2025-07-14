@@ -123,7 +123,8 @@ namespace BusinessLogic.Services
                 UsuarioNombre = usuario.Username,
                 ContrasenaScript = System.Text.Encoding.UTF8.GetBytes(usuario.Password),
                 IdRol = rol.IdRol,
-                FechaUltimoCambio = DateTime.Now
+                FechaUltimoCambio = DateTime.Now,
+                CambioContrasenaObligatorio = true
             };
             _userRepository.AddUsuario(nuevoUsuario);
         }
@@ -183,7 +184,29 @@ namespace BusinessLogic.Services
             _userRepository.EnviarCorreoRecuperacion(user, nueva);
         }
 
-        private string HashUsuarioContrasena(string usuario, string contrasena)
+        public UserDto Authenticate(string username, string password)
+        {
+            var user = _userRepository.GetByUsername(username);
+            if (user == null) return null;
+
+            var hash = HashUsuarioContrasena(username, password);
+            var hashBytes = Encoding.UTF8.GetBytes(hash);
+
+            if (user.ContrasenaScript.SequenceEqual(hashBytes))
+            {
+                return new UserDto
+                {
+                    Id = user.IdUsuario,
+                    Username = user.UsuarioNombre,
+                    CambioContrasenaObligatorio = user.CambioContrasenaObligatorio,
+                    Rol = user.Rol?.Nombre
+                };
+            }
+
+            return null;
+        }
+
+        public static string HashUsuarioContrasena(string usuario, string contrasena)
         {
             using var sha = SHA256.Create();
             var bytes = Encoding.UTF8.GetBytes(usuario + contrasena);
@@ -197,6 +220,16 @@ namespace BusinessLogic.Services
             var random = new Random();
             return new string(Enumerable.Repeat(chars, longitud)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public PoliticaSeguridad GetPoliticaSeguridad()
+        {
+            return _userRepository.GetPoliticaSeguridad();
+        }
+
+        public void UpdatePoliticaSeguridad(PoliticaSeguridad politica)
+        {
+            _userRepository.UpdatePoliticaSeguridad(politica);
         }
     }
 }

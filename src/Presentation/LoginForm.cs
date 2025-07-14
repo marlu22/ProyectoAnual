@@ -21,12 +21,34 @@ namespace Presentation
             string usuario = txtUsuario.Text.Trim();
             string contrasena = txtContrasena.Text;
 
-            if (usuario == "admin" && contrasena == "admin123")
+            var user = _userService.Authenticate(usuario, contrasena);
+
+            if (user != null)
             {
-                Hide();
-                var adminForm = new AdminForm(_userService);
-                adminForm.ShowDialog();
-                Show();
+                if (user.CambioContrasenaObligatorio)
+                {
+                    Hide();
+                    var cambioContrasenaForm = new CambioContrasenaForm(_userService, user.Username);
+                    cambioContrasenaForm.ShowDialog();
+                    Show();
+                }
+                else
+                {
+                    if (user.Rol == "Administrador")
+                    {
+                        Hide();
+                        var adminForm = new AdminForm(_userService);
+                        adminForm.ShowDialog();
+                        Show();
+                    }
+                    else
+                    {
+                        Hide();
+                        var userForm = new UserForm(_userService, user.Username);
+                        userForm.ShowDialog();
+                        Show();
+                    }
+                }
             }
             else
             {

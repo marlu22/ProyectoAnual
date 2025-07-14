@@ -26,4 +26,6 @@ public interface IUserRepository
     Usuario GetByUsername(string username);
     bool ValidarRespuestasSeguridad(int idUsuario, string[] respuestas);
     void EnviarCorreoRecuperacion(Usuario user, string nuevaContrasena);
+    PoliticaSeguridad GetPoliticaSeguridad();
+    void UpdatePoliticaSeguridad(PoliticaSeguridad politica);
 }

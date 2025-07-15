@@ -77,8 +77,10 @@ CREATE TABLE usuarios (
     nombre_usuario_bloqueo VARCHAR(30),
     fecha_ultimo_cambio DATETIME NOT NULL DEFAULT GETDATE(),
     id_rol INT NOT NULL,
+    id_politica INT,
     FOREIGN KEY (id_persona) REFERENCES personas(id_persona),
-    FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
+    FOREIGN KEY (id_rol) REFERENCES roles(id_rol),
+    FOREIGN KEY (id_politica) REFERENCES politicas_seguridad(id_politica)
 );
 
 -- 10. Permisos

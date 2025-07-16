@@ -22,12 +22,12 @@ namespace Presentation
             _politica = _userService.GetPoliticaSeguridad();
             if (_politica != null)
             {
-                chkMayusculasMinusculas.Checked = _politica.CombinarMayusculasMinusculas;
-                chkNumeros.Checked = _politica.RequerirNumeros;
-                chkCaracteresEspeciales.Checked = _politica.RequerirCaracteresEspeciales;
-                chkDobleFactor.Checked = _politica.UsarDobleFactor;
-                chkNoRepetirContrasenas.Checked = _politica.NoRepetirContrasenasAnteriores;
-                chkVerificarDatosPersonales.Checked = _politica.VerificarDatosPersonales;
+                chkMayusculasMinusculas.Checked = _politica.MayusYMinus;
+                chkNumeros.Checked = _politica.LetrasYNumeros;
+                chkCaracteresEspeciales.Checked = _politica.CaracterEspecial;
+                chkDobleFactor.Checked = _politica.Autenticacion2FA;
+                chkNoRepetirContrasenas.Checked = _politica.NoRepetirAnteriores;
+                chkVerificarDatosPersonales.Checked = _politica.SinDatosPersonales;
                 txtMinCaracteres.Text = _politica.MinCaracteres.ToString();
                 txtCantPreguntas.Text = _politica.CantPreguntas.ToString();
             }
@@ -40,12 +40,12 @@ namespace Presentation
                 _politica = new PoliticaSeguridad();
             }
 
-            _politica.CombinarMayusculasMinusculas = chkMayusculasMinusculas.Checked;
-            _politica.RequerirNumeros = chkNumeros.Checked;
-            _politica.RequerirCaracteresEspeciales = chkCaracteresEspeciales.Checked;
-            _politica.UsarDobleFactor = chkDobleFactor.Checked;
-            _politica.NoRepetirContrasenasAnteriores = chkNoRepetirContrasenas.Checked;
-            _politica.VerificarDatosPersonales = chkVerificarDatosPersonales.Checked;
+            _politica.MayusYMinus = chkMayusculasMinusculas.Checked;
+            _politica.LetrasYNumeros = chkNumeros.Checked;
+            _politica.CaracterEspecial = chkCaracteresEspeciales.Checked;
+            _politica.Autenticacion2FA = chkDobleFactor.Checked;
+            _politica.NoRepetirAnteriores = chkNoRepetirContrasenas.Checked;
+            _politica.SinDatosPersonales = chkVerificarDatosPersonales.Checked;
             _politica.MinCaracteres = int.Parse(txtMinCaracteres.Text);
             _politica.CantPreguntas = int.Parse(txtCantPreguntas.Text);
 

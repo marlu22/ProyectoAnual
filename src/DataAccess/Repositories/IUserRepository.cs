@@ -28,4 +28,6 @@ public interface IUserRepository
     void EnviarCorreoRecuperacion(Usuario user, string nuevaContrasena);
     PoliticaSeguridad GetPoliticaSeguridad();
     void UpdatePoliticaSeguridad(PoliticaSeguridad politica);
+    IEnumerable<HistorialContrasena> GetHistorialContrasenas(int idUsuario);
+    void AddHistorialContrasena(HistorialContrasena historial);
 }

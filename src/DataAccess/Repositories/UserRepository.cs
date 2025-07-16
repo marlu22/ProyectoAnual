@@ -114,5 +114,16 @@ namespace DataAccess.Repositories
             _context.PoliticasSeguridad.Update(politica);
             _context.SaveChanges();
         }
+
+        public IEnumerable<HistorialContrasena> GetHistorialContrasenas(int idUsuario)
+        {
+            return _context.HistorialContrasenas.Where(h => h.IdUsuario == idUsuario).ToList();
+        }
+
+        public void AddHistorialContrasena(HistorialContrasena historial)
+        {
+            _context.HistorialContrasenas.Add(historial);
+            _context.SaveChanges();
+        }
     }
 }

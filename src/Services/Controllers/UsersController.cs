@@ -23,7 +23,7 @@ public class UsersController : ControllerBase
     [HttpPost]
     public IActionResult Create(UserRequest request)
     {
-        var user = _userService.CreateUser(request);
-        return CreatedAtAction(nameof(GetAll), new { id = user.Id }, user);
+        _userService.CrearUsuario(request);
+        return CreatedAtAction(nameof(GetAll), null, null);
     }
 }

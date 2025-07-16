@@ -5,7 +5,6 @@ using DataAccess.Entities;
 public interface IUserService
 {
     IEnumerable<UserDto> GetAllUsers();
-    UserDto CreateUser(UserRequest request);
 
     void CrearPersona(PersonaRequest persona);
     void CrearUsuario(UserRequest usuario);

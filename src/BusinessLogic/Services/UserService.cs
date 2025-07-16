@@ -29,29 +29,6 @@ namespace BusinessLogic.Services
             });
         }
 
-        public UserDto CreateUser(UserRequest request)
-        {
-            if (string.IsNullOrEmpty(request.Password))
-                throw new ArgumentException("Password is required.", nameof(request.Password));
-
-            var usuario = new Usuario
-            {
-                UsuarioNombre = request.Username,
-                ContrasenaScript = System.Text.Encoding.UTF8.GetBytes(request.Password),
-                // Asigna aquí otros campos requeridos, por ejemplo:
-                // IdPersona = ...,
-                // IdRol = ...,
-            };
-
-            _userRepository.Add(usuario);
-
-            return new UserDto
-            {
-                Id = usuario.IdUsuario,
-                Username = usuario.UsuarioNombre,
-                // Otros campos
-            };
-        }
 
         public UserDto UpdateUser(int id, UserRequest request)
         {
@@ -111,22 +88,25 @@ namespace BusinessLogic.Services
             if (string.IsNullOrWhiteSpace(usuario.Username))
                 throw new ValidationException("El nombre de usuario es obligatorio.");
 
-            if (string.IsNullOrWhiteSpace(usuario.Password) || usuario.Password.Length < 8)
-                throw new ValidationException("La contraseña debe tener al menos 8 caracteres.");
-
             var persona = _userRepository.GetPersonaById(int.Parse(usuario.PersonaId));
             var rol = _userRepository.GetRolByNombre(usuario.Rol);
+
+            var contrasenaAleatoria = GenerarContrasenaAleatoria();
+            var hash = HashUsuarioContrasena(usuario.Username, contrasenaAleatoria);
 
             var nuevoUsuario = new Usuario
             {
                 IdPersona = persona.IdPersona,
                 UsuarioNombre = usuario.Username,
-                ContrasenaScript = System.Text.Encoding.UTF8.GetBytes(usuario.Password),
+                ContrasenaScript = Encoding.UTF8.GetBytes(hash),
                 IdRol = rol.IdRol,
                 FechaUltimoCambio = DateTime.Now,
                 CambioContrasenaObligatorio = true
             };
             _userRepository.AddUsuario(nuevoUsuario);
+
+            // Deberías enviar la contraseña aleatoria al usuario por correo electrónico
+            // _emailService.SendNewPassword(persona.Correo, contrasenaAleatoria);
         }
 
         public List<PersonaDto> GetPersonas()
@@ -146,21 +126,35 @@ namespace BusinessLogic.Services
 
         public void CambiarContrasena(string usuario, string nuevaContrasena)
         {
-            // Validar políticas de seguridad aquí (longitud, complejidad, etc.)
-            if (string.IsNullOrWhiteSpace(nuevaContrasena) || nuevaContrasena.Length < 8)
-                throw new ValidationException("La contraseña debe tener al menos 8 caracteres.");
-
+            var politica = _userRepository.GetPoliticaSeguridad();
             var user = _userRepository.GetByUsername(usuario);
             if (user == null)
                 throw new ValidationException("Usuario no encontrado.");
 
-            // Hashear usuario+contraseña
+            ValidarPoliticasDeSeguridad(nuevaContrasena, politica, user);
+
+            if (politica.NoRepetirAnteriores)
+            {
+                var historial = _userRepository.GetHistorialContrasenas(user.IdUsuario);
+                var hashNueva = HashUsuarioContrasena(usuario, nuevaContrasena);
+                if (historial.Any(h => h.ContrasenaScript.SequenceEqual(Encoding.UTF8.GetBytes(hashNueva))))
+                {
+                    throw new ValidationException("La nueva contraseña no puede ser igual a una de las anteriores.");
+                }
+
+                _userRepository.AddHistorialContrasena(new HistorialContrasena
+                {
+                    IdUsuario = user.IdUsuario,
+                    ContrasenaScript = user.ContrasenaScript
+                });
+            }
+
             var hash = HashUsuarioContrasena(usuario, nuevaContrasena);
             user.ContrasenaScript = Encoding.UTF8.GetBytes(hash);
             user.FechaUltimoCambio = DateTime.Now;
+            user.CambioContrasenaObligatorio = false;
 
             _userRepository.Update(user);
-            // Opcional: guardar en historial_contrasena
         }
 
         public void RecuperarContrasena(string usuario, string[] respuestas)
@@ -178,6 +172,7 @@ namespace BusinessLogic.Services
             var hash = HashUsuarioContrasena(usuario, nueva);
             user.ContrasenaScript = Encoding.UTF8.GetBytes(hash);
             user.FechaUltimoCambio = DateTime.Now;
+            user.CambioContrasenaObligatorio = true;
             _userRepository.Update(user);
 
             // Enviar por correo (implementa el envío real en un helper o servicio)
@@ -230,6 +225,37 @@ namespace BusinessLogic.Services
         public void UpdatePoliticaSeguridad(PoliticaSeguridad politica)
         {
             _userRepository.UpdatePoliticaSeguridad(politica);
+        }
+
+        private void ValidarPoliticasDeSeguridad(string contrasena, PoliticaSeguridad politica, Usuario user)
+        {
+            if (politica == null) return;
+
+            if (contrasena.Length < politica.MinCaracteres)
+                throw new ValidationException($"La contraseña debe tener al menos {politica.MinCaracteres} caracteres.");
+
+            if (politica.MayusYMinus && (!contrasena.Any(char.IsUpper) || !contrasena.Any(char.IsLower)))
+                throw new ValidationException("La contraseña debe contener mayúsculas y minúsculas.");
+
+            if (politica.LetrasYNumeros && (!contrasena.Any(char.IsLetter) || !contrasena.Any(char.IsDigit)))
+                throw new ValidationException("La contraseña debe contener letras y números.");
+
+            if (politica.CaracterEspecial && !contrasena.Any(c => !char.IsLetterOrDigit(c)))
+                throw new ValidationException("La contraseña debe contener al menos un carácter especial.");
+
+            if (politica.SinDatosPersonales)
+            {
+                var persona = _userRepository.GetPersonaById(user.IdPersona);
+                if (persona != null)
+                {
+                    if (contrasena.Contains(persona.Nombre, StringComparison.OrdinalIgnoreCase) ||
+                        contrasena.Contains(persona.Apellido, StringComparison.OrdinalIgnoreCase) ||
+                        contrasena.Contains(persona.NumDoc, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new ValidationException("La contraseña no puede contener datos personales.");
+                    }
+                }
+            }
         }
     }
 }

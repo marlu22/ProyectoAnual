@@ -110,6 +110,7 @@ CREATE TABLE usuarios (
     fecha_ultimo_cambio DATETIME NOT NULL DEFAULT GETDATE(),
     id_rol INT NOT NULL,
     id_politica INT,
+    CambioContrasenaObligatorio BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (id_persona) REFERENCES personas(id_persona),
     FOREIGN KEY (id_rol) REFERENCES roles(id_rol),
     FOREIGN KEY (id_politica) REFERENCES politicas_seguridad(id_politica)
@@ -426,16 +427,17 @@ CREATE PROCEDURE sp_insert_usuario
     @fecha_bloqueo DATETIME,
     @nombre_usuario_bloqueo VARCHAR(30),
     @fecha_ultimo_cambio DATETIME,
-    @id_rol INT
+    @id_rol INT,
+    @CambioContrasenaObligatorio BIT = 0
 AS
 BEGIN
     INSERT INTO usuarios (
         usuario, contrasena_script, id_persona, fecha_bloqueo,
-        nombre_usuario_bloqueo, fecha_ultimo_cambio, id_rol
+        nombre_usuario_bloqueo, fecha_ultimo_cambio, id_rol, CambioContrasenaObligatorio
     )
     VALUES (
         @usuario, @contrasena_script, @id_persona, @fecha_bloqueo,
-        @nombre_usuario_bloqueo, @fecha_ultimo_cambio, @id_rol
+        @nombre_usuario_bloqueo, @fecha_ultimo_cambio, @id_rol, @CambioContrasenaObligatorio
     )
 END
 GO
@@ -450,7 +452,8 @@ CREATE PROCEDURE sp_actualizar_usuario
     @fecha_bloqueo DATETIME,
     @nombre_usuario_bloqueo VARCHAR(30),
     @fecha_ultimo_cambio DATETIME,
-    @id_rol INT
+    @id_rol INT,
+    @CambioContrasenaObligatorio BIT
 AS
 BEGIN
     UPDATE usuarios
@@ -460,7 +463,8 @@ BEGIN
         fecha_bloqueo = @fecha_bloqueo,
         nombre_usuario_bloqueo = @nombre_usuario_bloqueo,
         fecha_ultimo_cambio = @fecha_ultimo_cambio,
-        id_rol = @id_rol
+        id_rol = @id_rol,
+        CambioContrasenaObligatorio = @CambioContrasenaObligatorio
     WHERE id_usuario = @id_usuario
 END
 GO
@@ -864,5 +868,64 @@ END
 ELSE
 BEGIN
     RAISERROR ('Partido "Berazategui" not found.', 16, 1);
+END
+GO
+
+-- Step 7: Insert Admin User
+-- Insert Rol "Administrador"
+EXEC sp_insert_rol @rol = 'Administrador';
+GO
+
+-- Insert Persona for Admin
+DECLARE @id_tipo_doc INT, @id_localidad INT, @id_genero INT;
+SELECT @id_tipo_doc = id_tipo_doc FROM tipo_doc WHERE tipo_doc = 'DNI';
+SELECT @id_localidad = id_localidad FROM localidades WHERE localidad = 'Lanús Este';
+SELECT @id_genero = id_genero FROM generos WHERE genero = 'Masculino';
+
+IF @id_tipo_doc IS NOT NULL AND @id_localidad IS NOT NULL AND @id_genero IS NOT NULL
+BEGIN
+    EXEC sp_insert_persona 
+        @legajo = 1,
+        @nombre = 'Admin',
+        @apellido = 'User',
+        @id_tipo_doc = @id_tipo_doc,
+        @num_doc = '12345678',
+        @cuil = '20123456781',
+        @calle = 'Admin St',
+        @altura = '123',
+        @id_localidad = @id_localidad,
+        @id_genero = @id_genero,
+        @correo = 'admin@example.com';
+END
+ELSE
+BEGIN
+    RAISERROR ('Initial data for persona not found.', 16, 1);
+END
+GO
+
+-- Insert Usuario Admin
+DECLARE @id_persona INT, @id_rol INT, @fecha_bloqueo DATETIME, @fecha_ultimo_cambio DATETIME;
+SELECT @id_persona = id_persona FROM personas WHERE nombre = 'Admin';
+SELECT @id_rol = id_rol FROM roles WHERE rol = 'Administrador';
+SET @fecha_bloqueo = CAST('9999-12-31' AS DATETIME);
+SET @fecha_ultimo_cambio = GETDATE();
+
+IF @id_persona IS NOT NULL AND @id_rol IS NOT NULL
+BEGIN
+    -- Contraseña "admin123" encriptada con SHA256
+    DECLARE @password VARBINARY(512) = HASHBYTES('SHA2_256', 'admin123');
+    EXEC sp_insert_usuario
+        @usuario = 'admin',
+        @contrasena_script = @password,
+        @id_persona = @id_persona,
+        @fecha_bloqueo = @fecha_bloqueo,
+        @nombre_usuario_bloqueo = NULL,
+        @fecha_ultimo_cambio = @fecha_ultimo_cambio,
+        @id_rol = @id_rol,
+        @CambioContrasenaObligatorio = 0;
+END
+ELSE
+BEGIN
+    RAISERROR ('Persona or Rol for admin not found.', 16, 1);
 END
 GO

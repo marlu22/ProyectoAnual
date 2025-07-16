@@ -134,6 +134,7 @@ namespace DataAccess
                 entity.Property(e => e.NombreUsuarioBloqueo).HasColumnName("nombre_usuario_bloqueo");
                 entity.Property(e => e.FechaUltimoCambio).HasColumnName("fecha_ultimo_cambio");
                 entity.Property(e => e.IdRol).HasColumnName("id_rol");
+                entity.Property(e => e.CambioContrasenaObligatorio).HasColumnName("CambioContrasenaObligatorio");
             });
 
             // Permisos

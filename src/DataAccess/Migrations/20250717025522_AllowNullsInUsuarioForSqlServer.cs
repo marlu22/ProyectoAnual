@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AllowNullsInUsuarioForSqlServer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,9 +15,9 @@ namespace DataAccess.Migrations
                 name: "generos",
                 columns: table => new
                 {
-                    id_genero = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    genero = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false)
+                    id_genero = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    genero = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,10 +28,10 @@ namespace DataAccess.Migrations
                 name: "historial_contrasena",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    id_usuario = table.Column<int>(type: "INTEGER", nullable: false),
-                    contrasena_script = table.Column<byte[]>(type: "BLOB", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id_usuario = table.Column<int>(type: "int", nullable: false),
+                    contrasena_script = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,10 +42,10 @@ namespace DataAccess.Migrations
                 name: "permisos",
                 columns: table => new
                 {
-                    id_permiso = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    permiso = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    descripcion = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
+                    id_permiso = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    permiso = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    descripcion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,9 +56,9 @@ namespace DataAccess.Migrations
                 name: "permisos_usuarios",
                 columns: table => new
                 {
-                    id_usuario = table.Column<int>(type: "INTEGER", nullable: false),
-                    id_permiso = table.Column<int>(type: "INTEGER", nullable: false),
-                    fecha_vencimiento = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id_usuario = table.Column<int>(type: "int", nullable: false),
+                    id_permiso = table.Column<int>(type: "int", nullable: false),
+                    fecha_vencimiento = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,16 +69,16 @@ namespace DataAccess.Migrations
                 name: "politicas_seguridad",
                 columns: table => new
                 {
-                    id_politica = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    min_caracteres = table.Column<int>(type: "INTEGER", nullable: false),
-                    cant_preguntas = table.Column<int>(type: "INTEGER", nullable: false),
-                    mayus_y_minus = table.Column<bool>(type: "INTEGER", nullable: false),
-                    letras_y_numeros = table.Column<bool>(type: "INTEGER", nullable: false),
-                    caracter_especial = table.Column<bool>(type: "INTEGER", nullable: false),
-                    autenticacion_2fa = table.Column<bool>(type: "INTEGER", nullable: false),
-                    no_repetir_anteriores = table.Column<bool>(type: "INTEGER", nullable: false),
-                    sin_datos_personales = table.Column<bool>(type: "INTEGER", nullable: false)
+                    id_politica = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    min_caracteres = table.Column<int>(type: "int", nullable: false),
+                    cant_preguntas = table.Column<int>(type: "int", nullable: false),
+                    mayus_y_minus = table.Column<bool>(type: "bit", nullable: false),
+                    letras_y_numeros = table.Column<bool>(type: "bit", nullable: false),
+                    caracter_especial = table.Column<bool>(type: "bit", nullable: false),
+                    autenticacion_2fa = table.Column<bool>(type: "bit", nullable: false),
+                    no_repetir_anteriores = table.Column<bool>(type: "bit", nullable: false),
+                    sin_datos_personales = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,9 +89,9 @@ namespace DataAccess.Migrations
                 name: "preguntas_seguridad",
                 columns: table => new
                 {
-                    id_pregunta = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    pregunta = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false)
+                    id_pregunta = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    pregunta = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,9 +102,9 @@ namespace DataAccess.Migrations
                 name: "provincias",
                 columns: table => new
                 {
-                    id_provincia = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    provincia = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
+                    id_provincia = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    provincia = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,9 +115,9 @@ namespace DataAccess.Migrations
                 name: "respuestas_seguridad",
                 columns: table => new
                 {
-                    id_usuario = table.Column<int>(type: "INTEGER", nullable: false),
-                    id_pregunta = table.Column<int>(type: "INTEGER", nullable: false),
-                    respuesta = table.Column<string>(type: "TEXT", nullable: false)
+                    id_usuario = table.Column<int>(type: "int", nullable: false),
+                    id_pregunta = table.Column<int>(type: "int", nullable: false),
+                    respuesta = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,9 +128,9 @@ namespace DataAccess.Migrations
                 name: "roles",
                 columns: table => new
                 {
-                    id_rol = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    rol = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
+                    id_rol = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    rol = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,9 +141,9 @@ namespace DataAccess.Migrations
                 name: "tipo_doc",
                 columns: table => new
                 {
-                    id_tipo_doc = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    tipo_doc = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false)
+                    id_tipo_doc = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    tipo_doc = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -154,10 +154,10 @@ namespace DataAccess.Migrations
                 name: "partidos",
                 columns: table => new
                 {
-                    id_partido = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    partido = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    id_provincia = table.Column<int>(type: "INTEGER", nullable: false)
+                    id_partido = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    partido = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    id_provincia = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -174,8 +174,8 @@ namespace DataAccess.Migrations
                 name: "rol_permiso",
                 columns: table => new
                 {
-                    id_rol = table.Column<int>(type: "INTEGER", nullable: false),
-                    id_permiso = table.Column<int>(type: "INTEGER", nullable: false)
+                    id_rol = table.Column<int>(type: "int", nullable: false),
+                    id_permiso = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -198,16 +198,16 @@ namespace DataAccess.Migrations
                 name: "usuarios",
                 columns: table => new
                 {
-                    id_usuario = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    usuario = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
-                    contrasena_script = table.Column<byte[]>(type: "BLOB", nullable: false),
-                    id_persona = table.Column<int>(type: "INTEGER", nullable: false),
-                    fecha_bloqueo = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    nombre_usuario_bloqueo = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true),
-                    fecha_ultimo_cambio = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    id_rol = table.Column<int>(type: "INTEGER", nullable: false),
-                    CambioContrasenaObligatorio = table.Column<bool>(type: "INTEGER", nullable: false)
+                    id_usuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    usuario = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    contrasena_script = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    id_persona = table.Column<int>(type: "int", nullable: false),
+                    fecha_bloqueo = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    nombre_usuario_bloqueo = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
+                    fecha_ultimo_cambio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    id_rol = table.Column<int>(type: "int", nullable: false),
+                    CambioContrasenaObligatorio = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -224,10 +224,10 @@ namespace DataAccess.Migrations
                 name: "localidades",
                 columns: table => new
                 {
-                    id_localidad = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    localidad = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    id_partido = table.Column<int>(type: "INTEGER", nullable: false)
+                    id_localidad = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    localidad = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    id_partido = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -244,20 +244,20 @@ namespace DataAccess.Migrations
                 name: "personas",
                 columns: table => new
                 {
-                    id_persona = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    legajo = table.Column<int>(type: "INTEGER", nullable: false),
-                    nombre = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
-                    apellido = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
-                    id_tipo_doc = table.Column<int>(type: "INTEGER", nullable: false),
-                    num_doc = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
-                    cuil = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
-                    calle = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    altura = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
-                    id_localidad = table.Column<int>(type: "INTEGER", nullable: false),
-                    id_genero = table.Column<int>(type: "INTEGER", nullable: false),
-                    correo = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    FechaIngreso = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id_persona = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    legajo = table.Column<int>(type: "int", nullable: false),
+                    nombre = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    apellido = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    id_tipo_doc = table.Column<int>(type: "int", nullable: false),
+                    num_doc = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    cuil = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    calle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    altura = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    id_localidad = table.Column<int>(type: "int", nullable: false),
+                    id_genero = table.Column<int>(type: "int", nullable: false),
+                    correo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FechaIngreso = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -286,11 +286,11 @@ namespace DataAccess.Migrations
                 name: "contactos",
                 columns: table => new
                 {
-                    id_contacto = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    email = table.Column<string>(type: "TEXT", nullable: false),
-                    celular = table.Column<string>(type: "TEXT", nullable: false),
-                    id_persona = table.Column<int>(type: "INTEGER", nullable: false)
+                    id_contacto = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    celular = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    id_persona = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

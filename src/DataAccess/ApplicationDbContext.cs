@@ -212,14 +212,12 @@ namespace DataAccess
             });
         }
 
-        private static readonly Microsoft.Data.Sqlite.SqliteConnection _connection = new Microsoft.Data.Sqlite.SqliteConnection("DataSource=:memory:");
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                _connection.Open();
-                optionsBuilder.UseSqlite(_connection);
+                // Usa la cadena de conexión de tu appsettings.json o ponla aquí directamente para pruebas
+                optionsBuilder.UseSqlServer("Server=localhost;Database=login2;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
 

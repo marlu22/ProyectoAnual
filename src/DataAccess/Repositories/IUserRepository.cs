@@ -19,9 +19,13 @@ namespace DataAccess.Repositories
         List<Localidad> GetAllLocalidades();
         List<Genero> GetAllGeneros();
         List<Persona> GetAllPersonas();
+        Persona? GetPersonaById(int id);
         List<Rol> GetAllRoles();
         PoliticaSeguridad? GetPoliticaSeguridad();
         void UpdatePoliticaSeguridad(PoliticaSeguridad politica);
         List<Usuario> GetAllUsers();
+        List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario);
+        void AddHistorialContrasena(HistorialContrasena historial);
+        void AddRespuestaSeguridad(RespuestaSeguridad respuesta);
     }
 }

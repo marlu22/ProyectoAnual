@@ -20,5 +20,6 @@ namespace BusinessLogic.Services
         PoliticaSeguridad? GetPoliticaSeguridad();
         void UpdatePoliticaSeguridad(PoliticaSeguridad politica);
         List<Usuario> GetAllUsers();
+        void GuardarRespuestasSeguridad(string username, string[] respuestas);
     }
 }

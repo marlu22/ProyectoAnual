@@ -87,6 +87,11 @@ namespace DataAccess.Repositories
             return _context.Personas.ToList();
         }
 
+        public Persona? GetPersonaById(int id)
+        {
+            return _context.Personas.Find(id);
+        }
+
         public List<Rol> GetAllRoles()
         {
             return _context.Roles.ToList();
@@ -109,6 +114,25 @@ namespace DataAccess.Repositories
                 .Include(u => u.Rol)
                 .Include(u => u.Persona)
                 .ToList();
+        }
+
+        public List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario)
+        {
+            return _context.HistorialContrasenas
+                .Where(h => h.IdUsuario == idUsuario)
+                .ToList();
+        }
+
+        public void AddHistorialContrasena(HistorialContrasena historial)
+        {
+            _context.HistorialContrasenas.Add(historial);
+            _context.SaveChanges();
+        }
+
+        public void AddRespuestaSeguridad(RespuestaSeguridad respuesta)
+        {
+            _context.RespuestasSeguridad.Add(respuesta);
+            _context.SaveChanges();
         }
     }
 }

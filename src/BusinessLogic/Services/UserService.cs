@@ -208,7 +208,10 @@ namespace BusinessLogic.Services
 
         private string GenerateRandomPassword()
         {
-            return Guid.NewGuid().ToString("N").Substring(0, 12);
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, 12)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         private void ValidatePasswordPolicy(string password, string username, string nombre, string apellido)

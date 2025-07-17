@@ -25,6 +25,11 @@ Sistema de escritorio (.NET 9, WinForms/WPF) con arquitectura N-Capas para ABM d
 4. Ejecutar migraciones: `dotnet ef database update --project src/DataAccess/DataAccess.csproj --startup-project src/Services/Services.csproj`  
 5. Abrir solución en VS2022 y ejecutar proyecto `Presentation`
 
+sqlcmd -S localhost -Q "DROP DATABASE login2;"
+Remove-Item -Recurse -Force src/DataAccess/Migrations
+dotnet ef migrations add InitialCreate --project src/DataAccess
+dotnet ef database update --project src/DataAccess
+
 ## 5. Branching model  
 - **main**: siempre verde, releases en producción.  
 - **develop**: integración de features, base de los sprints.  

@@ -3,7 +3,6 @@ using System;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -16,33 +15,27 @@ namespace DataAccess.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
 
             modelBuilder.Entity("DataAccess.Entities.Contacto", b =>
                 {
                     b.Property<int>("IdContacto")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_contacto");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdContacto"));
 
                     b.Property<string>("Celular")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("celular");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("email");
 
                     b.Property<int>("IdPersona")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_persona");
 
                     b.HasKey("IdContacto");
@@ -56,15 +49,13 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdGenero")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_genero");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdGenero"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("genero");
 
                     b.HasKey("IdGenero");
@@ -76,18 +67,16 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdHistorial")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHistorial"));
 
                     b.Property<byte[]>("ContrasenaScript")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)")
+                        .HasColumnType("BLOB")
                         .HasColumnName("contrasena_script");
 
                     b.Property<int>("IdUsuario")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_usuario");
 
                     b.HasKey("IdHistorial");
@@ -99,19 +88,17 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdLocalidad")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_localidad");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLocalidad"));
-
                     b.Property<int>("IdPartido")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_partido");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("localidad");
 
                     b.HasKey("IdLocalidad");
@@ -125,19 +112,17 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdPartido")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_partido");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPartido"));
-
                     b.Property<int>("IdProvincia")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_provincia");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("partido");
 
                     b.HasKey("IdPartido");
@@ -151,21 +136,19 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdPermiso")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_permiso");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPermiso"));
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("descripcion");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("permiso");
 
                     b.HasKey("IdPermiso");
@@ -176,15 +159,15 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.PermisoUsuario", b =>
                 {
                     b.Property<int>("IdUsuario")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_usuario");
 
                     b.Property<int>("IdPermiso")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_permiso");
 
                     b.Property<DateTime>("FechaVencimiento")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("TEXT")
                         .HasColumnName("fecha_vencimiento");
 
                     b.HasKey("IdUsuario", "IdPermiso");
@@ -196,70 +179,68 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdPersona")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_persona");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPersona"));
 
                     b.Property<string>("Altura")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("altura");
 
                     b.Property<string>("Apellido")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("apellido");
 
                     b.Property<string>("Calle")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("calle");
 
                     b.Property<string>("Correo")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("correo");
 
                     b.Property<string>("Cuil")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("cuil");
 
                     b.Property<DateTime>("FechaIngreso")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("IdGenero")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_genero");
 
                     b.Property<int>("IdLocalidad")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_localidad");
 
                     b.Property<int>("IdTipoDoc")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_tipo_doc");
 
                     b.Property<int>("Legajo")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("legajo");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("nombre");
 
                     b.Property<string>("NumDoc")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("num_doc");
 
                     b.HasKey("IdPersona");
@@ -277,41 +258,39 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdPolitica")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_politica");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPolitica"));
-
                     b.Property<bool>("Autenticacion2FA")
-                        .HasColumnType("bit")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("autenticacion_2fa");
 
                     b.Property<int>("CantPreguntas")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("cant_preguntas");
 
                     b.Property<bool>("CaracterEspecial")
-                        .HasColumnType("bit")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("caracter_especial");
 
                     b.Property<bool>("LetrasYNumeros")
-                        .HasColumnType("bit")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("letras_y_numeros");
 
                     b.Property<bool>("MayusYMinus")
-                        .HasColumnType("bit")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("mayus_y_minus");
 
                     b.Property<int>("MinCaracteres")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("min_caracteres");
 
                     b.Property<bool>("NoRepetirAnteriores")
-                        .HasColumnType("bit")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("no_repetir_anteriores");
 
                     b.Property<bool>("SinDatosPersonales")
-                        .HasColumnType("bit")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("sin_datos_personales");
 
                     b.HasKey("IdPolitica");
@@ -323,15 +302,13 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdPregunta")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_pregunta");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPregunta"));
 
                     b.Property<string>("Pregunta")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("pregunta");
 
                     b.HasKey("IdPregunta");
@@ -343,15 +320,13 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdProvincia")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_provincia");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProvincia"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("provincia");
 
                     b.HasKey("IdProvincia");
@@ -362,16 +337,16 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.RespuestaSeguridad", b =>
                 {
                     b.Property<int>("IdUsuario")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_usuario");
 
                     b.Property<int>("IdPregunta")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_pregunta");
 
                     b.Property<string>("Respuesta")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("respuesta");
 
                     b.HasKey("IdUsuario", "IdPregunta");
@@ -383,15 +358,13 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdRol")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_rol");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRol"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("rol");
 
                     b.HasKey("IdRol");
@@ -402,11 +375,11 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.RolPermiso", b =>
                 {
                     b.Property<int>("IdRol")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_rol");
 
                     b.Property<int>("IdPermiso")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_permiso");
 
                     b.HasKey("IdRol", "IdPermiso");
@@ -420,15 +393,13 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdTipoDoc")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_tipo_doc");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoDoc"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("tipo_doc");
 
                     b.HasKey("IdTipoDoc");
@@ -440,49 +411,46 @@ namespace DataAccess.Migrations
                 {
                     b.Property<int>("IdUsuario")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_usuario");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
+                    b.Property<bool>("CambioContrasenaObligatorio")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("CambioContrasenaObligatorio");
 
                     b.Property<byte[]>("ContrasenaScript")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)")
+                        .HasColumnType("BLOB")
                         .HasColumnName("contrasena_script");
 
-                    b.Property<DateTime>("FechaBloqueo")
-                        .HasColumnType("datetime2")
+                    b.Property<DateTime?>("FechaBloqueo")
+                        .HasColumnType("TEXT")
                         .HasColumnName("fecha_bloqueo");
 
                     b.Property<DateTime>("FechaUltimoCambio")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("TEXT")
                         .HasColumnName("fecha_ultimo_cambio");
 
                     b.Property<int>("IdPersona")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_persona");
 
                     b.Property<int>("IdRol")
-                        .HasColumnType("int")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id_rol");
 
                     b.Property<string>("NombreUsuarioBloqueo")
-                        .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("nombre_usuario_bloqueo");
 
                     b.Property<string>("UsuarioNombre")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("usuario");
 
                     b.HasKey("IdUsuario");
-
-                    b.Property<bool?>("CambioContrasenaObligatorio")
-                        .HasColumnType("bit")
-                        .HasColumnName("cambio_contrasena_obligatorio");
 
                     b.HasIndex("IdRol");
 

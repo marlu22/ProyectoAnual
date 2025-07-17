@@ -19,10 +19,10 @@ namespace DataAccess.Entities
         [Required]
         public int IdPersona { get; set; }
 
-        public DateTime FechaBloqueo { get; set; }
+        public DateTime? FechaBloqueo { get; set; }
 
         [MaxLength(30)]
-        public string NombreUsuarioBloqueo { get; set; }
+        public string? NombreUsuarioBloqueo { get; set; }
 
         public DateTime FechaUltimoCambio { get; set; }
 

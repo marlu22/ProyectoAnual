@@ -104,7 +104,7 @@ namespace DataAccess.Repositories
 
         public void UpdatePoliticaSeguridad(PoliticaSeguridad politica)
         {
-            _context.PoliticasSeguridad.Update(politica);
+            _context.Set<PoliticaSeguridad>().Update(politica);
             _context.SaveChanges();
         }
 

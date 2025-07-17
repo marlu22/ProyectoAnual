@@ -45,7 +45,7 @@ namespace Presentation
             }
         }
 
-        private void BtnGuardar_Click(object sender, EventArgs e) // Remove nullable annotations
+        private void BtnGuardar_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(txtMinCaracteres.Text, out var minChars) || minChars <= 0)
             {
@@ -58,18 +58,19 @@ namespace Presentation
                 return;
             }
 
-            _politica = new PoliticaSeguridad
+            if (_politica == null)
             {
-                IdPolitica = _politica?.IdPolitica ?? 1,
-                MayusYMinus = chkMayusculasMinusculas.Checked,
-                LetrasYNumeros = chkNumeros.Checked,
-                CaracterEspecial = chkCaracteresEspeciales.Checked,
-                Autenticacion2FA = chkDobleFactor.Checked,
-                NoRepetirAnteriores = chkNoRepetirContrasenas.Checked,
-                SinDatosPersonales = chkVerificarDatosPersonales.Checked,
-                MinCaracteres = minChars,
-                CantPreguntas = cantPreg
-            };
+                _politica = new PoliticaSeguridad { IdPolitica = 1 };
+            }
+
+            _politica.MayusYMinus = chkMayusculasMinusculas.Checked;
+            _politica.LetrasYNumeros = chkNumeros.Checked;
+            _politica.CaracterEspecial = chkCaracteresEspeciales.Checked;
+            _politica.Autenticacion2FA = chkDobleFactor.Checked;
+            _politica.NoRepetirAnteriores = chkNoRepetirContrasenas.Checked;
+            _politica.SinDatosPersonales = chkVerificarDatosPersonales.Checked;
+            _politica.MinCaracteres = minChars;
+            _politica.CantPreguntas = cantPreg;
 
             _userService.UpdatePoliticaSeguridad(_politica);
             MessageBox.Show("Configuración guardada correctamente.", "Info");

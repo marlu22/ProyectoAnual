@@ -21,76 +21,37 @@ namespace BusinessLogic.Services
 
         public void CrearPersona(PersonaRequest request)
         {
-            if (request == null)
-                throw new ValidationException("Request cannot be null");
-
-            if (request.Legajo <= 0 ||
-                string.IsNullOrWhiteSpace(request.Nombre) ||
-                string.IsNullOrWhiteSpace(request.Apellido) ||
-                string.IsNullOrWhiteSpace(request.TipoDoc) ||
-                string.IsNullOrWhiteSpace(request.NumDoc) ||
-                string.IsNullOrWhiteSpace(request.Cuil) ||
-                string.IsNullOrWhiteSpace(request.Calle) ||
-                string.IsNullOrWhiteSpace(request.Altura) ||
-                string.IsNullOrWhiteSpace(request.Localidad) ||
-                string.IsNullOrWhiteSpace(request.Genero) ||
-                string.IsNullOrWhiteSpace(request.Correo))
-                throw new ValidationException("All fields are required");
-
-            var tipoDoc = _userRepository.GetTipoDocByNombre(request.TipoDoc)
-                ?? throw new ValidationException($"TipoDoc '{request.TipoDoc}' not found");
-            var localidad = _userRepository.GetLocalidadByNombre(request.Localidad)
-                ?? throw new ValidationException($"Localidad '{request.Localidad}' not found");
-            var genero = _userRepository.GetGeneroByNombre(request.Genero)
-                ?? throw new ValidationException($"Genero '{request.Genero}' not found");
-
             var persona = new Persona
             {
-                Legajo = request.Legajo.ToString(),
+                Legajo = request.Legajo,
                 Nombre = request.Nombre,
                 Apellido = request.Apellido,
-                IdTipoDoc = tipoDoc.IdTipoDoc,
+                IdTipoDoc = _userRepository.GetTipoDocByNombre(request.TipoDoc)?.IdTipoDoc ?? throw new ValidationException("Tipo de documento no encontrado"),
                 NumDoc = request.NumDoc,
                 Cuil = request.Cuil,
                 Calle = request.Calle,
                 Altura = request.Altura,
-                IdLocalidad = localidad.IdLocalidad,
-                IdGenero = genero.IdGenero,
+                IdLocalidad = _userRepository.GetLocalidadByNombre(request.Localidad)?.IdLocalidad ?? throw new ValidationException("Localidad no encontrada"),
+                IdGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero ?? throw new ValidationException("Género no encontrado"),
                 Correo = request.Correo,
                 FechaIngreso = DateTime.Now
             };
-
             _userRepository.AddPersona(persona);
         }
 
+        // src/BusinessLogic/Services/UserService.cs (partial)
         public void CrearUsuario(UserRequest request)
         {
-            if (request == null)
-                throw new ValidationException("Request cannot be null");
-
-            if (string.IsNullOrWhiteSpace(request.PersonaId) ||
-                string.IsNullOrWhiteSpace(request.Username) ||
-                string.IsNullOrWhiteSpace(request.Password) ||
-                string.IsNullOrWhiteSpace(request.Rol))
-                throw new ValidationException("All fields are required");
-
-            if (!int.TryParse(request.PersonaId, out int personaId))
-                throw new ValidationException("Invalid PersonaId format");
-
-            var rol = _userRepository.GetRolByNombre(request.Rol)
-                ?? throw new ValidationException($"Rol '{request.Rol}' not found");
-
             var usuario = new Usuario
             {
-                IdPersona = personaId,
+                IdPersona = int.Parse(request.PersonaId), // Convert string to int
                 UsuarioNombre = request.Username,
                 ContrasenaScript = HashUsuarioContrasena(request.Username, request.Password),
-                IdRol = rol.IdRol,
+                IdRol = _userRepository.GetRolByNombre(request.Rol)?.IdRol ?? throw new ValidationException("Rol no encontrado"),
                 FechaUltimoCambio = DateTime.Now,
                 FechaBloqueo = new DateTime(9999, 12, 31),
-                CambioContrasenaObligatorio = true
+                CambioContrasenaObligatorio = false
             };
-
             _userRepository.AddUsuario(usuario);
         }
 

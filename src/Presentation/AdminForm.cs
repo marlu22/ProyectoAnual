@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BusinessLogic.Services;
 using BusinessLogic.Exceptions;
-using BusinessLogic.Models; // Ensure this is included
+using BusinessLogic.Models;
 
 namespace Presentation
 {
@@ -30,7 +30,7 @@ namespace Presentation
             btnConfiguracion.Click += BtnConfiguracion_Click;
         }
 
-        private void BtnConfiguracion_Click(object? sender, EventArgs? e)
+        private void BtnConfiguracion_Click(object sender, EventArgs e) // Fixed nullable annotations
         {
             var form = new ConfiguracionForm(_userService);
             form.ShowDialog();
@@ -38,41 +38,82 @@ namespace Presentation
 
         private void LoadTipoDoc()
         {
-            cbxTipoDoc.DataSource = _userService.GetTiposDoc();
+            var tiposDoc = _userService.GetTiposDoc();
+            if (tiposDoc == null || !tiposDoc.Any())
+            {
+                MessageBox.Show("No se encontraron tipos de documento.", "Advertencia");
+                cbxTipoDoc.DataSource = null;
+                return;
+            }
+            cbxTipoDoc.DataSource = tiposDoc;
             cbxTipoDoc.DisplayMember = "Nombre";
-            cbxTipoDoc.ValueMember = "Nombre";
+            cbxTipoDoc.ValueMember = "IdTipoDoc"; // Changed to match TipoDoc
         }
 
         private void LoadLocalidades()
         {
-            cbxLocalidad.DataSource = _userService.GetLocalidades();
+            var localidades = _userService.GetLocalidades();
+            if (localidades == null || !localidades.Any())
+            {
+                MessageBox.Show("No se encontraron localidades.", "Advertencia");
+                cbxLocalidad.DataSource = null;
+                return;
+            }
+            cbxLocalidad.DataSource = localidades;
             cbxLocalidad.DisplayMember = "Nombre";
-            cbxLocalidad.ValueMember = "Nombre";
+            cbxLocalidad.ValueMember = "IdLocalidad"; // Changed to match Localidad
         }
 
         private void LoadGeneros()
         {
-            cbxGenero.DataSource = _userService.GetGeneros();
+            var generos = _userService.GetGeneros();
+            if (generos == null || !generos.Any())
+            {
+                MessageBox.Show("No se encontraron géneros.", "Advertencia");
+                cbxGenero.DataSource = null;
+                return;
+            }
+            cbxGenero.DataSource = generos;
             cbxGenero.DisplayMember = "Nombre";
-            cbxGenero.ValueMember = "Nombre";
+            cbxGenero.ValueMember = "IdGenero"; // Changed to match Genero
         }
 
         private void LoadPersonas()
         {
-            var personas = _userService.GetPersonas();
-            cbxPersona.DataSource = personas;
-            cbxPersona.DisplayMember = "NombreCompleto";
-            cbxPersona.ValueMember = "Id";
+            try
+            {
+                var personas = _userService.GetPersonas();
+                if (personas == null || !personas.Any())
+                {
+                    MessageBox.Show("No se encontraron personas en la base de datos.", "Advertencia");
+                    cbxPersona.DataSource = null;
+                    return;
+                }
+                cbxPersona.DataSource = personas;
+                cbxPersona.DisplayMember = "NombreCompleto"; // Matches new Persona property
+                cbxPersona.ValueMember = "IdPersona"; // Fixed from "Id" to "IdPersona"
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar personas: {ex.Message}", "Error");
+            }
         }
 
         private void LoadRoles()
         {
-            cbxRolUsuario.DataSource = _userService.GetRoles();
+            var roles = _userService.GetRoles();
+            if (roles == null || !roles.Any())
+            {
+                MessageBox.Show("No se encontraron roles.", "Advertencia");
+                cbxRolUsuario.DataSource = null;
+                return;
+            }
+            cbxRolUsuario.DataSource = roles;
             cbxRolUsuario.DisplayMember = "Nombre";
-            cbxRolUsuario.ValueMember = "Nombre";
+            cbxRolUsuario.ValueMember = "IdRol"; // Changed to match Rol
         }
 
-        private void BtnGuardarPersona_Click(object? sender, EventArgs? e)
+        private void BtnGuardarPersona_Click(object sender, EventArgs e) // Fixed nullable annotations
         {
             try
             {
@@ -94,16 +135,16 @@ namespace Presentation
 
                 var persona = new PersonaRequest
                 {
-                    Legajo = int.Parse(txtLegajo.Text), // Parse string to int
+                    Legajo = txtLegajo.Text, // Changed to string to match Persona.Legajo
                     Nombre = txtNombre.Text,
                     Apellido = txtApellido.Text,
-                    TipoDoc = cbxTipoDoc.SelectedItem.ToString()!,
+                    TipoDoc = cbxTipoDoc.Text, // Use .Text to get the string value
                     NumDoc = txtNumDoc.Text,
                     Cuil = txtCuil.Text,
                     Calle = txtCalle.Text,
                     Altura = txtAltura.Text,
-                    Localidad = cbxLocalidad.SelectedItem.ToString()!,
-                    Genero = cbxGenero.SelectedItem.ToString()!,
+                    Localidad = cbxLocalidad.Text, // Use .Text to get the string value
+                    Genero = cbxGenero.Text, // Use .Text to get the string value
                     Correo = txtCorreo.Text
                 };
                 _userService.CrearPersona(persona);
@@ -120,7 +161,7 @@ namespace Presentation
             }
         }
 
-        private void BtnCrearUsuario_Click(object? sender, EventArgs? e)
+        private void BtnCrearUsuario_Click(object sender, EventArgs e) // Fixed nullable annotations
         {
             try
             {
@@ -135,10 +176,10 @@ namespace Presentation
 
                 var usuario = new UserRequest
                 {
-                    PersonaId = cbxPersona.SelectedValue.ToString()!,
+                    PersonaId = cbxPersona.SelectedValue.ToString()!, // Ensure string conversion
                     Username = txtUsuario.Text,
                     Password = txtPassword.Text,
-                    Rol = cbxRolUsuario.SelectedItem.ToString()!
+                    Rol = cbxRolUsuario.Text // Use .Text to get the string value
                 };
                 _userService.CrearUsuario(usuario);
                 MessageBox.Show("Usuario creado correctamente", "Info");
@@ -153,7 +194,7 @@ namespace Presentation
             }
         }
 
-        private void BtnRecuperarContrasena_Click(object? sender, EventArgs? e)
+        private void BtnRecuperarContrasena_Click(object sender, EventArgs e) // Fixed nullable annotations
         {
             var form = new RecuperarContrasenaForm(_userService);
             form.ShowDialog();

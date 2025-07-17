@@ -26,6 +26,7 @@ namespace Services.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
+            // La contraseña ya viene encriptada desde el cliente
             var user = _userService.Authenticate(request.Username, request.Password);
             if (user == null)
                 return Unauthorized("Invalid credentials");

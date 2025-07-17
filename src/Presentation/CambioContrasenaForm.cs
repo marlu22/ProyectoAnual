@@ -38,6 +38,10 @@ namespace Presentation
 
                 _userService.CambiarContrasena(_usuario, nueva);
                 MessageBox.Show("Contraseña cambiada correctamente.", "Info");
+
+                var preguntasForm = new PreguntasSeguridadForm(_userService, _usuario);
+                preguntasForm.ShowDialog();
+
                 DialogResult = DialogResult.OK;
                 Close();
             }

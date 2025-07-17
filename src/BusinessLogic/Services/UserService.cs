@@ -13,10 +13,12 @@ namespace BusinessLogic.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IEmailService emailService)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         public void CrearPersona(PersonaRequest request)
@@ -42,17 +44,26 @@ namespace BusinessLogic.Services
         // src/BusinessLogic/Services/UserService.cs (partial)
         public void CrearUsuario(UserRequest request)
         {
+            var persona = _userRepository.GetPersonaById(int.Parse(request.PersonaId))
+                ?? throw new ValidationException("Persona no encontrada");
+
+            var generatedPassword = GenerateRandomPassword();
+            ValidatePasswordPolicy(generatedPassword, request.Username, persona.Nombre, persona.Apellido);
+
             var usuario = new Usuario
             {
-                IdPersona = int.Parse(request.PersonaId), // Convert string to int
+                IdPersona = int.Parse(request.PersonaId),
                 UsuarioNombre = request.Username,
-                ContrasenaScript = HashUsuarioContrasena(request.Username, request.Password),
+                ContrasenaScript = HashUsuarioContrasena(request.Username, generatedPassword),
                 IdRol = _userRepository.GetRolByNombre(request.Rol)?.IdRol ?? throw new ValidationException("Rol no encontrado"),
                 FechaUltimoCambio = DateTime.Now,
                 FechaBloqueo = new DateTime(9999, 12, 31),
-                CambioContrasenaObligatorio = false
+                CambioContrasenaObligatorio = true // Forzar cambio de contraseña en el primer login
             };
             _userRepository.AddUsuario(usuario);
+
+            // Enviar la contraseña generada por correo
+            _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {generatedPassword}");
         }
 
         public UserResponse? Authenticate(string username, string password)
@@ -76,7 +87,7 @@ namespace BusinessLogic.Services
             };
         }
 
-        public void RecuperarContrasena(string username, string[] respuestas)
+        public async void RecuperarContrasena(string username, string[] respuestas)
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ValidationException("Username is required");
@@ -86,6 +97,9 @@ namespace BusinessLogic.Services
 
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
+
+            var persona = _userRepository.GetPersonaById(usuario.IdPersona)
+                ?? throw new ValidationException("Persona no encontrada");
 
             var respuestasSeguridad = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
                 ?? throw new ValidationException("Security answers not configured");
@@ -101,6 +115,8 @@ namespace BusinessLogic.Services
             usuario.FechaUltimoCambio = DateTime.Now;
             usuario.CambioContrasenaObligatorio = true;
             _userRepository.UpdateUsuario(usuario);
+
+            await _emailService.SendEmailAsync(persona.Correo, "Recuperación de Contraseña", $"Su nueva contraseña es: {newPassword}");
         }
 
         public void CambiarContrasena(string username, string newPassword)
@@ -111,7 +127,31 @@ namespace BusinessLogic.Services
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
-            usuario.ContrasenaScript = HashUsuarioContrasena(username, newPassword);
+            var persona = _userRepository.GetPersonaById(usuario.IdPersona)
+                ?? throw new ValidationException("Persona no encontrada");
+
+            ValidatePasswordPolicy(newPassword, username, persona.Nombre, persona.Apellido);
+
+            var newPasswordHash = HashUsuarioContrasena(username, newPassword);
+
+            var politica = _userRepository.GetPoliticaSeguridad();
+            if (politica?.NoRepetirContrasenasAnteriores ?? false)
+            {
+                var historial = _userRepository.GetHistorialContrasenasByUsuarioId(usuario.IdUsuario);
+                if (historial.Any(h => h.ContrasenaScript.SequenceEqual(newPasswordHash)))
+                {
+                    throw new ValidationException("La nueva contraseña no puede ser igual a ninguna de las contraseñas anteriores.");
+                }
+            }
+
+            _userRepository.AddHistorialContrasena(new HistorialContrasena
+            {
+                IdUsuario = usuario.IdUsuario,
+                ContrasenaScript = usuario.ContrasenaScript,
+                FechaCambio = DateTime.Now
+            });
+
+            usuario.ContrasenaScript = newPasswordHash;
             usuario.FechaUltimoCambio = DateTime.Now;
             usuario.CambioContrasenaObligatorio = false;
             _userRepository.UpdateUsuario(usuario);
@@ -169,6 +209,60 @@ namespace BusinessLogic.Services
         private string GenerateRandomPassword()
         {
             return Guid.NewGuid().ToString("N").Substring(0, 12);
+        }
+
+        private void ValidatePasswordPolicy(string password, string username, string nombre, string apellido)
+        {
+            var politica = _userRepository.GetPoliticaSeguridad();
+            if (politica == null) return;
+
+            if (password.Length < politica.MinCaracteres)
+                throw new ValidationException($"La contraseña debe tener al menos {politica.MinCaracteres} caracteres.");
+
+            if (politica.CombinarMayusculasMinusculas && (!password.Any(char.IsUpper) || !password.Any(char.IsLower)))
+                throw new ValidationException("La contraseña debe contener mayúsculas y minúsculas.");
+
+            if (politica.RequerirNumeros && !password.Any(char.IsDigit))
+                throw new ValidationException("La contraseña debe contener números.");
+
+            if (politica.RequerirCaracteresEspeciales && !password.Any(c => !char.IsLetterOrDigit(c)))
+                throw new ValidationException("La contraseña debe contener caracteres especiales.");
+
+            if (politica.EvitarDatosPersonales)
+            {
+                if (password.Contains(username, StringComparison.OrdinalIgnoreCase) ||
+                    password.Contains(nombre, StringComparison.OrdinalIgnoreCase) ||
+                    password.Contains(apellido, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ValidationException("La contraseña no debe contener datos personales (nombre de usuario, nombre o apellido).");
+                }
+            }
+        }
+
+        public void GuardarRespuestasSeguridad(string username, string[] respuestas)
+        {
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+                ?? throw new ValidationException($"Usuario '{username}' not found");
+
+            if (respuestas.Length != 2)
+                throw new ValidationException("Se requieren exactamente dos respuestas de seguridad.");
+
+            // Asumiendo que las preguntas de seguridad tienen IDs 1 y 2
+            var respuesta1 = new RespuestaSeguridad
+            {
+                IdUsuario = usuario.IdUsuario,
+                IdPregunta = 1,
+                Respuesta = respuestas[0]
+            };
+            _userRepository.AddRespuestaSeguridad(respuesta1);
+
+            var respuesta2 = new RespuestaSeguridad
+            {
+                IdUsuario = usuario.IdUsuario,
+                IdPregunta = 2,
+                Respuesta = respuestas[1]
+            };
+            _userRepository.AddRespuestaSeguridad(respuesta2);
         }
     }
 }

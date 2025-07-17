@@ -34,7 +34,7 @@ namespace BusinessLogic.Services
                 Calle = request.Calle,
                 Altura = request.Altura,
                 IdLocalidad = _userRepository.GetLocalidadByNombre(request.Localidad)?.IdLocalidad ?? throw new ValidationException("Localidad no encontrada"),
-                IdGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero ?? throw new ValidationException("G�nero no encontrado"),
+                IdGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero ?? throw new ValidationException("G�nero no encontrado"),
                 Correo = request.Correo,
                 FechaIngreso = DateTime.Now
             };
@@ -135,7 +135,7 @@ namespace BusinessLogic.Services
             var newPasswordHash = HashUsuarioContrasena(username, newPassword);
 
             var politica = _userRepository.GetPoliticaSeguridad();
-            if (politica?.NoRepetirContrasenasAnteriores ?? false)
+            if (politica?.NoRepetirAnteriores ?? false)
             {
                 var historial = _userRepository.GetHistorialContrasenasByUsuarioId(usuario.IdUsuario);
                 if (historial.Any(h => h.ContrasenaScript.SequenceEqual(newPasswordHash)))
@@ -219,16 +219,16 @@ namespace BusinessLogic.Services
             if (password.Length < politica.MinCaracteres)
                 throw new ValidationException($"La contraseña debe tener al menos {politica.MinCaracteres} caracteres.");
 
-            if (politica.CombinarMayusculasMinusculas && (!password.Any(char.IsUpper) || !password.Any(char.IsLower)))
+            if (politica.MayusYMinus && (!password.Any(char.IsUpper) || !password.Any(char.IsLower)))
                 throw new ValidationException("La contraseña debe contener mayúsculas y minúsculas.");
 
-            if (politica.RequerirNumeros && !password.Any(char.IsDigit))
+            if (politica.LetrasYNumeros && !password.Any(char.IsDigit))
                 throw new ValidationException("La contraseña debe contener números.");
 
-            if (politica.RequerirCaracteresEspeciales && !password.Any(c => !char.IsLetterOrDigit(c)))
+            if (politica.CaracterEspecial && !password.Any(c => !char.IsLetterOrDigit(c)))
                 throw new ValidationException("La contraseña debe contener caracteres especiales.");
 
-            if (politica.EvitarDatosPersonales)
+            if (politica.SinDatosPersonales)
             {
                 if (password.Contains(username, StringComparison.OrdinalIgnoreCase) ||
                     password.Contains(nombre, StringComparison.OrdinalIgnoreCase) ||

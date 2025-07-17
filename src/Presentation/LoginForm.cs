@@ -1,3 +1,4 @@
+// src/Presentation/LoginForm.cs
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
@@ -16,8 +17,15 @@ namespace Presentation
             btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
         }
 
-        private void BtnLogin_Click(object? sender, EventArgs e)
+        private void BtnLogin_Click(object? sender, EventArgs? e)
         {
+            if (string.IsNullOrWhiteSpace(txtUsuario.Text) ||
+                string.IsNullOrWhiteSpace(txtContrasena.Text))
+            {
+                MessageBox.Show("Por favor, ingrese usuario y contraseña.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             string usuario = txtUsuario.Text.Trim();
             string contrasena = txtContrasena.Text;
 
@@ -56,7 +64,7 @@ namespace Presentation
             }
         }
 
-        private void BtnRecuperarContrasena_Click(object sender, EventArgs e)
+        private void BtnRecuperarContrasena_Click(object? sender, EventArgs? e)
         {
             var form = new RecuperarContrasenaForm(_userService);
             form.ShowDialog();

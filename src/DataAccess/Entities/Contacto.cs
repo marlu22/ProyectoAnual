@@ -1,17 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+// src/DataAccess/Entities/Contacto.cs
+// src/DataAccess/Entities/Contacto.cs
 namespace DataAccess.Entities
 {
     public class Contacto
     {
-        [Key]
-        public int IdContacto { get; set; }
-        public string Email { get; set; }
-        public string Celular { get; set; }
-        [Required]
         public int IdPersona { get; set; }
-        [ForeignKey("IdPersona")]
-        public Persona Persona { get; set; }
+        public string TipoContacto { get; set; } = null!;
+        public string Valor { get; set; } = null!;
+        public Persona? Persona { get; set; }
     }
 }

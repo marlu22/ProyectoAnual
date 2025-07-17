@@ -1,3 +1,4 @@
+// src/Presentation/ConfiguracionForm.cs
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
@@ -8,7 +9,7 @@ namespace Presentation
     public partial class ConfiguracionForm : Form
     {
         private readonly IUserService _userService;
-        private PoliticaSeguridad _politica;
+        private PoliticaSeguridad? _politica;
 
         public ConfiguracionForm(IUserService userService)
         {
@@ -31,23 +32,44 @@ namespace Presentation
                 txtMinCaracteres.Text = _politica.MinCaracteres.ToString();
                 txtCantPreguntas.Text = _politica.CantPreguntas.ToString();
             }
+            else
+            {
+                chkMayusculasMinusculas.Checked = false;
+                chkNumeros.Checked = false;
+                chkCaracteresEspeciales.Checked = false;
+                chkDobleFactor.Checked = false;
+                chkNoRepetirContrasenas.Checked = false;
+                chkVerificarDatosPersonales.Checked = false;
+                txtMinCaracteres.Text = "8";
+                txtCantPreguntas.Text = "0";
+            }
         }
 
-        private void BtnGuardar_Click(object sender, EventArgs e)
+        private void BtnGuardar_Click(object sender, EventArgs e) // Remove nullable annotations
         {
-            if (_politica == null)
+            if (!int.TryParse(txtMinCaracteres.Text, out var minChars) || minChars <= 0)
             {
-                _politica = new PoliticaSeguridad();
+                MessageBox.Show("Por favor, ingrese un número válido de caracteres mínimos.", "Error");
+                return;
+            }
+            if (!int.TryParse(txtCantPreguntas.Text, out var cantPreg) || cantPreg < 0)
+            {
+                MessageBox.Show("Por favor, ingrese un número válido de preguntas de seguridad.", "Error");
+                return;
             }
 
-            _politica.MayusYMinus = chkMayusculasMinusculas.Checked;
-            _politica.LetrasYNumeros = chkNumeros.Checked;
-            _politica.CaracterEspecial = chkCaracteresEspeciales.Checked;
-            _politica.Autenticacion2FA = chkDobleFactor.Checked;
-            _politica.NoRepetirAnteriores = chkNoRepetirContrasenas.Checked;
-            _politica.SinDatosPersonales = chkVerificarDatosPersonales.Checked;
-            _politica.MinCaracteres = int.Parse(txtMinCaracteres.Text);
-            _politica.CantPreguntas = int.Parse(txtCantPreguntas.Text);
+            _politica = new PoliticaSeguridad
+            {
+                IdPolitica = _politica?.IdPolitica ?? 1,
+                MayusYMinus = chkMayusculasMinusculas.Checked,
+                LetrasYNumeros = chkNumeros.Checked,
+                CaracterEspecial = chkCaracteresEspeciales.Checked,
+                Autenticacion2FA = chkDobleFactor.Checked,
+                NoRepetirAnteriores = chkNoRepetirContrasenas.Checked,
+                SinDatosPersonales = chkVerificarDatosPersonales.Checked,
+                MinCaracteres = minChars,
+                CantPreguntas = cantPreg
+            };
 
             _userService.UpdatePoliticaSeguridad(_politica);
             MessageBox.Show("Configuración guardada correctamente.", "Info");

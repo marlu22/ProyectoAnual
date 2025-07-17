@@ -1,9 +1,10 @@
+// src/Presentation/AdminForm.cs
 using System;
 using System.Linq;
 using System.Windows.Forms;
 using BusinessLogic.Services;
-using BusinessLogic.Models;
 using BusinessLogic.Exceptions;
+using BusinessLogic.Models; // Ensure this is included
 
 namespace Presentation
 {
@@ -29,7 +30,7 @@ namespace Presentation
             btnConfiguracion.Click += BtnConfiguracion_Click;
         }
 
-        private void BtnConfiguracion_Click(object sender, EventArgs e)
+        private void BtnConfiguracion_Click(object? sender, EventArgs? e)
         {
             var form = new ConfiguracionForm(_userService);
             form.ShowDialog();
@@ -71,22 +72,38 @@ namespace Presentation
             cbxRolUsuario.ValueMember = "Nombre";
         }
 
-        private void BtnGuardarPersona_Click(object sender, EventArgs e)
+        private void BtnGuardarPersona_Click(object? sender, EventArgs? e)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(txtLegajo.Text) ||
+                    string.IsNullOrWhiteSpace(txtNombre.Text) ||
+                    string.IsNullOrWhiteSpace(txtApellido.Text) ||
+                    cbxTipoDoc.SelectedItem == null ||
+                    string.IsNullOrWhiteSpace(txtNumDoc.Text) ||
+                    string.IsNullOrWhiteSpace(txtCuil.Text) ||
+                    string.IsNullOrWhiteSpace(txtCalle.Text) ||
+                    string.IsNullOrWhiteSpace(txtAltura.Text) ||
+                    cbxLocalidad.SelectedItem == null ||
+                    cbxGenero.SelectedItem == null ||
+                    string.IsNullOrWhiteSpace(txtCorreo.Text))
+                {
+                    MessageBox.Show("Por favor, complete todos los campos obligatorios.", "Error");
+                    return;
+                }
+
                 var persona = new PersonaRequest
                 {
-                    Legajo = txtLegajo.Text,
+                    Legajo = int.Parse(txtLegajo.Text), // Parse string to int
                     Nombre = txtNombre.Text,
                     Apellido = txtApellido.Text,
-                    TipoDoc = cbxTipoDoc.SelectedItem?.ToString(),
+                    TipoDoc = cbxTipoDoc.SelectedItem.ToString()!,
                     NumDoc = txtNumDoc.Text,
                     Cuil = txtCuil.Text,
                     Calle = txtCalle.Text,
                     Altura = txtAltura.Text,
-                    Localidad = cbxLocalidad.SelectedItem?.ToString(),
-                    Genero = cbxGenero.SelectedItem?.ToString(),
+                    Localidad = cbxLocalidad.SelectedItem.ToString()!,
+                    Genero = cbxGenero.SelectedItem.ToString()!,
                     Correo = txtCorreo.Text
                 };
                 _userService.CrearPersona(persona);
@@ -103,16 +120,25 @@ namespace Presentation
             }
         }
 
-        private void BtnCrearUsuario_Click(object sender, EventArgs e)
+        private void BtnCrearUsuario_Click(object? sender, EventArgs? e)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(txtUsuario.Text) ||
+                    string.IsNullOrWhiteSpace(txtPassword.Text) ||
+                    cbxPersona.SelectedValue == null ||
+                    cbxRolUsuario.SelectedItem == null)
+                {
+                    MessageBox.Show("Por favor, complete todos los campos obligatorios.", "Error");
+                    return;
+                }
+
                 var usuario = new UserRequest
                 {
-                    PersonaId = cbxPersona.SelectedValue?.ToString(),
+                    PersonaId = cbxPersona.SelectedValue.ToString()!,
                     Username = txtUsuario.Text,
                     Password = txtPassword.Text,
-                    Rol = cbxRolUsuario.SelectedItem?.ToString()
+                    Rol = cbxRolUsuario.SelectedItem.ToString()!
                 };
                 _userService.CrearUsuario(usuario);
                 MessageBox.Show("Usuario creado correctamente", "Info");
@@ -127,7 +153,7 @@ namespace Presentation
             }
         }
 
-        private void BtnRecuperarContrasena_Click(object? sender, EventArgs e)
+        private void BtnRecuperarContrasena_Click(object? sender, EventArgs? e)
         {
             var form = new RecuperarContrasenaForm(_userService);
             form.ShowDialog();

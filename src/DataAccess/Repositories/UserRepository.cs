@@ -1,3 +1,4 @@
+// src/DataAccess/Repositories/UserRepository.cs
 using System.Collections.Generic;
 using System.Linq;
 using DataAccess.Entities;
@@ -11,29 +12,32 @@ namespace DataAccess.Repositories
 
         public UserRepository(ApplicationDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        // Usuarios
-        public IEnumerable<Usuario> GetAll() => _context.Usuarios.ToList();
-
-        public Usuario GetById(int id) => _context.Usuarios.FirstOrDefault(u => u.IdUsuario == id);
-
-        public void Add(Usuario usuario)
+        public TipoDoc? GetTipoDocByNombre(string nombre)
         {
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
+            return _context.TiposDoc.FirstOrDefault(t => t.Nombre == nombre);
         }
 
-        public void Update(Usuario usuario)
+        public Localidad? GetLocalidadByNombre(string nombre)
         {
-            _context.Usuarios.Update(usuario);
-            _context.SaveChanges();
+            return _context.Localidades.FirstOrDefault(l => l.Nombre == nombre);
         }
 
-        public void Delete(Usuario usuario)
+        public Genero? GetGeneroByNombre(string nombre)
         {
-            _context.Usuarios.Remove(usuario);
+            return _context.Generos.FirstOrDefault(g => g.Nombre == nombre);
+        }
+
+        public Rol? GetRolByNombre(string nombre)
+        {
+            return _context.Roles.FirstOrDefault(r => r.Nombre == nombre);
+        }
+
+        public void AddPersona(Persona persona)
+        {
+            _context.Personas.Add(persona);
             _context.SaveChanges();
         }
 
@@ -43,68 +47,52 @@ namespace DataAccess.Repositories
             _context.SaveChanges();
         }
 
-        public Usuario GetByUsername(string username)
+        public Usuario? GetUsuarioByNombreUsuario(string nombre)
         {
-            return _context.Usuarios.Include(u => u.Rol).FirstOrDefault(u => u.UsuarioNombre == username);
+            return _context.Usuarios
+                .Include(u => u.Rol)
+                .FirstOrDefault(u => u.UsuarioNombre == nombre);
         }
 
-        public bool ValidarRespuestasSeguridad(int idUsuario, string[] respuestas)
+        public void UpdateUsuario(Usuario usuario)
         {
-            // Ejemplo simple: compara respuestas con las almacenadas
-            var respuestasDb = _context.RespuestasSeguridad
-                .Where(r => r.IdUsuario == idUsuario)
-                .OrderBy(r => r.IdPregunta)
-                .Select(r => r.Respuesta)
-                .ToArray();
-
-            if (respuestasDb.Length != respuestas.Length)
-                return false;
-
-            for (int i = 0; i < respuestas.Length; i++)
-                if (!string.Equals(respuestasDb[i], respuestas[i], StringComparison.OrdinalIgnoreCase))
-                    return false;
-
-            return true;
-        }
-
-        public void EnviarCorreoRecuperacion(Usuario user, string nuevaContrasena)
-        {
-            // Implementa el envío real de correo aquí (puedes usar SmtpClient)
-            Console.WriteLine($"Enviar a {user.UsuarioNombre}: {nuevaContrasena}");
-        }
-
-        // Personas
-        public void AddPersona(Persona persona)
-        {
-            _context.Personas.Add(persona);
+            _context.Usuarios.Update(usuario);
             _context.SaveChanges();
         }
 
-        public IEnumerable<Persona> GetAllPersonas() => _context.Personas.ToList();
+        public List<RespuestaSeguridad>? GetRespuestasSeguridadByUsuarioId(int idUsuario)
+        {
+            return _context.RespuestasSeguridad
+                .Where(rs => rs.IdUsuario == idUsuario)
+                .ToList();
+        }
 
-        public Persona GetPersonaById(int id) => _context.Personas.FirstOrDefault(p => p.IdPersona == id);
+        public List<TipoDoc> GetAllTiposDoc()
+        {
+            return _context.TiposDoc.ToList();
+        }
 
-        // Tipos de Documento
-        public TipoDoc GetTipoDocByNombre(string nombre) => _context.TiposDoc.FirstOrDefault(t => t.Nombre == nombre);
+        public List<Localidad> GetAllLocalidades()
+        {
+            return _context.Localidades.ToList();
+        }
 
-        public IEnumerable<TipoDoc> GetAllTipoDocs() => _context.TiposDoc.ToList();
+        public List<Genero> GetAllGeneros()
+        {
+            return _context.Generos.ToList();
+        }
 
-        // Localidades
-        public Localidad GetLocalidadByNombre(string nombre) => _context.Localidades.FirstOrDefault(l => l.Nombre == nombre);
+        public List<Persona> GetAllPersonas()
+        {
+            return _context.Personas.ToList();
+        }
 
-        public IEnumerable<Localidad> GetAllLocalidades() => _context.Localidades.ToList();
+        public List<Rol> GetAllRoles()
+        {
+            return _context.Roles.ToList();
+        }
 
-        // Géneros
-        public Genero GetGeneroByNombre(string nombre) => _context.Generos.FirstOrDefault(g => g.Nombre == nombre);
-
-        public IEnumerable<Genero> GetAllGeneros() => _context.Generos.ToList();
-
-        // Roles
-        public Rol GetRolByNombre(string nombre) => _context.Roles.FirstOrDefault(r => r.Nombre == nombre);
-
-        public IEnumerable<Rol> GetAllRoles() => _context.Roles.ToList();
-
-        public PoliticaSeguridad GetPoliticaSeguridad()
+        public PoliticaSeguridad? GetPoliticaSeguridad()
         {
             return _context.PoliticasSeguridad.FirstOrDefault();
         }
@@ -115,15 +103,12 @@ namespace DataAccess.Repositories
             _context.SaveChanges();
         }
 
-        public IEnumerable<HistorialContrasena> GetHistorialContrasenas(int idUsuario)
+        public List<Usuario> GetAllUsers()
         {
-            return _context.HistorialContrasenas.Where(h => h.IdUsuario == idUsuario).ToList();
-        }
-
-        public void AddHistorialContrasena(HistorialContrasena historial)
-        {
-            _context.HistorialContrasenas.Add(historial);
-            _context.SaveChanges();
+            return _context.Usuarios
+                .Include(u => u.Rol)
+                .Include(u => u.Persona)
+                .ToList();
         }
     }
 }

@@ -1,3 +1,4 @@
+// src/Presentation/RecuperarContrasenaForm.cs
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
@@ -16,13 +17,20 @@ namespace Presentation
             btnRecuperar.Click += BtnRecuperar_Click;
         }
 
-        private void BtnRecuperar_Click(object sender, EventArgs e)
+        private void BtnRecuperar_Click(object? sender, EventArgs? e)
         {
             try
             {
-                string usuario = txtUsuario.Text.Trim();
-                string[] respuestas = { txtRespuesta1.Text, txtRespuesta2.Text }; // según cantidad de preguntas
+                if (string.IsNullOrWhiteSpace(txtUsuario.Text) ||
+                    string.IsNullOrWhiteSpace(txtRespuesta1.Text) ||
+                    string.IsNullOrWhiteSpace(txtRespuesta2.Text))
+                {
+                    MessageBox.Show("Por favor, complete todos los campos.", "Error");
+                    return;
+                }
 
+                string usuario = txtUsuario.Text.Trim();
+                string[] respuestas = { txtRespuesta1.Text, txtRespuesta2.Text };
                 _userService.RecuperarContrasena(usuario, respuestas);
                 MessageBox.Show("Se envió una nueva contraseña a su correo.", "Info");
                 DialogResult = DialogResult.OK;

@@ -2,43 +2,26 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+// src/DataAccess/Entities/Persona.cs
 namespace DataAccess.Entities
 {
     public class Persona
     {
-        [Key]
         public int IdPersona { get; set; }
-        [Required]
-        public int Legajo { get; set; }
-        [Required]
-        [MaxLength(30)]
-        public string Nombre { get; set; }
-        [Required]
-        [MaxLength(30)]
-        public string Apellido { get; set; }
-        [Required]
+        public string Legajo { get; set; } = null!; // Confirmed as string
+        public string Nombre { get; set; } = null!;
+        public string Apellido { get; set; } = null!;
         public int IdTipoDoc { get; set; }
-        [ForeignKey("IdTipoDoc")]
-        public TipoDoc TipoDoc { get; set; }
-        [Required]
-        [MaxLength(20)]
-        public string NumDoc { get; set; }
-        [MaxLength(10)]
-        public string Cuil { get; set; }
-        [MaxLength(50)]
-        public string Calle { get; set; }
-        [MaxLength(30)]
-        public string Altura { get; set; }
-        [Required]
+        public string NumDoc { get; set; } = null!;
+        public string Cuil { get; set; } = null!;
+        public string Calle { get; set; } = null!;
+        public string Altura { get; set; } = null!;
         public int IdLocalidad { get; set; }
-        [ForeignKey("IdLocalidad")]
-        public Localidad Localidad { get; set; }
-        [Required]
         public int IdGenero { get; set; }
-        [ForeignKey("IdGenero")]
-        public Genero Genero { get; set; }
-        [MaxLength(100)]
-        public string Correo { get; set; }
+        public string Correo { get; set; } = null!;
         public DateTime FechaIngreso { get; set; }
+        public TipoDoc? TipoDoc { get; set; }
+        public Localidad? Localidad { get; set; }
+        public Genero? Genero { get; set; }
     }
 }

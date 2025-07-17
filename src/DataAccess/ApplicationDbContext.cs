@@ -1,240 +1,247 @@
+// src/DataAccess/ApplicationDbContext.cs
 using Microsoft.EntityFrameworkCore;
 using DataAccess.Entities;
-using System;
-using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DataAccess
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public DbSet<Provincia> Provincias { get; set; } = null!;
+        public DbSet<Partido> Partidos { get; set; } = null!;
+        public DbSet<Localidad> Localidades { get; set; } = null!;
+        public DbSet<TipoDoc> TiposDoc { get; set; } = null!;
+        public DbSet<Genero> Generos { get; set; } = null!;
+        public DbSet<Persona> Personas { get; set; } = null!;
+        public DbSet<Usuario> Usuarios { get; set; } = null!;
+        public DbSet<Rol> Roles { get; set; } = null!;
+        public DbSet<Permiso> Permisos { get; set; } = null!;
+        public DbSet<RolPermiso> RolPermisos { get; set; } = null!;
+        public DbSet<PermisoUsuario> PermisosUsuarios { get; set; } = null!;
+        public DbSet<HistorialContrasena> HistorialContrasenas { get; set; } = null!;
+        public DbSet<PreguntaSeguridad> PreguntasSeguridad { get; set; } = null!;
+        public DbSet<RespuestaSeguridad> RespuestasSeguridad { get; set; } = null!;
+        public DbSet<PoliticaSeguridad> PoliticasSeguridad { get; set; } = null!;
+        public DbSet<Contacto> Contactos { get; set; } = null!;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-
-        public ApplicationDbContext() { }
-
-        public DbSet<Provincia> Provincias { get; set; }
-        public DbSet<Partido> Partidos { get; set; }
-        public DbSet<Localidad> Localidades { get; set; }
-        public DbSet<TipoDoc> TiposDoc { get; set; }
-        public DbSet<Genero> Generos { get; set; }
-        public DbSet<Persona> Personas { get; set; }
-        public DbSet<Contacto> Contactos { get; set; }
-        public DbSet<Rol> Roles { get; set; }
-        public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Permiso> Permisos { get; set; }
-        public DbSet<RolPermiso> RolPermisos { get; set; }
-        public DbSet<PermisoUsuario> PermisosUsuarios { get; set; }
-        public DbSet<HistorialContrasena> HistorialContrasenas { get; set; }
-        public DbSet<PreguntaSeguridad> PreguntasSeguridad { get; set; }
-        public DbSet<RespuestaSeguridad> RespuestasSeguridad { get; set; }
-        public DbSet<PoliticaSeguridad> PoliticasSeguridad { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Provincias
-            modelBuilder.Entity<Provincia>(entity =>
-            {
-                entity.ToTable("provincias");
-                entity.HasKey(e => e.IdProvincia);
-                entity.Property(e => e.IdProvincia).HasColumnName("id_provincia");
-                entity.Property(e => e.Nombre).HasColumnName("provincia");
-            });
+            // Mark Contacto as keyless
+            modelBuilder.Entity<Contacto>().HasNoKey();
 
-            // Partidos
-            modelBuilder.Entity<Partido>(entity =>
-            {
-                entity.ToTable("partidos");
-                entity.HasKey(e => e.IdPartido);
-                entity.Property(e => e.IdPartido).HasColumnName("id_partido");
-                entity.Property(e => e.Nombre).HasColumnName("partido");
-                entity.Property(e => e.IdProvincia).HasColumnName("id_provincia");
-            });
+            // Explicitly define primary keys
+            modelBuilder.Entity<Genero>().HasKey(g => g.IdGenero);
+            modelBuilder.Entity<Provincia>().HasKey(p => p.IdProvincia);
+            modelBuilder.Entity<Partido>().HasKey(p => p.IdPartido);
+            modelBuilder.Entity<Localidad>().HasKey(l => l.IdLocalidad);
+            modelBuilder.Entity<TipoDoc>().HasKey(t => t.IdTipoDoc);
+            modelBuilder.Entity<Persona>().HasKey(p => p.IdPersona);
+            modelBuilder.Entity<Usuario>().HasKey(u => u.IdUsuario);
+            modelBuilder.Entity<Rol>().HasKey(r => r.IdRol);
+            modelBuilder.Entity<Permiso>().HasKey(p => p.IdPermiso);
+            modelBuilder.Entity<RolPermiso>().HasKey(rp => new { rp.IdRol, rp.IdPermiso });
+            modelBuilder.Entity<PermisoUsuario>().HasKey(pu => new { pu.IdUsuario, pu.IdPermiso });
+            modelBuilder.Entity<HistorialContrasena>().HasKey(h => h.IdHistorial);
+            modelBuilder.Entity<PreguntaSeguridad>().HasKey(ps => ps.IdPregunta);
+            modelBuilder.Entity<RespuestaSeguridad>().HasKey(rs => rs.IdRespuesta);
+            modelBuilder.Entity<PoliticaSeguridad>().HasKey(ps => ps.IdPolitica);
 
-            // Localidades
-            modelBuilder.Entity<Localidad>(entity =>
-            {
-                entity.ToTable("localidades");
-                entity.HasKey(e => e.IdLocalidad);
-                entity.Property(e => e.IdLocalidad).HasColumnName("id_localidad");
-                entity.Property(e => e.Nombre).HasColumnName("localidad");
-                entity.Property(e => e.IdPartido).HasColumnName("id_partido");
-            });
+            // TipoDoc (2 rows)
+            modelBuilder.Entity<TipoDoc>().HasData(
+                new TipoDoc { IdTipoDoc = 1, Nombre = "DNI" },
+                new TipoDoc { IdTipoDoc = 2, Nombre = "Pasaporte" }
+            );
 
-            // TipoDoc
-            modelBuilder.Entity<TipoDoc>(entity =>
-            {
-                entity.ToTable("tipo_doc");
-                entity.HasKey(e => e.IdTipoDoc);
-                entity.Property(e => e.IdTipoDoc).HasColumnName("id_tipo_doc");
-                entity.Property(e => e.Nombre).HasColumnName("tipo_doc");
-            });
+            // Generos (2 rows)
+            modelBuilder.Entity<Genero>().HasData(
+                new Genero { IdGenero = 1, Nombre = "Masculino" },
+                new Genero { IdGenero = 2, Nombre = "Femenino" }
+            );
 
-            // Generos
-            modelBuilder.Entity<Genero>(entity =>
-            {
-                entity.ToTable("generos");
-                entity.HasKey(e => e.IdGenero);
-                entity.Property(e => e.IdGenero).HasColumnName("id_genero");
-                entity.Property(e => e.Nombre).HasColumnName("genero");
-            });
+            // Provincias (24 rows)
+            modelBuilder.Entity<Provincia>().HasData(
+                new Provincia { IdProvincia = 1, Nombre = "Buenos Aires" },
+                new Provincia { IdProvincia = 2, Nombre = "Catamarca" },
+                new Provincia { IdProvincia = 3, Nombre = "Chaco" },
+                new Provincia { IdProvincia = 4, Nombre = "Chubut" },
+                new Provincia { IdProvincia = 5, Nombre = "Córdoba" },
+                new Provincia { IdProvincia = 6, Nombre = "Corrientes" },
+                new Provincia { IdProvincia = 7, Nombre = "Entre Ríos" },
+                new Provincia { IdProvincia = 8, Nombre = "Formosa" },
+                new Provincia { IdProvincia = 9, Nombre = "Jujuy" },
+                new Provincia { IdProvincia = 10, Nombre = "La Pampa" },
+                new Provincia { IdProvincia = 11, Nombre = "La Rioja" },
+                new Provincia { IdProvincia = 12, Nombre = "Mendoza" },
+                new Provincia { IdProvincia = 13, Nombre = "Misiones" },
+                new Provincia { IdProvincia = 14, Nombre = "Neuquén" },
+                new Provincia { IdProvincia = 15, Nombre = "Río Negro" },
+                new Provincia { IdProvincia = 16, Nombre = "Salta" },
+                new Provincia { IdProvincia = 17, Nombre = "San Juan" },
+                new Provincia { IdProvincia = 18, Nombre = "San Luis" },
+                new Provincia { IdProvincia = 19, Nombre = "Santa Cruz" },
+                new Provincia { IdProvincia = 20, Nombre = "Santa Fe" },
+                new Provincia { IdProvincia = 21, Nombre = "Santiago del Estero" },
+                new Provincia { IdProvincia = 22, Nombre = "Tierra del Fuego" },
+                new Provincia { IdProvincia = 23, Nombre = "Tucumán" },
+                new Provincia { IdProvincia = 24, Nombre = "CABA" }
+            );
 
-            // Personas
-            modelBuilder.Entity<Persona>(entity =>
-            {
-                entity.ToTable("personas");
-                entity.HasKey(e => e.IdPersona);
-                entity.Property(e => e.IdPersona).HasColumnName("id_persona");
-                entity.Property(e => e.Legajo).HasColumnName("legajo");
-                entity.Property(e => e.Nombre).HasColumnName("nombre");
-                entity.Property(e => e.Apellido).HasColumnName("apellido");
-                entity.Property(e => e.IdTipoDoc).HasColumnName("id_tipo_doc");
-                entity.Property(e => e.NumDoc).HasColumnName("num_doc");
-                entity.Property(e => e.Cuil).HasColumnName("cuil");
-                entity.Property(e => e.Calle).HasColumnName("calle");
-                entity.Property(e => e.Altura).HasColumnName("altura");
-                entity.Property(e => e.IdLocalidad).HasColumnName("id_localidad");
-                entity.Property(e => e.IdGenero).HasColumnName("id_genero");
-                entity.Property(e => e.Correo).HasColumnName("correo");
-            });
+            // Partidos (10 rows)
+            modelBuilder.Entity<Partido>().HasData(
+                new Partido { IdPartido = 1, IdProvincia = 1, Nombre = "La Plata" },
+                new Partido { IdPartido = 2, IdProvincia = 1, Nombre = "Quilmes" },
+                new Partido { IdPartido = 3, IdProvincia = 1, Nombre = "Lomas de Zamora" },
+                new Partido { IdPartido = 4, IdProvincia = 5, Nombre = "Córdoba Capital" },
+                new Partido { IdPartido = 5, IdProvincia = 5, Nombre = "Río Cuarto" },
+                new Partido { IdPartido = 6, IdProvincia = 12, Nombre = "Mendoza Capital" },
+                new Partido { IdPartido = 7, IdProvincia = 12, Nombre = "Godoy Cruz" },
+                new Partido { IdPartido = 8, IdProvincia = 20, Nombre = "Rosario" },
+                new Partido { IdPartido = 9, IdProvincia = 20, Nombre = "Santa Fe Capital" },
+                new Partido { IdPartido = 10, IdProvincia = 24, Nombre = "Comuna 1" }
+            );
 
-            // Contactos
-            modelBuilder.Entity<Contacto>(entity =>
-            {
-                entity.ToTable("contactos");
-                entity.HasKey(e => e.IdContacto);
-                entity.Property(e => e.IdContacto).HasColumnName("id_contacto");
-                entity.Property(e => e.Email).HasColumnName("email");
-                entity.Property(e => e.Celular).HasColumnName("celular");
-                entity.Property(e => e.IdPersona).HasColumnName("id_persona");
-            });
+            // Localidades (33 rows)
+            modelBuilder.Entity<Localidad>().HasData(
+                new Localidad { IdLocalidad = 1, IdPartido = 1, Nombre = "La Plata" },
+                new Localidad { IdLocalidad = 2, IdPartido = 1, Nombre = "City Bell" },
+                new Localidad { IdLocalidad = 3, IdPartido = 1, Nombre = "Gonnet" },
+                new Localidad { IdLocalidad = 4, IdPartido = 2, Nombre = "Quilmes" },
+                new Localidad { IdLocalidad = 5, IdPartido = 2, Nombre = "Bernal" },
+                new Localidad { IdLocalidad = 6, IdPartido = 3, Nombre = "Lomas de Zamora" },
+                new Localidad { IdLocalidad = 7, IdPartido = 3, Nombre = "Banfield" },
+                new Localidad { IdLocalidad = 8, IdPartido = 4, Nombre = "Córdoba" },
+                new Localidad { IdLocalidad = 9, IdPartido = 4, Nombre = "Alta Córdoba" },
+                new Localidad { IdLocalidad = 10, IdPartido = 5, Nombre = "Río Cuarto" },
+                new Localidad { IdLocalidad = 11, IdPartido = 5, Nombre = "Las Higueras" },
+                new Localidad { IdLocalidad = 12, IdPartido = 6, Nombre = "Mendoza" },
+                new Localidad { IdLocalidad = 13, IdPartido = 6, Nombre = "Guaymallén" },
+                new Localidad { IdLocalidad = 14, IdPartido = 7, Nombre = "Godoy Cruz" },
+                new Localidad { IdLocalidad = 15, IdPartido = 7, Nombre = "Las Heras" },
+                new Localidad { IdLocalidad = 16, IdPartido = 8, Nombre = "Rosario" },
+                new Localidad { IdLocalidad = 17, IdPartido = 8, Nombre = "Funes" },
+                new Localidad { IdLocalidad = 18, IdPartido = 9, Nombre = "Santa Fe" },
+                new Localidad { IdLocalidad = 19, IdPartido = 9, Nombre = "Santo Tomé" },
+                new Localidad { IdLocalidad = 20, IdPartido = 10, Nombre = "Retiro" },
+                new Localidad { IdLocalidad = 21, IdPartido = 10, Nombre = "San Nicolás" },
+                new Localidad { IdLocalidad = 22, IdPartido = 1, Nombre = "Tolosa" },
+                new Localidad { IdLocalidad = 23, IdPartido = 2, Nombre = "Ezpeleta" },
+                new Localidad { IdLocalidad = 24, IdPartido = 3, Nombre = "Temperley" },
+                new Localidad { IdLocalidad = 25, IdPartido = 4, Nombre = "Nueva Córdoba" },
+                new Localidad { IdLocalidad = 26, IdPartido = 5, Nombre = "Holmberg" },
+                new Localidad { IdLocalidad = 27, IdPartido = 6, Nombre = "Luján de Cuyo" },
+                new Localidad { IdLocalidad = 28, IdPartido = 7, Nombre = "Maipú" },
+                new Localidad { IdLocalidad = 29, IdPartido = 8, Nombre = "Roldán" },
+                new Localidad { IdLocalidad = 30, IdPartido = 9, Nombre = "Recreo" },
+                new Localidad { IdLocalidad = 31, IdPartido = 10, Nombre = "Recoleta" },
+                new Localidad { IdLocalidad = 32, IdPartido = 10, Nombre = "Palermo" },
+                new Localidad { IdLocalidad = 33, IdPartido = 10, Nombre = "Belgrano" }
+            );
 
-            // Roles
-            modelBuilder.Entity<Rol>(entity =>
-            {
-                entity.ToTable("roles");
-                entity.HasKey(e => e.IdRol);
-                entity.Property(e => e.IdRol).HasColumnName("id_rol");
-                entity.Property(e => e.Nombre).HasColumnName("rol");
-            });
+            // Roles (1 row)
+            modelBuilder.Entity<Rol>().HasData(
+                new Rol { IdRol = 1, Nombre = "Administrador" }
+            );
 
-            // Usuarios
-            modelBuilder.Entity<Usuario>(entity =>
+            // Personas (1 row)
+            modelBuilder.Entity<Persona>().HasData(
+            new Persona
             {
-                entity.ToTable("usuarios");
-                entity.HasKey(e => e.IdUsuario);
-                entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-                entity.Property(e => e.UsuarioNombre).HasColumnName("usuario");
-                entity.Property(e => e.ContrasenaScript).HasColumnName("contrasena_script");
-                entity.Property(e => e.IdPersona).HasColumnName("id_persona");
-                entity.Property(e => e.FechaBloqueo).HasColumnName("fecha_bloqueo");
-                entity.Property(e => e.NombreUsuarioBloqueo).HasColumnName("nombre_usuario_bloqueo");
-                entity.Property(e => e.FechaUltimoCambio).HasColumnName("fecha_ultimo_cambio");
-                entity.Property(e => e.IdRol).HasColumnName("id_rol");
-                entity.Property(e => e.CambioContrasenaObligatorio).HasColumnName("CambioContrasenaObligatorio");
-            });
-
-            // Permisos
-            modelBuilder.Entity<Permiso>(entity =>
-            {
-                entity.ToTable("permisos");
-                entity.HasKey(e => e.IdPermiso);
-                entity.Property(e => e.IdPermiso).HasColumnName("id_permiso");
-                entity.Property(e => e.Nombre).HasColumnName("permiso");
-                entity.Property(e => e.Descripcion).HasColumnName("descripcion");
-            });
-
-            // RolPermiso
-            modelBuilder.Entity<RolPermiso>(entity =>
-            {
-                entity.ToTable("rol_permiso");
-                entity.HasKey(e => new { e.IdRol, e.IdPermiso });
-                entity.Property(e => e.IdRol).HasColumnName("id_rol");
-                entity.Property(e => e.IdPermiso).HasColumnName("id_permiso");
-            });
-
-            // PermisoUsuario
-            modelBuilder.Entity<PermisoUsuario>(entity =>
-            {
-                entity.ToTable("permisos_usuarios");
-                entity.HasKey(e => new { e.IdUsuario, e.IdPermiso });
-                entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-                entity.Property(e => e.IdPermiso).HasColumnName("id_permiso");
-                entity.Property(e => e.FechaVencimiento).HasColumnName("fecha_vencimiento");
-            });
-
-            // HistorialContrasena
-            modelBuilder.Entity<HistorialContrasena>(entity =>
-            {
-                entity.ToTable("historial_contrasena");
-                entity.HasKey(e => e.IdHistorial);
-                entity.Property(e => e.IdHistorial).HasColumnName("id");
-                entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-                entity.Property(e => e.ContrasenaScript).HasColumnName("contrasena_script");
-            });
-
-            // PreguntaSeguridad
-            modelBuilder.Entity<PreguntaSeguridad>(entity =>
-            {
-                entity.ToTable("preguntas_seguridad");
-                entity.HasKey(e => e.IdPregunta);
-                entity.Property(e => e.IdPregunta).HasColumnName("id_pregunta");
-                entity.Property(e => e.Pregunta).HasColumnName("pregunta");
-            });
-
-            // RespuestaSeguridad
-            modelBuilder.Entity<RespuestaSeguridad>(entity =>
-            {
-                entity.ToTable("respuestas_seguridad");
-                entity.HasKey(e => new { e.IdUsuario, e.IdPregunta });
-                entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-                entity.Property(e => e.IdPregunta).HasColumnName("id_pregunta");
-                entity.Property(e => e.Respuesta).HasColumnName("respuesta");
-            });
-
-            // PoliticaSeguridad
-            modelBuilder.Entity<PoliticaSeguridad>(entity =>
-            {
-                entity.ToTable("politicas_seguridad");
-                entity.HasKey(e => e.IdPolitica);
-                entity.Property(e => e.IdPolitica).HasColumnName("id_politica");
-                entity.Property(e => e.MinCaracteres).HasColumnName("min_caracteres");
-                entity.Property(e => e.CantPreguntas).HasColumnName("cant_preguntas");
-                entity.Property(e => e.MayusYMinus).HasColumnName("mayus_y_minus");
-                entity.Property(e => e.LetrasYNumeros).HasColumnName("letras_y_numeros");
-                entity.Property(e => e.CaracterEspecial).HasColumnName("caracter_especial");
-                entity.Property(e => e.Autenticacion2FA).HasColumnName("autenticacion_2fa");
-                entity.Property(e => e.NoRepetirAnteriores).HasColumnName("no_repetir_anteriores");
-                entity.Property(e => e.SinDatosPersonales).HasColumnName("sin_datos_personales");
-            });
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                // Usa la cadena de conexión de tu appsettings.json o ponla aquí directamente para pruebas
-                optionsBuilder.UseSqlServer("Server=localhost;Database=login2;Trusted_Connection=True;TrustServerCertificate=True;");
+                IdPersona = 1,
+                Legajo = "1001", // Likely causing CS0029 if Legajo is string
+                Nombre = "Juan",
+                Apellido = "Pérez",
+                IdTipoDoc = 1,
+                NumDoc = "12345678",
+                Cuil = "20-12345678-9",
+                Calle = "Calle Falsa",
+                Altura = "123",
+                IdLocalidad = 1,
+                IdGenero = 1,
+                Correo = "juan.perez@example.com",
+                FechaIngreso = new DateTime(2025, 1, 1)
             }
-        }
+        );
 
-        public void TestConnection()
-        {
-            try
-            {
-                using (var context = new ApplicationDbContext())
+            // Usuarios (1 row)
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario
                 {
-                    var usuarios = context.Usuarios.ToList();
-                    // ...
+                    IdUsuario = 1,
+                    IdPersona = 1,
+                    UsuarioNombre = "admin",
+                    ContrasenaScript = HashUsuarioContrasena("admin", "testpassword"),
+                    IdRol = 1,
+                    FechaUltimoCambio = new DateTime(2025, 1, 1),
+                    FechaBloqueo = new DateTime(9999, 12, 31),
+                    CambioContrasenaObligatorio = true
                 }
-            }
-            catch (Exception ex)
+            );
+
+            // Configure relationships
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Persona)
+                .WithMany()
+                .HasForeignKey(u => u.IdPersona);
+
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Rol)
+                .WithMany()
+                .HasForeignKey(u => u.IdRol);
+
+            modelBuilder.Entity<Persona>()
+                .HasOne(p => p.TipoDoc)
+                .WithMany()
+                .HasForeignKey(p => p.IdTipoDoc);
+
+            modelBuilder.Entity<Persona>()
+                .HasOne(p => p.Localidad)
+                .WithMany()
+                .HasForeignKey(p => p.IdLocalidad);
+
+            modelBuilder.Entity<Persona>()
+                .HasOne(p => p.Genero)
+                .WithMany()
+                .HasForeignKey(p => p.IdGenero);
+
+            modelBuilder.Entity<Localidad>()
+                .HasOne(l => l.Partido)
+                .WithMany()
+                .HasForeignKey(l => l.IdPartido);
+
+            modelBuilder.Entity<Partido>()
+                .HasOne(p => p.Provincia)
+                .WithMany()
+                .HasForeignKey(p => p.IdProvincia);
+                // src/DataAccess/ApplicationDbContext.cs (add to OnModelCreating)
+            modelBuilder.Entity<PoliticaSeguridad>().HasData(
+                new PoliticaSeguridad
+                {
+                    IdPolitica = 1,
+                    MayusYMinus = true,
+                    LetrasYNumeros = true,
+                    CaracterEspecial = true,
+                    Autenticacion2FA = false,
+                    NoRepetirAnteriores = true,
+                    SinDatosPersonales = true,
+                    MinCaracteres = 8,
+                    CantPreguntas = 2
+                }
+            );
+        }
+
+        private static byte[] HashUsuarioContrasena(string username, string password)
+        {
+            using (var sha256 = SHA256.Create())
             {
-                // Lanza la excepción para que la maneje la capa de presentación
-                throw new Exception($"Error: {ex.Message}\nUsuario: {Environment.UserName}", ex);
+                var salted = $"{username}:{password}";
+                return sha256.ComputeHash(Encoding.UTF8.GetBytes(salted));
             }
         }
     }

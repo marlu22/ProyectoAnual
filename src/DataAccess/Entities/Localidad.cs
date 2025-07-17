@@ -5,14 +5,9 @@ namespace DataAccess.Entities
 {
     public class Localidad
     {
-        [Key]
         public int IdLocalidad { get; set; }
-        [Required]
-        [MaxLength(50)]
-        public string Nombre { get; set; }
-        [Required]
+        public string Nombre { get; set; } = null!;
         public int IdPartido { get; set; }
-        [ForeignKey("IdPartido")]
-        public Partido Partido { get; set; }
+        public Partido Partido { get; set; } = null!;
     }
 }

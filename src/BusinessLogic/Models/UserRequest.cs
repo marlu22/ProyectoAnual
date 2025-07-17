@@ -1,10 +1,11 @@
+// src/BusinessLogic/Models/UserRequest.cs
 namespace BusinessLogic.Models
 {
     public class UserRequest
     {
-        public string PersonaId { get; set; } // O el campo clave de persona
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Rol { get; set; }
+        public string? PersonaId { get; set; }
+        public string Username { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string? Rol { get; set; }
     }
 }

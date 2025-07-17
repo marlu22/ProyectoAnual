@@ -6,36 +6,18 @@ namespace DataAccess.Entities
 {
     public class Usuario
     {
-        [Key]
         public int IdUsuario { get; set; }
-
-        [Required]
-        [MaxLength(30)]
-        public string UsuarioNombre { get; set; }
-
-        [Required]
-        public byte[] ContrasenaScript { get; set; }
-
-        [Required]
+        public string UsuarioNombre { get; set; } = null!;
+        public byte[] ContrasenaScript { get; set; } = null!;
         public int IdPersona { get; set; }
-
-        public DateTime? FechaBloqueo { get; set; }
-
-        [MaxLength(30)]
+        public DateTime FechaBloqueo { get; set; }
         public string? NombreUsuarioBloqueo { get; set; }
-
         public DateTime FechaUltimoCambio { get; set; }
-
-        [Required]
         public int IdRol { get; set; }
-
-        [ForeignKey("IdRol")]
-        public Rol Rol { get; set; }
-
-        public bool CambioContrasenaObligatorio { get; set; } = false;
-
-        // Relaciones de navegación (opcional, si tienes las entidades Persona y Rol)
-        // public Persona Persona { get; set; }
-        // public Rol Rol { get; set; }
+        public int? IdPolitica { get; set; }
+        public bool CambioContrasenaObligatorio { get; set; }
+        public Persona Persona { get; set; } = null!;
+        public Rol Rol { get; set; } = null!;
+        public PoliticaSeguridad? PoliticaSeguridad { get; set; }
     }
 }

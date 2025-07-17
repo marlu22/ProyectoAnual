@@ -1,22 +1,24 @@
+// src/BusinessLogic/Services/IUserService.cs
 using System.Collections.Generic;
 using BusinessLogic.Models;
 using DataAccess.Entities;
 
-public interface IUserService
+namespace BusinessLogic.Services
 {
-    IEnumerable<UserDto> GetAllUsers();
-
-    void CrearPersona(PersonaRequest persona);
-    void CrearUsuario(UserRequest usuario);
-    List<PersonaDto> GetPersonas();
-
-    List<TipoDoc> GetTiposDoc();
-    List<Localidad> GetLocalidades();
-    List<Genero> GetGeneros();
-    List<Rol> GetRoles();
-    void CambiarContrasena(string usuario, string nuevaContrasena);
-    void RecuperarContrasena(string usuario, string[] respuestas);
-    UserDto Authenticate(string username, string password);
-    PoliticaSeguridad GetPoliticaSeguridad();
-    void UpdatePoliticaSeguridad(PoliticaSeguridad politica);
+    public interface IUserService
+    {
+        void CrearPersona(PersonaRequest request);
+        void CrearUsuario(UserRequest request);
+        UserResponse? Authenticate(string username, string password);
+        void RecuperarContrasena(string username, string[] respuestas);
+        void CambiarContrasena(string username, string newPassword);
+        List<TipoDoc> GetTiposDoc();
+        List<Localidad> GetLocalidades();
+        List<Genero> GetGeneros();
+        List<Persona> GetPersonas();
+        List<Rol> GetRoles();
+        PoliticaSeguridad? GetPoliticaSeguridad();
+        void UpdatePoliticaSeguridad(PoliticaSeguridad politica);
+        List<Usuario> GetAllUsers();
+    }
 }

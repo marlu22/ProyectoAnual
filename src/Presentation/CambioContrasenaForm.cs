@@ -1,3 +1,4 @@
+// src/Presentation/CambioContrasenaForm.cs
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
@@ -18,10 +19,17 @@ namespace Presentation
             btnCambiar.Click += BtnCambiar_Click;
         }
 
-        private void BtnCambiar_Click(object sender, EventArgs e)
+        private void BtnCambiar_Click(object? sender, EventArgs? e)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(txtNueva.Text) ||
+                    string.IsNullOrWhiteSpace(txtRepetir.Text))
+                {
+                    MessageBox.Show("Por favor, ingrese y repita la nueva contraseña.", "Error");
+                    return;
+                }
+
                 string nueva = txtNueva.Text;
                 string repetir = txtRepetir.Text;
 

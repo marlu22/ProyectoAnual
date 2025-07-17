@@ -1,13 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
+// src/DataAccess/Entities/Genero.cs
 namespace DataAccess.Entities
 {
     public class Genero
     {
-        [Key]
         public int IdGenero { get; set; }
-        [Required]
-        [MaxLength(25)]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = null!;
     }
 }

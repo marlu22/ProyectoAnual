@@ -1,29 +1,27 @@
+// src/Services/Controllers/UsersController.cs
 using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.Services;
-using BusinessLogic.Models;
+using DataAccess.Entities;
+using System.Collections.Generic;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UsersController : ControllerBase
+namespace Services.Controllers
 {
-    private readonly IUserService _userService;
-
-    public UsersController(IUserService userService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UsersController : ControllerBase
     {
-        _userService = userService;
-    }
+        private readonly IUserService _userService;
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var users = _userService.GetAllUsers();
-        return Ok(users);
-    }
+        public UsersController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
-    [HttpPost]
-    public IActionResult Create(UserRequest request)
-    {
-        _userService.CrearUsuario(request);
-        return CreatedAtAction(nameof(GetAll), null, null);
+        [HttpGet]
+        public ActionResult<List<Usuario>> GetAllUsers()
+        {
+            var users = _userService.GetAllUsers();
+            return Ok(users);
+        }
     }
 }

@@ -1,11 +1,12 @@
+// src/BusinessLogic/Services/UserService.cs
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using DataAccess.Repositories;
-using DataAccess.Entities;
-using BusinessLogic.Models;
 using BusinessLogic.Exceptions;
+using BusinessLogic.Models;
+using DataAccess.Entities;
+using DataAccess.Repositories;
 
 namespace BusinessLogic.Services
 {
@@ -15,209 +16,172 @@ namespace BusinessLogic.Services
 
         public UserService(IUserRepository userRepository)
         {
-            _userRepository = userRepository;
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        public IEnumerable<UserDto> GetAllUsers()
+        public void CrearPersona(PersonaRequest request)
         {
-            var usuarios = _userRepository.GetAll();
-            return usuarios.Select(u => new UserDto
+            if (request == null)
+                throw new ValidationException("Request cannot be null");
+
+            if (request.Legajo <= 0 ||
+                string.IsNullOrWhiteSpace(request.Nombre) ||
+                string.IsNullOrWhiteSpace(request.Apellido) ||
+                string.IsNullOrWhiteSpace(request.TipoDoc) ||
+                string.IsNullOrWhiteSpace(request.NumDoc) ||
+                string.IsNullOrWhiteSpace(request.Cuil) ||
+                string.IsNullOrWhiteSpace(request.Calle) ||
+                string.IsNullOrWhiteSpace(request.Altura) ||
+                string.IsNullOrWhiteSpace(request.Localidad) ||
+                string.IsNullOrWhiteSpace(request.Genero) ||
+                string.IsNullOrWhiteSpace(request.Correo))
+                throw new ValidationException("All fields are required");
+
+            var tipoDoc = _userRepository.GetTipoDocByNombre(request.TipoDoc)
+                ?? throw new ValidationException($"TipoDoc '{request.TipoDoc}' not found");
+            var localidad = _userRepository.GetLocalidadByNombre(request.Localidad)
+                ?? throw new ValidationException($"Localidad '{request.Localidad}' not found");
+            var genero = _userRepository.GetGeneroByNombre(request.Genero)
+                ?? throw new ValidationException($"Genero '{request.Genero}' not found");
+
+            var persona = new Persona
             {
-                Id = u.IdUsuario,
-                Username = u.UsuarioNombre,
-                // Agrega aquí otros campos que tengas en UserDto
-            });
-        }
-
-
-        public UserDto UpdateUser(int id, UserRequest request)
-        {
-            var usuario = _userRepository.GetById(id);
-            if (usuario == null) throw new KeyNotFoundException("Usuario no encontrado.");
-
-            usuario.UsuarioNombre = request.Username;
-            // Actualiza otros campos si es necesario
-
-            _userRepository.Update(usuario);
-
-            return new UserDto
-            {
-                Id = usuario.IdUsuario,
-                Username = usuario.UsuarioNombre,
-                // Otros campos
-            };
-        }
-
-        public void DeleteUser(int id)
-        {
-            var usuario = _userRepository.GetById(id);
-            if (usuario == null) throw new KeyNotFoundException("Usuario no encontrado.");
-
-            _userRepository.Delete(usuario);
-        }
-
-        public void CrearPersona(PersonaRequest persona)
-        {
-            // Busca los objetos relacionados en la base de datos
-            var tipoDoc = _userRepository.GetTipoDocByNombre(persona.TipoDoc);
-            var localidad = _userRepository.GetLocalidadByNombre(persona.Localidad);
-            var genero = _userRepository.GetGeneroByNombre(persona.Genero);
-
-            var nuevaPersona = new DataAccess.Entities.Persona
-            {
-                Legajo = int.Parse(persona.Legajo),
-                Nombre = persona.Nombre,
-                Apellido = persona.Apellido,
+                Legajo = request.Legajo.ToString(),
+                Nombre = request.Nombre,
+                Apellido = request.Apellido,
                 IdTipoDoc = tipoDoc.IdTipoDoc,
-                TipoDoc = tipoDoc,
-                NumDoc = persona.NumDoc,
-                Cuil = persona.Cuil,
-                Calle = persona.Calle,
-                Altura = persona.Altura,
+                NumDoc = request.NumDoc,
+                Cuil = request.Cuil,
+                Calle = request.Calle,
+                Altura = request.Altura,
                 IdLocalidad = localidad.IdLocalidad,
-                Localidad = localidad,
                 IdGenero = genero.IdGenero,
-                Genero = genero,
-                Correo = persona.Correo
+                Correo = request.Correo,
+                FechaIngreso = DateTime.Now
             };
-            _userRepository.AddPersona(nuevaPersona);
+
+            _userRepository.AddPersona(persona);
         }
 
-        public void CrearUsuario(UserRequest usuario)
+        public void CrearUsuario(UserRequest request)
         {
-            if (string.IsNullOrWhiteSpace(usuario.Username))
-                throw new ValidationException("El nombre de usuario es obligatorio.");
+            if (request == null)
+                throw new ValidationException("Request cannot be null");
 
-            var persona = _userRepository.GetPersonaById(int.Parse(usuario.PersonaId));
-            var rol = _userRepository.GetRolByNombre(usuario.Rol);
+            if (string.IsNullOrWhiteSpace(request.PersonaId) ||
+                string.IsNullOrWhiteSpace(request.Username) ||
+                string.IsNullOrWhiteSpace(request.Password) ||
+                string.IsNullOrWhiteSpace(request.Rol))
+                throw new ValidationException("All fields are required");
 
-            var contrasenaAleatoria = GenerarContrasenaAleatoria();
-            var hash = HashUsuarioContrasena(usuario.Username, contrasenaAleatoria);
+            if (!int.TryParse(request.PersonaId, out int personaId))
+                throw new ValidationException("Invalid PersonaId format");
 
-            var nuevoUsuario = new Usuario
+            var rol = _userRepository.GetRolByNombre(request.Rol)
+                ?? throw new ValidationException($"Rol '{request.Rol}' not found");
+
+            var usuario = new Usuario
             {
-                IdPersona = persona.IdPersona,
-                UsuarioNombre = usuario.Username,
-                ContrasenaScript = Encoding.UTF8.GetBytes(hash),
+                IdPersona = personaId,
+                UsuarioNombre = request.Username,
+                ContrasenaScript = HashUsuarioContrasena(request.Username, request.Password),
                 IdRol = rol.IdRol,
                 FechaUltimoCambio = DateTime.Now,
+                FechaBloqueo = new DateTime(9999, 12, 31),
                 CambioContrasenaObligatorio = true
             };
-            _userRepository.AddUsuario(nuevoUsuario);
 
-            // Deberías enviar la contraseña aleatoria al usuario por correo electrónico
-            // _emailService.SendNewPassword(persona.Correo, contrasenaAleatoria);
+            _userRepository.AddUsuario(usuario);
         }
 
-        public List<PersonaDto> GetPersonas()
+        public UserResponse? Authenticate(string username, string password)
         {
-            var personas = _userRepository.GetAllPersonas();
-            return personas.Select(p => new PersonaDto
-            {
-                Id = p.IdPersona, // CORREGIDO: usar IdPersona
-                NombreCompleto = $"{p.Nombre} {p.Apellido}"
-            }).ToList();
-        }
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                return null;
 
-        public List<TipoDoc> GetTiposDoc() => _userRepository.GetAllTipoDocs().ToList();
-        public List<Localidad> GetLocalidades() => _userRepository.GetAllLocalidades().ToList();
-        public List<Genero> GetGeneros() => _userRepository.GetAllGeneros().ToList();
-        public List<Rol> GetRoles() => _userRepository.GetAllRoles().ToList();
-
-        public void CambiarContrasena(string usuario, string nuevaContrasena)
-        {
-            var politica = _userRepository.GetPoliticaSeguridad();
-            var user = _userRepository.GetByUsername(usuario);
-            if (user == null)
-                throw new ValidationException("Usuario no encontrado.");
-
-            ValidarPoliticasDeSeguridad(nuevaContrasena, politica, user);
-
-            if (politica.NoRepetirAnteriores)
-            {
-                var historial = _userRepository.GetHistorialContrasenas(user.IdUsuario);
-                var hashNueva = HashUsuarioContrasena(usuario, nuevaContrasena);
-                if (historial.Any(h => h.ContrasenaScript.SequenceEqual(Encoding.UTF8.GetBytes(hashNueva))))
-                {
-                    throw new ValidationException("La nueva contraseña no puede ser igual a una de las anteriores.");
-                }
-
-                _userRepository.AddHistorialContrasena(new HistorialContrasena
-                {
-                    IdUsuario = user.IdUsuario,
-                    ContrasenaScript = user.ContrasenaScript
-                });
-            }
-
-            var hash = HashUsuarioContrasena(usuario, nuevaContrasena);
-            user.ContrasenaScript = Encoding.UTF8.GetBytes(hash);
-            user.FechaUltimoCambio = DateTime.Now;
-            user.CambioContrasenaObligatorio = false;
-
-            _userRepository.Update(user);
-        }
-
-        public void RecuperarContrasena(string usuario, string[] respuestas)
-        {
-            var user = _userRepository.GetByUsername(usuario);
-            if (user == null)
-                throw new ValidationException("Usuario no encontrado.");
-
-            // Validar respuestas de seguridad (deberías tener un método para esto)
-            if (!_userRepository.ValidarRespuestasSeguridad(user.IdUsuario, respuestas))
-                throw new ValidationException("Respuestas de seguridad incorrectas.");
-
-            // Generar nueva contraseña aleatoria
-            var nueva = GenerarContrasenaAleatoria();
-            var hash = HashUsuarioContrasena(usuario, nueva);
-            user.ContrasenaScript = Encoding.UTF8.GetBytes(hash);
-            user.FechaUltimoCambio = DateTime.Now;
-            user.CambioContrasenaObligatorio = true;
-            _userRepository.Update(user);
-
-            // Enviar por correo (implementa el envío real en un helper o servicio)
-            _userRepository.EnviarCorreoRecuperacion(user, nueva);
-        }
-
-        public UserDto Authenticate(string username, string password)
-        {
-            var user = _userRepository.GetByUsername(username);
-            if (user == null) return null;
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
+            if (usuario == null)
+                return null;
 
             var hash = HashUsuarioContrasena(username, password);
-            var hashBytes = Encoding.UTF8.GetBytes(hash);
+            if (!hash.SequenceEqual(usuario.ContrasenaScript))
+                return null;
 
-            if (user.ContrasenaScript.SequenceEqual(hashBytes))
+            return new UserResponse
             {
-                return new UserDto
-                {
-                    Id = user.IdUsuario,
-                    Username = user.UsuarioNombre,
-                    CambioContrasenaObligatorio = user.CambioContrasenaObligatorio,
-                    Rol = user.Rol?.Nombre
-                };
-            }
-
-            return null;
+                Username = usuario.UsuarioNombre,
+                Rol = usuario.Rol?.Nombre,
+                CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
+            };
         }
 
-        public static string HashUsuarioContrasena(string usuario, string contrasena)
+        public void RecuperarContrasena(string username, string[] respuestas)
         {
-            using var sha = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(usuario + contrasena);
-            var hash = sha.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ValidationException("Username is required");
+
+            if (respuestas == null || respuestas.Length != 2 || respuestas.Any(r => string.IsNullOrWhiteSpace(r)))
+                throw new ValidationException("Two security answers are required");
+
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+                ?? throw new ValidationException($"Usuario '{username}' not found");
+
+            var respuestasSeguridad = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
+                ?? throw new ValidationException("Security answers not configured");
+
+            if (respuestasSeguridad.Count != 2)
+                throw new ValidationException("Exactly two security answers are required");
+
+            if (respuestasSeguridad[0].Respuesta != respuestas[0] || respuestasSeguridad[1].Respuesta != respuestas[1])
+                throw new ValidationException("Incorrect security answers");
+
+            var newPassword = GenerateRandomPassword();
+            usuario.ContrasenaScript = HashUsuarioContrasena(username, newPassword);
+            usuario.FechaUltimoCambio = DateTime.Now;
+            usuario.CambioContrasenaObligatorio = true;
+            _userRepository.UpdateUsuario(usuario);
         }
 
-        private string GenerarContrasenaAleatoria(int longitud = 10)
+        public void CambiarContrasena(string username, string newPassword)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var random = new Random();
-            return new string(Enumerable.Repeat(chars, longitud)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(newPassword))
+                throw new ValidationException("Username and new password are required");
+
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+                ?? throw new ValidationException($"Usuario '{username}' not found");
+
+            usuario.ContrasenaScript = HashUsuarioContrasena(username, newPassword);
+            usuario.FechaUltimoCambio = DateTime.Now;
+            usuario.CambioContrasenaObligatorio = false;
+            _userRepository.UpdateUsuario(usuario);
         }
 
-        public PoliticaSeguridad GetPoliticaSeguridad()
+        public List<TipoDoc> GetTiposDoc()
+        {
+            return _userRepository.GetAllTiposDoc();
+        }
+
+        public List<Localidad> GetLocalidades()
+        {
+            return _userRepository.GetAllLocalidades();
+        }
+
+        public List<Genero> GetGeneros()
+        {
+            return _userRepository.GetAllGeneros();
+        }
+
+        public List<Persona> GetPersonas()
+        {
+            return _userRepository.GetAllPersonas();
+        }
+
+        public List<Rol> GetRoles()
+        {
+            return _userRepository.GetAllRoles();
+        }
+
+        public PoliticaSeguridad? GetPoliticaSeguridad()
         {
             return _userRepository.GetPoliticaSeguridad();
         }
@@ -227,35 +191,23 @@ namespace BusinessLogic.Services
             _userRepository.UpdatePoliticaSeguridad(politica);
         }
 
-        private void ValidarPoliticasDeSeguridad(string contrasena, PoliticaSeguridad politica, Usuario user)
+        public List<Usuario> GetAllUsers()
         {
-            if (politica == null) return;
+            return _userRepository.GetAllUsers();
+        }
 
-            if (contrasena.Length < politica.MinCaracteres)
-                throw new ValidationException($"La contraseña debe tener al menos {politica.MinCaracteres} caracteres.");
-
-            if (politica.MayusYMinus && (!contrasena.Any(char.IsUpper) || !contrasena.Any(char.IsLower)))
-                throw new ValidationException("La contraseña debe contener mayúsculas y minúsculas.");
-
-            if (politica.LetrasYNumeros && (!contrasena.Any(char.IsLetter) || !contrasena.Any(char.IsDigit)))
-                throw new ValidationException("La contraseña debe contener letras y números.");
-
-            if (politica.CaracterEspecial && !contrasena.Any(c => !char.IsLetterOrDigit(c)))
-                throw new ValidationException("La contraseña debe contener al menos un carácter especial.");
-
-            if (politica.SinDatosPersonales)
+        private byte[] HashUsuarioContrasena(string username, string password)
+        {
+            using (var sha256 = SHA256.Create())
             {
-                var persona = _userRepository.GetPersonaById(user.IdPersona);
-                if (persona != null)
-                {
-                    if (contrasena.Contains(persona.Nombre, StringComparison.OrdinalIgnoreCase) ||
-                        contrasena.Contains(persona.Apellido, StringComparison.OrdinalIgnoreCase) ||
-                        contrasena.Contains(persona.NumDoc, StringComparison.OrdinalIgnoreCase))
-                    {
-                        throw new ValidationException("La contraseña no puede contener datos personales.");
-                    }
-                }
+                var salted = $"{username}:{password}";
+                return sha256.ComputeHash(Encoding.UTF8.GetBytes(salted));
             }
+        }
+
+        private string GenerateRandomPassword()
+        {
+            return Guid.NewGuid().ToString("N").Substring(0, 12);
         }
     }
 }

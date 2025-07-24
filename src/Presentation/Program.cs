@@ -30,11 +30,7 @@ internal static class Program
         var context = new ApplicationDbContext(optionsBuilder.Options);
         IUserRepository userRepository = new UserRepository(context);
 
-        var smtpSettings = new SmtpSettings();
-        config.GetSection("SmtpSettings").Bind(smtpSettings);
-        IEmailService emailService = new EmailService(smtpSettings);
-
-        IUserService userService = new UserService(userRepository, emailService);
+        IUserService userService = new UserService(userRepository);
 
         Application.Run(new LoginForm(userService));
     }

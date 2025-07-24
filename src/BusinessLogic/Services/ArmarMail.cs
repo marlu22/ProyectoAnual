@@ -1,4 +1,6 @@
-﻿namespace CapaSesion
+﻿using BusinessLogic.Services;
+
+namespace BusinessLogic.Services
 {
     public static class ArmarMail
     {

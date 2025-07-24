@@ -29,7 +29,7 @@ namespace BusinessLogic.Services
             }
             catch (InfrastructureException ex)
             {
-                throw new BusinessLogicException($"A business logic error occurred during {operationName}.", ex);
+                throw new DataAccessLayerException($"A data access error occurred during {operationName}.", ex);
             }
         }
 
@@ -41,7 +41,7 @@ namespace BusinessLogic.Services
             }
             catch (InfrastructureException ex)
             {
-                throw new BusinessLogicException($"A business logic error occurred during {operationName}.", ex);
+                throw new DataAccessLayerException($"A data access error occurred during {operationName}.", ex);
             }
         }
 

@@ -8,6 +8,9 @@ using DataAccess;
 using DataAccess.Repositories;
 using BusinessLogic.Services;
 using Presentation; // Add this if LoginForm is in Presentation.Forms namespace
+using UserManagementSystem.BusinessLogic.Exceptions;
+using UserManagementSystem.DataAccess.Exceptions;
+using UserManagementSystem.Presentation.Exceptions;
 
 internal static class Program
 {
@@ -58,15 +61,15 @@ internal static class Program
         LogException(ex);
 
         // Show a friendly message to the user
-        MessageBox.Show(
-            "Ocurrió un error inesperado. La aplicación se cerrará. Por favor, contacte al soporte técnico.",
-            "Error Inesperado",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error
-        );
+        using (var errorForm = new frmError(ex))
+        {
+            errorForm.ShowDialog();
+        }
 
-        // Optionally, exit the application
-        Environment.Exit(1);
+        if (!(ex is ValidationException) && !(ex is BusinessLogicException) && !(ex is UILayerException))
+        {
+            Environment.Exit(1);
+        }
     }
 
     private static void LogException(Exception ex)

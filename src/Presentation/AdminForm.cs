@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using BusinessLogic.Services;
-using BusinessLogic.Exceptions;
+using UserManagementSystem.BusinessLogic.Exceptions;
 using BusinessLogic.Models;
 
 namespace Presentation

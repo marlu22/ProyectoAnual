@@ -13,12 +13,10 @@ namespace BusinessLogic.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IEmailService _emailService;
 
-        public UserService(IUserRepository userRepository, IEmailService emailService)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         public void CrearPersona(PersonaRequest request)
@@ -63,7 +61,7 @@ namespace BusinessLogic.Services
             _userRepository.AddUsuario(usuario);
 
             // Enviar la contraseña generada por correo
-            _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {generatedPassword}");
+            // _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {generatedPassword}");
         }
 
         public UserResponse? Authenticate(string username, string password)
@@ -87,7 +85,7 @@ namespace BusinessLogic.Services
             };
         }
 
-        public async void RecuperarContrasena(string username, string[] respuestas)
+        public void RecuperarContrasena(string username, string[] respuestas)
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ValidationException("Username is required");
@@ -116,7 +114,10 @@ namespace BusinessLogic.Services
             usuario.CambioContrasenaObligatorio = true;
             _userRepository.UpdateUsuario(usuario);
 
-            await _emailService.SendEmailAsync(persona.Correo, "Recuperación de Contraseña", $"Su nueva contraseña es: {newPassword}");
+            ArmarMail.DireccionCorreo = persona.Correo;
+            ArmarMail.Asunto = "Recuperación de Contraseña";
+            ArmarMail.NuevaContraseña = newPassword;
+            ArmarMail.Preparar();
         }
 
         public void CambiarContrasena(string username, string newPassword)

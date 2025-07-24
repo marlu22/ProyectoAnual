@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 
-namespace CapaSesion
+namespace BusinessLogic.Services
 {
     public static class EnviarMail
     {

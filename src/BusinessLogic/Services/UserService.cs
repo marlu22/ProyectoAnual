@@ -1,12 +1,14 @@
 // src/BusinessLogic/Services/UserService.cs
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using BusinessLogic.Exceptions;
 using BusinessLogic.Models;
 using DataAccess.Entities;
 using DataAccess.Repositories;
+using UserManagementSystem.DataAccess.Exceptions;
+using UserManagementSystem.BusinessLogic.Exceptions;
 
 namespace BusinessLogic.Services
 {
@@ -19,7 +21,31 @@ namespace BusinessLogic.Services
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        public void CrearPersona(PersonaRequest request)
+        private T ExecuteServiceOperation<T>(Func<T> operation, string operationName)
+        {
+            try
+            {
+                return operation();
+            }
+            catch (InfrastructureException ex)
+            {
+                throw new BusinessLogicException($"A business logic error occurred during {operationName}.", ex);
+            }
+        }
+
+        private void ExecuteServiceOperation(Action operation, string operationName)
+        {
+            try
+            {
+                operation();
+            }
+            catch (InfrastructureException ex)
+            {
+                throw new BusinessLogicException($"A business logic error occurred during {operationName}.", ex);
+            }
+        }
+
+        public void CrearPersona(PersonaRequest request) => ExecuteServiceOperation(() =>
         {
             var persona = new Persona
             {
@@ -32,15 +58,14 @@ namespace BusinessLogic.Services
                 Calle = request.Calle,
                 Altura = request.Altura,
                 IdLocalidad = _userRepository.GetLocalidadByNombre(request.Localidad)?.IdLocalidad ?? throw new ValidationException("Localidad no encontrada"),
-                IdGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero ?? throw new ValidationException("G�nero no encontrado"),
+                IdGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero ?? throw new ValidationException("Género no encontrado"),
                 Correo = request.Correo,
                 FechaIngreso = DateTime.Now
             };
             _userRepository.AddPersona(persona);
-        }
+        }, "creating a person");
 
-        // src/BusinessLogic/Services/UserService.cs (partial)
-        public void CrearUsuario(UserRequest request)
+        public void CrearUsuario(UserRequest request) => ExecuteServiceOperation(() =>
         {
             var persona = _userRepository.GetPersonaById(int.Parse(request.PersonaId))
                 ?? throw new ValidationException("Persona no encontrada");
@@ -62,9 +87,9 @@ namespace BusinessLogic.Services
 
             // Enviar la contraseña generada por correo
             // _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {generatedPassword}");
-        }
+        }, "creating a user");
 
-        public UserResponse? Authenticate(string username, string password)
+        public UserResponse? Authenticate(string username, string password) => ExecuteServiceOperation(() =>
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 return null;
@@ -83,9 +108,9 @@ namespace BusinessLogic.Services
                 Rol = usuario.Rol?.Nombre,
                 CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
             };
-        }
+        }, "authenticating user");
 
-        public void RecuperarContrasena(string username, string[] respuestas)
+        public void RecuperarContrasena(string username, string[] respuestas) => ExecuteServiceOperation(() =>
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ValidationException("Username is required");
@@ -118,9 +143,9 @@ namespace BusinessLogic.Services
             ArmarMail.Asunto = "Recuperación de Contraseña";
             ArmarMail.NuevaContraseña = newPassword;
             ArmarMail.Preparar();
-        }
+        }, "recovering password");
 
-        public void CambiarContrasena(string username, string newPassword)
+        public void CambiarContrasena(string username, string newPassword) => ExecuteServiceOperation(() =>
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(newPassword))
                 throw new ValidationException("Username and new password are required");
@@ -156,47 +181,23 @@ namespace BusinessLogic.Services
             usuario.FechaUltimoCambio = DateTime.Now;
             usuario.CambioContrasenaObligatorio = false;
             _userRepository.UpdateUsuario(usuario);
-        }
+        }, "changing password");
 
-        public List<TipoDoc> GetTiposDoc()
-        {
-            return _userRepository.GetAllTiposDoc();
-        }
+        public List<TipoDoc> GetTiposDoc() => ExecuteServiceOperation(() => _userRepository.GetAllTiposDoc(), "getting all document types");
 
-        public List<Localidad> GetLocalidades()
-        {
-            return _userRepository.GetAllLocalidades();
-        }
+        public List<Localidad> GetLocalidades() => ExecuteServiceOperation(() => _userRepository.GetAllLocalidades(), "getting all locations");
 
-        public List<Genero> GetGeneros()
-        {
-            return _userRepository.GetAllGeneros();
-        }
+        public List<Genero> GetGeneros() => ExecuteServiceOperation(() => _userRepository.GetAllGeneros(), "getting all genders");
 
-        public List<Persona> GetPersonas()
-        {
-            return _userRepository.GetAllPersonas();
-        }
+        public List<Persona> GetPersonas() => ExecuteServiceOperation(() => _userRepository.GetAllPersonas(), "getting all people");
 
-        public List<Rol> GetRoles()
-        {
-            return _userRepository.GetAllRoles();
-        }
+        public List<Rol> GetRoles() => ExecuteServiceOperation(() => _userRepository.GetAllRoles(), "getting all roles");
 
-        public PoliticaSeguridad? GetPoliticaSeguridad()
-        {
-            return _userRepository.GetPoliticaSeguridad();
-        }
+        public PoliticaSeguridad? GetPoliticaSeguridad() => ExecuteServiceOperation(() => _userRepository.GetPoliticaSeguridad(), "getting security policy");
 
-        public void UpdatePoliticaSeguridad(PoliticaSeguridad politica)
-        {
-            _userRepository.UpdatePoliticaSeguridad(politica);
-        }
+        public void UpdatePoliticaSeguridad(PoliticaSeguridad politica) => ExecuteServiceOperation(() => _userRepository.UpdatePoliticaSeguridad(politica), "updating security policy");
 
-        public List<Usuario> GetAllUsers()
-        {
-            return _userRepository.GetAllUsers();
-        }
+        public List<Usuario> GetAllUsers() => ExecuteServiceOperation(() => _userRepository.GetAllUsers(), "getting all users");
 
         private byte[] HashUsuarioContrasena(string username, string password)
         {
@@ -243,7 +244,7 @@ namespace BusinessLogic.Services
             }
         }
 
-        public void GuardarRespuestasSeguridad(string username, string[] respuestas)
+        public void GuardarRespuestasSeguridad(string username, string[] respuestas) => ExecuteServiceOperation(() =>
         {
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
@@ -267,6 +268,6 @@ namespace BusinessLogic.Services
                 Respuesta = respuestas[1]
             };
             _userRepository.AddRespuestaSeguridad(respuesta2);
-        }
+        }, "saving security answers");
     }
 }

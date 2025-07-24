@@ -4,6 +4,7 @@ using BusinessLogic.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using UserManagementSystem.Services.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,7 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 // Configurar middleware
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

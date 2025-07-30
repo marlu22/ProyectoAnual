@@ -176,7 +176,7 @@ namespace DataAccess
                     IdUsuario = 1,
                     IdPersona = 1,
                     UsuarioNombre = "admin",
-                    ContrasenaScript = HashUsuarioContrasena("admin", "testpassword"),
+                    ContrasenaScript = HashUsuarioContrasena("admin", "admin123"),
                     IdRol = 1,
                     FechaUltimoCambio = new DateTime(2025, 1, 1),
                     FechaBloqueo = new DateTime(9999, 12, 31),

@@ -49,7 +49,7 @@ namespace BusinessLogic.Services
         {
             var persona = new Persona
             {
-                Legajo = request.Legajo,
+                Legajo = int.Parse(request.Legajo),
                 Nombre = request.Nombre,
                 Apellido = request.Apellido,
                 IdTipoDoc = _userRepository.GetTipoDocByNombre(request.TipoDoc)?.IdTipoDoc ?? throw new ValidationException("Tipo de documento no encontrado"),

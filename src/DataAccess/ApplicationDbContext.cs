@@ -154,7 +154,7 @@ namespace DataAccess
             new Persona
             {
                 IdPersona = 1,
-                Legajo = "1001", // Likely causing CS0029 if Legajo is string
+                Legajo = 1001,
                 Nombre = "Juan",
                 Apellido = "Pérez",
                 IdTipoDoc = 1,

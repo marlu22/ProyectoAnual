@@ -36,7 +36,7 @@ namespace DataAccess.Entities
         public string NumDoc { get; set; } = null!;
 
         [Column("cuil")]
-        [StringLength(10)]
+        [StringLength(15)]
         public string? Cuil { get; set; }
 
         [Column("calle")]

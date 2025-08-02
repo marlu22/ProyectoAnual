@@ -42,15 +42,17 @@ namespace Presentation
             tableLayoutPanel.Controls.Add(lblContrasena, 0, 1);
             tableLayoutPanel.Controls.Add(txtContrasena, 1, 1);
             tableLayoutPanel.Controls.Add(btnLogin, 1, 2);
+            tableLayoutPanel.Controls.Add(btnRecuperarContrasena, 1, 3);
             tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel.Name = "tableLayoutPanel";
             tableLayoutPanel.Padding = new System.Windows.Forms.Padding(10);
-            tableLayoutPanel.RowCount = 3;
+            tableLayoutPanel.RowCount = 4;
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            tableLayoutPanel.Size = new System.Drawing.Size(350, 180);
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            tableLayoutPanel.Size = new System.Drawing.Size(350, 220);
             tableLayoutPanel.TabIndex = 0;
             // 
             // lblUsuario
@@ -102,7 +104,6 @@ namespace Presentation
             // btnRecuperarContrasena
             // 
             btnRecuperarContrasena.Dock = System.Windows.Forms.DockStyle.Fill;
-            btnRecuperarContrasena.Location = new System.Drawing.Point(128, 133);
             btnRecuperarContrasena.Name = "btnRecuperarContrasena";
             btnRecuperarContrasena.Size = new System.Drawing.Size(209, 29);
             btnRecuperarContrasena.TabIndex = 5;
@@ -113,7 +114,7 @@ namespace Presentation
             // LoginForm
             // 
             AcceptButton = btnLogin;
-            ClientSize = new System.Drawing.Size(350, 180);
+            ClientSize = new System.Drawing.Size(350, 220);
             Controls.Add(tableLayoutPanel);
             Font = new System.Drawing.Font("Segoe UI", 10F);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

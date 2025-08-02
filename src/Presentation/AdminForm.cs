@@ -26,7 +26,6 @@ namespace Presentation
 
             btnGuardarPersona.Click += BtnGuardarPersona_Click;
             btnCrearUsuario.Click += BtnCrearUsuario_Click;
-            btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
             btnConfiguracion.Click += BtnConfiguracion_Click;
         }
 
@@ -194,10 +193,5 @@ namespace Presentation
             }
         }
 
-        private void BtnRecuperarContrasena_Click(object sender, EventArgs e) // Fixed nullable annotations
-        {
-            var form = new RecuperarContrasenaForm(_userService);
-            form.ShowDialog();
-        }
     }
 }

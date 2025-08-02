@@ -4,6 +4,8 @@ using DataAccess.Entities;
 using DataAccess.Repositories;
 using BusinessLogic.Services;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 public class Program
 {
@@ -13,9 +15,12 @@ public class Program
         {
             Console.WriteLine("Iniciando prueba de autenticación...");
 
-            // 1. Crear DbContext
-            var dbContext = new ApplicationDbContext();
-            dbContext.Database.EnsureCreated(); // Asegura que la BD en memoria exista
+            // 1. Crear DbContext en memoria
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+            using var dbContext = new ApplicationDbContext(options);
+            dbContext.Database.EnsureCreated();
 
             // 2. Agregar datos de prueba (Rol y Usuario)
             var rol = new Rol { Nombre = "Administrador" };
@@ -24,18 +29,18 @@ public class Program
 
             var username = "testuser";
             var password = "password123";
-            var hashedPassword = UserService.HashUsuarioContrasena(username, password);
+            var hashedPassword = HashUsuarioContrasena(username, password);
 
             var user = new Usuario
             {
                 UsuarioNombre = username,
-                ContrasenaScript = Encoding.UTF8.GetBytes(hashedPassword),
+                ContrasenaScript = hashedPassword,
                 IdPersona = 1, // ID de persona de prueba
                 IdRol = rol.IdRol,
                 FechaUltimoCambio = DateTime.Now,
                 CambioContrasenaObligatorio = false,
-                FechaBloqueo = null, // Importante: probando el caso nulo
-                NombreUsuarioBloqueo = null // Importante: probando el caso nulo
+                FechaBloqueo = new DateTime(9999, 12, 31),
+                NombreUsuarioBloqueo = null
             };
             dbContext.Usuarios.Add(user);
             dbContext.SaveChanges();
@@ -63,6 +68,15 @@ public class Program
         catch (Exception ex)
         {
             Console.WriteLine($"Se produjo una excepción inesperada: {ex.ToString()}");
+        }
+    }
+
+    private static byte[] HashUsuarioContrasena(string username, string password)
+    {
+        using (var sha256 = SHA256.Create())
+        {
+            var salted = $"{username}:{password}";
+            return sha256.ComputeHash(Encoding.UTF8.GetBytes(salted));
         }
     }
 }

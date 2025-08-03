@@ -469,6 +469,83 @@ BEGIN
 END
 GO
 
+DROP PROCEDURE IF EXISTS sp_get_usuario_by_nombre;
+GO
+CREATE PROCEDURE sp_get_usuario_by_nombre
+    @usuario_nombre VARCHAR(30)
+AS
+BEGIN
+    SELECT
+        u.id_usuario,
+        u.usuario,
+        u.contrasena_script,
+        u.id_persona,
+        u.fecha_bloqueo,
+        u.nombre_usuario_bloqueo,
+        u.fecha_ultimo_cambio,
+        u.id_rol,
+        u.id_politica,
+        u.CambioContrasenaObligatorio,
+        r.id_rol AS rol_id_rol,
+        r.rol
+    FROM usuarios u
+    INNER JOIN roles r ON u.id_rol = r.id_rol
+    WHERE u.usuario = @usuario_nombre;
+END
+GO
+
+DROP PROCEDURE IF EXISTS sp_get_all_users;
+GO
+CREATE PROCEDURE sp_get_all_users
+AS
+BEGIN
+    SELECT
+        u.id_usuario,
+        u.usuario,
+        u.contrasena_script,
+        u.id_persona,
+        u.fecha_bloqueo,
+        u.nombre_usuario_bloqueo,
+        u.fecha_ultimo_cambio,
+        u.id_rol,
+        u.id_politica,
+        u.CambioContrasenaObligatorio,
+        r.id_rol AS rol_id_rol,
+        r.rol,
+        p.id_persona AS persona_id_persona,
+        p.legajo,
+        p.nombre,
+        p.apellido,
+        p.id_tipo_doc,
+        p.num_doc,
+        p.cuil,
+        p.calle,
+        p.altura,
+        p.id_localidad,
+        p.id_genero,
+        p.correo,
+        p.fecha_ingreso
+    FROM usuarios u
+    INNER JOIN roles r ON u.id_rol = r.id_rol
+    INNER JOIN personas p ON u.id_persona = p.id_persona;
+END
+GO
+
+DROP PROCEDURE IF EXISTS sp_delete_usuario;
+GO
+CREATE PROCEDURE sp_delete_usuario
+    @id_usuario INT
+AS
+BEGIN
+    BEGIN TRANSACTION;
+    DELETE FROM permisos_usuarios WHERE id_usuario = @id_usuario;
+    DELETE FROM historial_contrasena WHERE id_usuario = @id_usuario;
+    DELETE FROM respuestas_seguridad WHERE id_usuario = @id_usuario;
+    DELETE FROM usuarios WHERE id_usuario = @id_usuario;
+    COMMIT TRANSACTION;
+END
+GO
+
 -- 10. Permisos
 DROP PROCEDURE IF EXISTS sp_insert_permiso;
 GO

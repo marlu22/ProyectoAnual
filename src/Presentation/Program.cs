@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 using DataAccess;
 using DataAccess.Repositories;
 using BusinessLogic.Services;
@@ -31,12 +30,8 @@ internal static class Program
             .AddJsonFile("appsettings.json", optional: false)
             .Build();
 
-        var connectionString = config.GetConnectionString("DefaultConnection");
-        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseSqlServer(connectionString);
-
-        var context = new ApplicationDbContext(optionsBuilder.Options);
-        IUserRepository userRepository = new UserRepository(context);
+        var connectionFactory = new DatabaseConnectionFactory(config);
+        IUserRepository userRepository = new SqlUserRepository(connectionFactory);
 
         IUserService userService = new UserService(userRepository);
 

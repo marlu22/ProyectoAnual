@@ -99,6 +99,11 @@ CREATE TABLE politicas_seguridad (
     sin_datos_personales BIT
 );
 
+-- Insert Default Security Policy
+INSERT INTO politicas_seguridad (min_caracteres, cant_preguntas, mayus_y_minus, letras_y_numeros, caracter_especial, autenticacion_2fa, no_repetir_anteriores, sin_datos_personales)
+VALUES (8, 3, 0, 0, 0, 0, 0, 0);
+GO
+
 -- 10. Usuarios
 CREATE TABLE usuarios (
     id_usuario INT PRIMARY KEY IDENTITY(1,1),

@@ -6,6 +6,7 @@ namespace Presentation
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPersonas;
         private System.Windows.Forms.TabPage tabUsuarios;
+        private System.Windows.Forms.TabPage tabGestionUsuarios;
 
         // Controles para "Añadir Persona"
         private System.Windows.Forms.TableLayoutPanel personaLayout;
@@ -18,6 +19,11 @@ namespace Presentation
         private System.Windows.Forms.ComboBox cbxPersona, cbxRolUsuario;
         private System.Windows.Forms.TextBox txtUsuario, txtPassword;
         private System.Windows.Forms.Button btnCrearUsuario, btnConfiguracion;
+
+        // Controles para "Gestion de Usuarios"
+        private System.Windows.Forms.TableLayoutPanel gestionUsuariosLayout;
+        private System.Windows.Forms.DataGridView dgvUsuarios;
+        private System.Windows.Forms.Button btnRefrescarUsuarios, btnGuardarCambios, btnEliminarUsuario;
 
         protected override void Dispose(bool disposing)
         {
@@ -115,6 +121,45 @@ namespace Presentation
             tabUsuarios.Text = "Crear Usuario";
             tabUsuarios.Controls.Add(usuarioLayout);
 
+            // ----------- TAB GESTION DE USUARIOS -----------
+            tabGestionUsuarios = new System.Windows.Forms.TabPage();
+            gestionUsuariosLayout = new System.Windows.Forms.TableLayoutPanel();
+            dgvUsuarios = new System.Windows.Forms.DataGridView();
+            btnRefrescarUsuarios = new System.Windows.Forms.Button();
+            btnGuardarCambios = new System.Windows.Forms.Button();
+            btnEliminarUsuario = new System.Windows.Forms.Button();
+
+            gestionUsuariosLayout.ColumnCount = 3;
+            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+            gestionUsuariosLayout.RowCount = 2;
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 85F));
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            gestionUsuariosLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+
+            gestionUsuariosLayout.Controls.Add(dgvUsuarios, 0, 0);
+            gestionUsuariosLayout.SetColumnSpan(dgvUsuarios, 3);
+
+            btnRefrescarUsuarios.Text = "Refrescar";
+            btnGuardarCambios.Text = "Guardar Cambios";
+            btnEliminarUsuario.Text = "Eliminar Usuario";
+
+            var buttonPanel = new System.Windows.Forms.FlowLayoutPanel
+            {
+                Dock = System.Windows.Forms.DockStyle.Fill,
+                FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
+            };
+            buttonPanel.Controls.Add(btnEliminarUsuario);
+            buttonPanel.Controls.Add(btnGuardarCambios);
+            buttonPanel.Controls.Add(btnRefrescarUsuarios);
+
+            gestionUsuariosLayout.Controls.Add(buttonPanel, 0, 1);
+            gestionUsuariosLayout.SetColumnSpan(buttonPanel, 3);
+
+            tabGestionUsuarios.Text = "Gestion de Usuarios";
+            tabGestionUsuarios.Controls.Add(gestionUsuariosLayout);
+
             // ----------- TAB CONTROL PRINCIPAL -----------
             var tabConfiguracion = new System.Windows.Forms.TabPage();
             btnConfiguracion = new System.Windows.Forms.Button();
@@ -124,6 +169,7 @@ namespace Presentation
 
             tabControl.Controls.Add(tabPersonas);
             tabControl.Controls.Add(tabUsuarios);
+            tabControl.Controls.Add(tabGestionUsuarios);
             tabControl.Controls.Add(tabConfiguracion);
             tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 
@@ -144,6 +190,9 @@ namespace Presentation
             tabUsuarios.ResumeLayout(false);
             usuarioLayout.ResumeLayout(false);
             usuarioLayout.PerformLayout();
+            tabGestionUsuarios.ResumeLayout(false);
+            gestionUsuariosLayout.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(dgvUsuarios)).EndInit();
             ResumeLayout(false);
         }
     }

@@ -20,6 +20,8 @@ namespace BusinessLogic.Services
         PoliticaSeguridad? GetPoliticaSeguridad();
         void UpdatePoliticaSeguridad(PoliticaSeguridad politica);
         List<Usuario> GetAllUsers();
+        void UpdateUser(UserDto user);
+        void DeleteUser(int userId);
         void GuardarRespuestasSeguridad(string username, Dictionary<int, string> respuestas);
         List<PreguntaSeguridad> GetPreguntasSeguridad();
         List<PreguntaSeguridad> GetPreguntasDeUsuario(string username);

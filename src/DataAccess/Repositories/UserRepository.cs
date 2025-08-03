@@ -119,6 +119,16 @@ namespace DataAccess.Repositories
             _context.SaveChanges();
         }, "adding password history");
 
+        public void DeleteUsuario(int usuarioId) => ExecuteDbOperation(() =>
+        {
+            var usuario = _context.Usuarios.Find(usuarioId);
+            if (usuario != null)
+            {
+                _context.Usuarios.Remove(usuario);
+                _context.SaveChanges();
+            }
+        }, "deleting a user");
+
         public void AddRespuestaSeguridad(RespuestaSeguridad respuesta) => ExecuteDbOperation(() =>
         {
             _context.RespuestasSeguridad.Add(respuesta);

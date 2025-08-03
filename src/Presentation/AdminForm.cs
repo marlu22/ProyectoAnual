@@ -11,6 +11,7 @@ namespace Presentation
     public partial class AdminForm : Form
     {
         private readonly IUserService _userService;
+        private readonly List<int> _dirtyUserIds = new List<int>();
 
         public AdminForm(IUserService userService)
         {
@@ -27,6 +28,116 @@ namespace Presentation
             btnGuardarPersona.Click += BtnGuardarPersona_Click;
             btnCrearUsuario.Click += BtnCrearUsuario_Click;
             btnConfiguracion.Click += BtnConfiguracion_Click;
+
+            // Gestion de Usuarios
+            btnRefrescarUsuarios.Click += (s, e) => LoadUsers();
+            btnGuardarCambios.Click += BtnGuardarCambios_Click;
+            btnEliminarUsuario.Click += BtnEliminarUsuario_Click;
+            dgvUsuarios.CellEndEdit += DgvUsuarios_CellEndEdit;
+
+
+            LoadUsers();
+        }
+
+        private void LoadUsers()
+        {
+            try
+            {
+                var users = _userService.GetAllUsers();
+                var userDtos = users.Select(u => new UserDto
+                {
+                    IdUsuario = u.IdUsuario,
+                    Username = u.UsuarioNombre,
+                    NombreCompleto = u.Persona != null ? $"{u.Persona.Nombre} {u.Persona.Apellido}" : "N/A",
+                    Rol = u.Rol?.Nombre,
+                    IdRol = u.IdRol,
+                    CambioContrasenaObligatorio = u.CambioContrasenaObligatorio
+                }).ToList();
+
+                dgvUsuarios.DataSource = userDtos;
+
+                // Configure columns
+                dgvUsuarios.Columns["IdUsuario"].Visible = false;
+                dgvUsuarios.Columns["IdRol"].Visible = false;
+                dgvUsuarios.Columns["NombreCompleto"].ReadOnly = true;
+                dgvUsuarios.Columns["CambioContrasenaObligatorio"].ReadOnly = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar usuarios: {ex.Message}", "Error");
+            }
+        }
+
+        private void DgvUsuarios_CellEndEdit(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                var userDto = (UserDto)dgvUsuarios.Rows[e.RowIndex].DataBoundItem;
+                if (!_dirtyUserIds.Contains(userDto.IdUsuario))
+                {
+                    _dirtyUserIds.Add(userDto.IdUsuario);
+                }
+            }
+        }
+
+        private void BtnGuardarCambios_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (dgvUsuarios.DataSource is List<UserDto> userDtos)
+                {
+                    var usersToUpdate = userDtos.Where(u => _dirtyUserIds.Contains(u.IdUsuario)).ToList();
+                    foreach (var userDto in usersToUpdate)
+                    {
+                        _userService.UpdateUser(userDto);
+                    }
+
+                    if (usersToUpdate.Any())
+                    {
+                        MessageBox.Show("Cambios guardados exitosamente.", "Éxito");
+                    }
+                    else
+                    {
+                        MessageBox.Show("No hay cambios para guardar.", "Información");
+                    }
+
+                    _dirtyUserIds.Clear();
+                    LoadUsers();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar cambios: {ex.Message}", "Error");
+            }
+        }
+
+        private void BtnEliminarUsuario_Click(object? sender, EventArgs e)
+        {
+            if (dgvUsuarios.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Por favor, seleccione un usuario para eliminar.", "Advertencia");
+                return;
+            }
+
+            var selectedRow = dgvUsuarios.SelectedRows[0];
+            var userDto = (UserDto)selectedRow.DataBoundItem;
+
+            var confirmResult = MessageBox.Show($"¿Está seguro de que desea eliminar al usuario '{userDto.Username}'?",
+                                                 "Confirmar Eliminación",
+                                                 MessageBoxButtons.YesNo);
+            if (confirmResult == DialogResult.Yes)
+            {
+                try
+                {
+                    _userService.DeleteUser(userDto.IdUsuario);
+                    MessageBox.Show("Usuario eliminado exitosamente.", "Éxito");
+                    LoadUsers();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al eliminar usuario: {ex.Message}", "Error");
+                }
+            }
         }
 
         private void BtnConfiguracion_Click(object? sender, EventArgs e) // Fixed nullable annotations

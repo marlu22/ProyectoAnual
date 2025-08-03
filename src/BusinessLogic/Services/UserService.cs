@@ -214,6 +214,22 @@ namespace BusinessLogic.Services
 
         public List<Usuario> GetAllUsers() => ExecuteServiceOperation(() => _userRepository.GetAllUsers(), "getting all users");
 
+        public void UpdateUser(UserDto userDto) => ExecuteServiceOperation(() =>
+        {
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(userDto.Username)
+                ?? throw new ValidationException($"Usuario '{userDto.Username}' not found");
+
+            usuario.UsuarioNombre = userDto.Username;
+            usuario.IdRol = userDto.IdRol;
+
+            _userRepository.UpdateUsuario(usuario);
+        }, "updating user");
+
+        public void DeleteUser(int userId) => ExecuteServiceOperation(() =>
+        {
+            _userRepository.DeleteUsuario(userId);
+        }, "deleting user");
+
         private byte[] HashUsuarioContrasena(string username, string password)
         {
             using (var sha256 = SHA256.Create())

@@ -6,6 +6,17 @@ using BusinessLogic.Services;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
+
+// Mock Email Service para la prueba
+public class MockEmailService : IEmailService
+{
+    public Task SendPasswordResetEmailAsync(string toEmail, string newPassword)
+    {
+        Console.WriteLine($"Simulando envío de correo a {toEmail} con la contraseña {newPassword}");
+        return Task.CompletedTask;
+    }
+}
 
 public class Program
 {
@@ -49,7 +60,8 @@ public class Program
 
             // 3. Crear servicios
             var userRepository = new UserRepository(dbContext);
-            var userService = new UserService(userRepository);
+            var emailService = new MockEmailService(); // Usar el mock
+            var userService = new UserService(userRepository, emailService);
 
             // 4. Autenticar
             Console.WriteLine("Intentando autenticar...");
@@ -75,8 +87,8 @@ public class Program
     {
         using (var sha256 = SHA256.Create())
         {
-            var salted = $"{username}:{password}";
-            return sha256.ComputeHash(Encoding.UTF8.GetBytes(salted));
+            // La lógica de hashing debe coincidir con la de UserService.cs
+            return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
     }
 }

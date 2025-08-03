@@ -15,10 +15,12 @@ namespace BusinessLogic.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IEmailService emailService)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         private T ExecuteServiceOperation<T>(Func<T> operation, string operationName)
@@ -156,10 +158,10 @@ namespace BusinessLogic.Services
             usuario.CambioContrasenaObligatorio = true;
             _userRepository.UpdateUsuario(usuario);
 
-            ArmarMail.DireccionCorreo = persona.Correo ?? string.Empty;
-            ArmarMail.Asunto = "Recuperación de Contraseña";
-            ArmarMail.NuevaContraseña = newPassword;
-            ArmarMail.Preparar();
+            // Enviar correo con la nueva contraseña usando el servicio de email
+            _emailService.SendPasswordResetEmailAsync(persona.Correo, newPassword)
+                         .GetAwaiter()
+                         .GetResult(); // Llamada síncrona para no cambiar la firma del método
         }, "recovering password");
 
         public void CambiarContrasena(string username, string newPassword) => ExecuteServiceOperation(() =>

@@ -70,8 +70,7 @@ namespace BusinessLogic.Services
             var persona = _userRepository.GetPersonaById(int.Parse(request.PersonaId))
                 ?? throw new ValidationException("Persona no encontrada");
 
-            var generatedPassword = GenerateRandomPassword();
-            ValidatePasswordPolicy(generatedPassword, request.Username, persona.Nombre, persona.Apellido);
+            var generatedPassword = GenerateRandomPassword(request.Username, persona.Nombre, persona.Apellido);
 
             var usuario = new Usuario
             {
@@ -142,7 +141,7 @@ namespace BusinessLogic.Services
                 }
             }
 
-            var newPassword = GenerateRandomPassword();
+            var newPassword = GenerateRandomPassword(username, persona.Nombre, persona.Apellido);
             usuario.ContrasenaScript = HashUsuarioContrasena(username, newPassword);
             usuario.FechaUltimoCambio = DateTime.Now;
             usuario.CambioContrasenaObligatorio = true;
@@ -238,12 +237,57 @@ namespace BusinessLogic.Services
             }
         }
 
-        private string GenerateRandomPassword()
+        private string GenerateRandomPassword(string? username = null, string? nombre = null, string? apellido = null)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad();
             var random = new Random();
-            return new string(Enumerable.Repeat(chars, 12)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            while (true)
+            {
+                var minLength = politica.MinCaracteres > 0 ? politica.MinCaracteres : 12;
+
+                var passwordChars = new List<char>();
+
+                const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                const string lower = "abcdefghijklmnopqrstuvwxyz";
+                const string digits = "0123456789";
+                const string specials = "!@#$%^&*()";
+
+                var allChars = new StringBuilder(upper).Append(lower).Append(digits).Append(specials).ToString();
+
+                if (politica.MayusYMinus)
+                {
+                    passwordChars.Add(upper[random.Next(upper.Length)]);
+                    passwordChars.Add(lower[random.Next(lower.Length)]);
+                }
+                if (politica.LetrasYNumeros)
+                {
+                    passwordChars.Add(digits[random.Next(digits.Length)]);
+                }
+                if (politica.CaracterEspecial)
+                {
+                    passwordChars.Add(specials[random.Next(specials.Length)]);
+                }
+
+                while (passwordChars.Count < minLength)
+                {
+                    passwordChars.Add(allChars[random.Next(allChars.Length)]);
+                }
+
+                var password = new string(passwordChars.OrderBy(c => random.Next()).ToArray());
+
+                if (politica.SinDatosPersonales && username != null && nombre != null && apellido != null)
+                {
+                    if (password.Contains(username, StringComparison.OrdinalIgnoreCase) ||
+                        password.Contains(nombre, StringComparison.OrdinalIgnoreCase) ||
+                        password.Contains(apellido, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue; // Regenerate password
+                    }
+                }
+
+                return password;
+            }
         }
 
         private void ValidatePasswordPolicy(string password, string username, string nombre, string apellido)

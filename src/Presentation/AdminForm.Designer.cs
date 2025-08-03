@@ -18,7 +18,20 @@ namespace Presentation
         private System.Windows.Forms.TableLayoutPanel usuarioLayout;
         private System.Windows.Forms.ComboBox cbxPersona, cbxRolUsuario;
         private System.Windows.Forms.TextBox txtUsuario, txtPassword;
-        private System.Windows.Forms.Button btnCrearUsuario, btnConfiguracion;
+        private System.Windows.Forms.Button btnCrearUsuario;
+
+        // Controles para "Configuracion"
+        private System.Windows.Forms.TabPage tabConfiguracion;
+        private System.Windows.Forms.TableLayoutPanel configuracionLayout;
+        private System.Windows.Forms.CheckBox chkMayusculasMinusculas;
+        private System.Windows.Forms.CheckBox chkNumeros;
+        private System.Windows.Forms.CheckBox chkCaracteresEspeciales;
+        private System.Windows.Forms.CheckBox chkDobleFactor;
+        private System.Windows.Forms.CheckBox chkNoRepetirContrasenas;
+        private System.Windows.Forms.CheckBox chkVerificarDatosPersonales;
+        private System.Windows.Forms.TextBox txtMinCaracteres;
+        private System.Windows.Forms.TextBox txtCantPreguntas;
+        private System.Windows.Forms.Button btnGuardarConfig;
 
         // Controles para "Gestion de Usuarios"
         private System.Windows.Forms.TableLayoutPanel gestionUsuariosLayout;
@@ -160,13 +173,51 @@ namespace Presentation
             tabGestionUsuarios.Text = "Gestion de Usuarios";
             tabGestionUsuarios.Controls.Add(gestionUsuariosLayout);
 
-            // ----------- TAB CONTROL PRINCIPAL -----------
-            var tabConfiguracion = new System.Windows.Forms.TabPage();
-            btnConfiguracion = new System.Windows.Forms.Button();
-            btnConfiguracion.Text = "Abrir Configuración";
-            tabConfiguracion.Controls.Add(btnConfiguracion);
-            tabConfiguracion.Text = "Configuración";
+            // ----------- TAB CONFIGURACION -----------
+            tabConfiguracion = new System.Windows.Forms.TabPage();
+            configuracionLayout = new System.Windows.Forms.TableLayoutPanel();
+            chkMayusculasMinusculas = new System.Windows.Forms.CheckBox();
+            chkNumeros = new System.Windows.Forms.CheckBox();
+            chkCaracteresEspeciales = new System.Windows.Forms.CheckBox();
+            chkDobleFactor = new System.Windows.Forms.CheckBox();
+            chkNoRepetirContrasenas = new System.Windows.Forms.CheckBox();
+            chkVerificarDatosPersonales = new System.Windows.Forms.CheckBox();
+            txtMinCaracteres = new System.Windows.Forms.TextBox();
+            txtCantPreguntas = new System.Windows.Forms.TextBox();
+            btnGuardarConfig = new System.Windows.Forms.Button();
 
+            configuracionLayout.ColumnCount = 2;
+            configuracionLayout.RowCount = 9;
+            configuracionLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            configuracionLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            configuracionLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            for (int i = 0; i < 9; i++)
+                configuracionLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+
+            chkMayusculasMinusculas.Text = "Combinar mayúsculas y minúsculas";
+            chkNumeros.Text = "Requerir números";
+            chkCaracteresEspeciales.Text = "Requerir caracteres especiales";
+            chkDobleFactor.Text = "Usar doble factor";
+            chkNoRepetirContrasenas.Text = "No repetir contraseñas anteriores";
+            chkVerificarDatosPersonales.Text = "Verificar datos personales";
+            btnGuardarConfig.Text = "Guardar";
+
+            configuracionLayout.Controls.Add(chkMayusculasMinusculas, 0, 0);
+            configuracionLayout.Controls.Add(chkNumeros, 0, 1);
+            configuracionLayout.Controls.Add(chkCaracteresEspeciales, 0, 2);
+            configuracionLayout.Controls.Add(chkDobleFactor, 0, 3);
+            configuracionLayout.Controls.Add(chkNoRepetirContrasenas, 0, 4);
+            configuracionLayout.Controls.Add(chkVerificarDatosPersonales, 0, 5);
+            configuracionLayout.Controls.Add(new System.Windows.Forms.Label() { Text = "Mínimo de caracteres:" }, 0, 6);
+            configuracionLayout.Controls.Add(txtMinCaracteres, 1, 6);
+            configuracionLayout.Controls.Add(new System.Windows.Forms.Label() { Text = "Cantidad de preguntas:" }, 0, 7);
+            configuracionLayout.Controls.Add(txtCantPreguntas, 1, 7);
+            configuracionLayout.Controls.Add(btnGuardarConfig, 1, 8);
+
+            tabConfiguracion.Text = "Configuración";
+            tabConfiguracion.Controls.Add(configuracionLayout);
+
+            // ----------- TAB CONTROL PRINCIPAL -----------
             tabControl.Controls.Add(tabPersonas);
             tabControl.Controls.Add(tabUsuarios);
             tabControl.Controls.Add(tabGestionUsuarios);
@@ -193,6 +244,9 @@ namespace Presentation
             tabGestionUsuarios.ResumeLayout(false);
             gestionUsuariosLayout.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(dgvUsuarios)).EndInit();
+            tabConfiguracion.ResumeLayout(false);
+            configuracionLayout.ResumeLayout(false);
+            configuracionLayout.PerformLayout();
             ResumeLayout(false);
         }
     }

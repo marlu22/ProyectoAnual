@@ -10,12 +10,14 @@ namespace Presentation
 
         // Controles para "Añadir Persona"
         private System.Windows.Forms.TableLayoutPanel personaLayout;
+        private System.Windows.Forms.Label lblLegajo, lblNombre, lblApellido, lblTipoDoc, lblNumDoc, lblCuil, lblCalle, lblAltura, lblLocalidad, lblGenero, lblCorreo;
         private System.Windows.Forms.TextBox txtLegajo, txtNombre, txtApellido, txtNumDoc, txtCuil, txtCalle, txtAltura, txtCorreo;
         private System.Windows.Forms.ComboBox cbxTipoDoc, cbxLocalidad, cbxGenero;
         private System.Windows.Forms.Button btnGuardarPersona;
 
         // Controles para "Crear Usuario"
         private System.Windows.Forms.TableLayoutPanel usuarioLayout;
+        private System.Windows.Forms.Label lblPersona, lblUsuario, lblPassword, lblRolUsuario;
         private System.Windows.Forms.ComboBox cbxPersona, cbxRolUsuario;
         private System.Windows.Forms.TextBox txtUsuario, txtPassword;
         private System.Windows.Forms.Button btnCrearUsuario;
@@ -23,6 +25,7 @@ namespace Presentation
         // Controles para "Configuracion"
         private System.Windows.Forms.TabPage tabConfiguracion;
         private System.Windows.Forms.TableLayoutPanel configuracionLayout;
+        private System.Windows.Forms.Label lblMinCaracteres, lblCantPreguntas;
         private System.Windows.Forms.CheckBox chkMayusculasMinusculas;
         private System.Windows.Forms.CheckBox chkNumeros;
         private System.Windows.Forms.CheckBox chkCaracteresEspeciales;
@@ -62,6 +65,17 @@ namespace Presentation
             cbxGenero = new System.Windows.Forms.ComboBox();
             txtCorreo = new System.Windows.Forms.TextBox();
             btnGuardarPersona = new System.Windows.Forms.Button();
+            lblLegajo = new System.Windows.Forms.Label();
+            lblNombre = new System.Windows.Forms.Label();
+            lblApellido = new System.Windows.Forms.Label();
+            lblTipoDoc = new System.Windows.Forms.Label();
+            lblNumDoc = new System.Windows.Forms.Label();
+            lblCuil = new System.Windows.Forms.Label();
+            lblCalle = new System.Windows.Forms.Label();
+            lblAltura = new System.Windows.Forms.Label();
+            lblLocalidad = new System.Windows.Forms.Label();
+            lblGenero = new System.Windows.Forms.Label();
+            lblCorreo = new System.Windows.Forms.Label();
             tabUsuarios = new System.Windows.Forms.TabPage();
             usuarioLayout = new System.Windows.Forms.TableLayoutPanel();
             cbxPersona = new System.Windows.Forms.ComboBox();
@@ -69,6 +83,10 @@ namespace Presentation
             txtPassword = new System.Windows.Forms.TextBox();
             cbxRolUsuario = new System.Windows.Forms.ComboBox();
             btnCrearUsuario = new System.Windows.Forms.Button();
+            lblPersona = new System.Windows.Forms.Label();
+            lblUsuario = new System.Windows.Forms.Label();
+            lblPassword = new System.Windows.Forms.Label();
+            lblRolUsuario = new System.Windows.Forms.Label();
             tabGestionUsuarios = new System.Windows.Forms.TabPage();
             gestionUsuariosLayout = new System.Windows.Forms.TableLayoutPanel();
             dgvUsuarios = new System.Windows.Forms.DataGridView();
@@ -87,6 +105,8 @@ namespace Presentation
             txtMinCaracteres = new System.Windows.Forms.TextBox();
             txtCantPreguntas = new System.Windows.Forms.TextBox();
             btnGuardarConfig = new System.Windows.Forms.Button();
+            lblMinCaracteres = new System.Windows.Forms.Label();
+            lblCantPreguntas = new System.Windows.Forms.Label();
             tabControl.SuspendLayout();
             tabPersonas.SuspendLayout();
             personaLayout.SuspendLayout();
@@ -127,18 +147,29 @@ namespace Presentation
             personaLayout.ColumnCount = 2;
             personaLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             personaLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
-            personaLayout.Controls.Add(txtLegajo, 1, 0);
-            personaLayout.Controls.Add(txtNombre, 1, 1);
-            personaLayout.Controls.Add(txtApellido, 1, 2);
-            personaLayout.Controls.Add(cbxTipoDoc, 1, 3);
-            personaLayout.Controls.Add(txtNumDoc, 1, 4);
-            personaLayout.Controls.Add(txtCuil, 1, 5);
-            personaLayout.Controls.Add(txtCalle, 1, 6);
-            personaLayout.Controls.Add(txtAltura, 1, 7);
-            personaLayout.Controls.Add(cbxLocalidad, 1, 8);
-            personaLayout.Controls.Add(cbxGenero, 1, 9);
-            personaLayout.Controls.Add(txtCorreo, 1, 10);
-            personaLayout.Controls.Add(btnGuardarPersona, 1, 11);
+            personaLayout.Controls.Add(this.lblLegajo, 0, 0);
+            personaLayout.Controls.Add(this.txtLegajo, 1, 0);
+            personaLayout.Controls.Add(this.lblNombre, 0, 1);
+            personaLayout.Controls.Add(this.txtNombre, 1, 1);
+            personaLayout.Controls.Add(this.lblApellido, 0, 2);
+            personaLayout.Controls.Add(this.txtApellido, 1, 2);
+            personaLayout.Controls.Add(this.lblTipoDoc, 0, 3);
+            personaLayout.Controls.Add(this.cbxTipoDoc, 1, 3);
+            personaLayout.Controls.Add(this.lblNumDoc, 0, 4);
+            personaLayout.Controls.Add(this.txtNumDoc, 1, 4);
+            personaLayout.Controls.Add(this.lblCuil, 0, 5);
+            personaLayout.Controls.Add(this.txtCuil, 1, 5);
+            personaLayout.Controls.Add(this.lblCalle, 0, 6);
+            personaLayout.Controls.Add(this.txtCalle, 1, 6);
+            personaLayout.Controls.Add(this.lblAltura, 0, 7);
+            personaLayout.Controls.Add(this.txtAltura, 1, 7);
+            personaLayout.Controls.Add(this.lblLocalidad, 0, 8);
+            personaLayout.Controls.Add(this.cbxLocalidad, 1, 8);
+            personaLayout.Controls.Add(this.lblGenero, 0, 9);
+            personaLayout.Controls.Add(this.cbxGenero, 1, 9);
+            personaLayout.Controls.Add(this.lblCorreo, 0, 10);
+            personaLayout.Controls.Add(this.txtCorreo, 1, 10);
+            personaLayout.Controls.Add(this.btnGuardarPersona, 1, 11);
             personaLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             personaLayout.Location = new System.Drawing.Point(0, 0);
             personaLayout.Name = "personaLayout";
@@ -242,6 +273,83 @@ namespace Presentation
             btnGuardarPersona.Size = new System.Drawing.Size(75, 23);
             btnGuardarPersona.TabIndex = 22;
             btnGuardarPersona.Text = "Guardar Persona";
+            //
+            // lblLegajo
+            //
+            this.lblLegajo.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblLegajo.AutoSize = true;
+            this.lblLegajo.Name = "lblLegajo";
+            this.lblLegajo.Text = "Legajo:";
+            //
+            // lblNombre
+            //
+            this.lblNombre.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblNombre.AutoSize = true;
+            this.lblNombre.Name = "lblNombre";
+            this.lblNombre.Text = "Nombre:";
+            //
+            // lblApellido
+            //
+            this.lblApellido.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblApellido.AutoSize = true;
+            this.lblApellido.Name = "lblApellido";
+            this.lblApellido.Text = "Apellido:";
+            //
+            // lblTipoDoc
+            //
+            this.lblTipoDoc.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTipoDoc.AutoSize = true;
+            this.lblTipoDoc.Name = "lblTipoDoc";
+            this.lblTipoDoc.Text = "Tipo Documento:";
+            //
+            // lblNumDoc
+            //
+            this.lblNumDoc.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblNumDoc.AutoSize = true;
+            this.lblNumDoc.Name = "lblNumDoc";
+            this.lblNumDoc.Text = "Nro. Documento:";
+            //
+            // lblCuil
+            //
+            this.lblCuil.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCuil.AutoSize = true;
+            this.lblCuil.Name = "lblCuil";
+            this.lblCuil.Text = "CUIL:";
+            //
+            // lblCalle
+            //
+            this.lblCalle.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCalle.AutoSize = true;
+            this.lblCalle.Name = "lblCalle";
+            this.lblCalle.Text = "Calle:";
+            //
+            // lblAltura
+            //
+            this.lblAltura.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblAltura.AutoSize = true;
+            this.lblAltura.Name = "lblAltura";
+            this.lblAltura.Text = "Altura:";
+            //
+            // lblLocalidad
+            //
+            this.lblLocalidad.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblLocalidad.AutoSize = true;
+            this.lblLocalidad.Name = "lblLocalidad";
+            this.lblLocalidad.Text = "Localidad:";
+            //
+            // lblGenero
+            //
+            this.lblGenero.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblGenero.AutoSize = true;
+            this.lblGenero.Name = "lblGenero";
+            this.lblGenero.Text = "Género:";
+            //
+            // lblCorreo
+            //
+            this.lblCorreo.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCorreo.AutoSize = true;
+            this.lblCorreo.Name = "lblCorreo";
+            this.lblCorreo.Text = "Correo Electrónico:";
             // 
             // tabUsuarios
             // 
@@ -257,11 +365,15 @@ namespace Presentation
             usuarioLayout.ColumnCount = 2;
             usuarioLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             usuarioLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
-            usuarioLayout.Controls.Add(cbxPersona, 1, 0);
-            usuarioLayout.Controls.Add(txtUsuario, 1, 1);
-            usuarioLayout.Controls.Add(txtPassword, 1, 2);
-            usuarioLayout.Controls.Add(cbxRolUsuario, 1, 3);
-            usuarioLayout.Controls.Add(btnCrearUsuario, 1, 4);
+            usuarioLayout.Controls.Add(this.lblPersona, 0, 0);
+            usuarioLayout.Controls.Add(this.cbxPersona, 1, 0);
+            usuarioLayout.Controls.Add(this.lblUsuario, 0, 1);
+            usuarioLayout.Controls.Add(this.txtUsuario, 1, 1);
+            usuarioLayout.Controls.Add(this.lblPassword, 0, 2);
+            usuarioLayout.Controls.Add(this.txtPassword, 1, 2);
+            usuarioLayout.Controls.Add(this.lblRolUsuario, 0, 3);
+            usuarioLayout.Controls.Add(this.cbxRolUsuario, 1, 3);
+            usuarioLayout.Controls.Add(this.btnCrearUsuario, 1, 4);
             usuarioLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             usuarioLayout.Location = new System.Drawing.Point(0, 0);
             usuarioLayout.Name = "usuarioLayout";
@@ -310,6 +422,34 @@ namespace Presentation
             btnCrearUsuario.Size = new System.Drawing.Size(75, 23);
             btnCrearUsuario.TabIndex = 8;
             btnCrearUsuario.Text = "Crear Usuario";
+            //
+            // lblPersona
+            //
+            this.lblPersona.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblPersona.AutoSize = true;
+            this.lblPersona.Name = "lblPersona";
+            this.lblPersona.Text = "Persona:";
+            //
+            // lblUsuario
+            //
+            this.lblUsuario.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblUsuario.AutoSize = true;
+            this.lblUsuario.Name = "lblUsuario";
+            this.lblUsuario.Text = "Usuario:";
+            //
+            // lblPassword
+            //
+            this.lblPassword.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblPassword.AutoSize = true;
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Text = "Contraseña:";
+            //
+            // lblRolUsuario
+            //
+            this.lblRolUsuario.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblRolUsuario.AutoSize = true;
+            this.lblRolUsuario.Name = "lblRolUsuario";
+            this.lblRolUsuario.Text = "Rol:";
             // 
             // tabGestionUsuarios
             // 
@@ -400,7 +540,9 @@ namespace Presentation
             configuracionLayout.Controls.Add(chkDobleFactor, 0, 3);
             configuracionLayout.Controls.Add(chkNoRepetirContrasenas, 0, 4);
             configuracionLayout.Controls.Add(chkVerificarDatosPersonales, 0, 5);
+            configuracionLayout.Controls.Add(this.lblMinCaracteres, 0, 6);
             configuracionLayout.Controls.Add(txtMinCaracteres, 1, 6);
+            configuracionLayout.Controls.Add(this.lblCantPreguntas, 0, 7);
             configuracionLayout.Controls.Add(txtCantPreguntas, 1, 7);
             configuracionLayout.Controls.Add(btnGuardarConfig, 1, 8);
             configuracionLayout.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -488,6 +630,20 @@ namespace Presentation
             btnGuardarConfig.Size = new System.Drawing.Size(75, 23);
             btnGuardarConfig.TabIndex = 10;
             btnGuardarConfig.Text = "Guardar";
+            //
+            // lblMinCaracteres
+            //
+            this.lblMinCaracteres.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMinCaracteres.AutoSize = true;
+            this.lblMinCaracteres.Name = "lblMinCaracteres";
+            this.lblMinCaracteres.Text = "Mínimo de caracteres:";
+            //
+            // lblCantPreguntas
+            //
+            this.lblCantPreguntas.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCantPreguntas.AutoSize = true;
+            this.lblCantPreguntas.Name = "lblCantPreguntas";
+            this.lblCantPreguntas.Text = "Cantidad de preguntas de seguridad:";
             // 
             // AdminForm
             // 

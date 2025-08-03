@@ -16,28 +16,23 @@ namespace Presentation
         {
             InitializeComponent();
             _userService = userService;
-            btnRecuperar.Click += BtnRecuperar_Click;
-            txtUsuario.Leave += TxtUsuario_Leave;
 
-            // Ocultar preguntas y respuestas hasta que se carguen
-            lblPregunta1.Visible = false;
-            txtRespuesta1.Visible = false;
-            lblPregunta2.Visible = false;
-            txtRespuesta2.Visible = false;
+            // Configure initial state
+            preguntasLayoutPanel.Visible = false;
+            btnRecuperar.Visible = false;
+
+            // Wire up events
+            btnContinuar.Click += BtnContinuar_Click;
+            btnRecuperar.Click += BtnRecuperar_Click;
         }
 
-        private void TxtUsuario_Leave(object? sender, EventArgs e)
+        private void BtnContinuar_Click(object? sender, EventArgs e)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(txtUsuario.Text))
                 {
-                    // Limpiar y ocultar si el usuario borra el texto
-                    _preguntasUsuario.Clear();
-                    lblPregunta1.Visible = false;
-                    txtRespuesta1.Visible = false;
-                    lblPregunta2.Visible = false;
-                    txtRespuesta2.Visible = false;
+                    MessageBox.Show("Por favor, ingrese un nombre de usuario.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -46,93 +41,91 @@ namespace Presentation
 
                 if (_preguntasUsuario.Count > 0)
                 {
-                    // Mostrar preguntas y campos de respuesta.
-                    // La UI actual solo soporta 2, pero vamos a ser un poco flexibles
-                    lblPregunta1.Text = _preguntasUsuario[0].Pregunta;
-                    lblPregunta1.Visible = true;
-                    txtRespuesta1.Visible = true;
-
-                    if (_preguntasUsuario.Count > 1)
-                    {
-                        lblPregunta2.Text = _preguntasUsuario[1].Pregunta;
-                        lblPregunta2.Visible = true;
-                        txtRespuesta2.Visible = true;
-                    }
-                    else
-                    {
-                        lblPregunta2.Visible = false;
-                        txtRespuesta2.Visible = false;
-                    }
+                    MostrarPreguntas(_preguntasUsuario);
+                    preguntasLayoutPanel.Visible = true;
+                    btnRecuperar.Visible = true;
+                    txtUsuario.Enabled = false; // Prevent user from changing username
+                    btnContinuar.Enabled = false; // Prevent clicking again
                 }
                 else
                 {
-                    MessageBox.Show("El usuario no tiene preguntas de seguridad configuradas.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    _preguntasUsuario.Clear();
-                    lblPregunta1.Visible = false;
-                    txtRespuesta1.Visible = false;
-                    lblPregunta2.Visible = false;
-                    txtRespuesta2.Visible = false;
+                    MessageBox.Show("El usuario no tiene preguntas de seguridad configuradas o el usuario no existe.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LimpiarPreguntas();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar preguntas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _preguntasUsuario.Clear();
-                lblPregunta1.Visible = false;
-                txtRespuesta1.Visible = false;
-                lblPregunta2.Visible = false;
-                txtRespuesta2.Visible = false;
+                LimpiarPreguntas();
             }
+        }
+
+        private void MostrarPreguntas(List<PreguntaSeguridad> preguntas)
+        {
+            LimpiarPreguntas();
+            preguntasLayoutPanel.RowCount = preguntas.Count;
+            for (int i = 0; i < preguntas.Count; i++)
+            {
+                var pregunta = preguntas[i];
+
+                var label = new Label
+                {
+                    Text = pregunta.Pregunta,
+                    Dock = DockStyle.Fill,
+                    TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+                };
+
+                var textBox = new TextBox
+                {
+                    Dock = DockStyle.Fill,
+                    Tag = pregunta.IdPregunta // Store question ID
+                };
+
+                preguntasLayoutPanel.Controls.Add(label, 0, i);
+                preguntasLayoutPanel.Controls.Add(textBox, 1, i);
+            }
+        }
+
+        private void LimpiarPreguntas()
+        {
+            _preguntasUsuario.Clear();
+            preguntasLayoutPanel.Controls.Clear();
+            preguntasLayoutPanel.RowCount = 0;
+            preguntasLayoutPanel.Visible = false;
+            btnRecuperar.Visible = false;
         }
 
         private void BtnRecuperar_Click(object? sender, EventArgs? e)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtUsuario.Text))
-                {
-                    MessageBox.Show("Por favor, ingrese un nombre de usuario.", "Error");
-                    return;
-                }
-
-                if (_preguntasUsuario == null || _preguntasUsuario.Count == 0)
-                {
-                    MessageBox.Show("Por favor, cargue las preguntas de seguridad para el usuario (salga del campo de texto del usuario para cargarlas).", "Error");
-                    return;
-                }
-
                 var respuestas = new Dictionary<int, string>();
+                foreach (Control control in preguntasLayoutPanel.Controls)
+                {
+                    if (control is TextBox textBox)
+                    {
+                        if (string.IsNullOrWhiteSpace(textBox.Text))
+                        {
+                            MessageBox.Show("Por favor, responda todas las preguntas.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
 
-                // Validar y agregar respuestas basado en las preguntas visibles
-                if (lblPregunta1.Visible && string.IsNullOrWhiteSpace(txtRespuesta1.Text))
-                {
-                    MessageBox.Show("Por favor, responda la pregunta 1.", "Error");
-                    return;
-                }
-                if (lblPregunta1.Visible)
-                {
-                    respuestas.Add(_preguntasUsuario[0].IdPregunta, txtRespuesta1.Text);
-                }
-
-                if (lblPregunta2.Visible && string.IsNullOrWhiteSpace(txtRespuesta2.Text))
-                {
-                    MessageBox.Show("Por favor, responda la pregunta 2.", "Error");
-                    return;
-                }
-                if (lblPregunta2.Visible)
-                {
-                    respuestas.Add(_preguntasUsuario[1].IdPregunta, txtRespuesta2.Text);
+                        if (textBox.Tag is int idPregunta)
+                        {
+                            respuestas.Add(idPregunta, textBox.Text);
+                        }
+                    }
                 }
 
-                if (respuestas.Count == 0)
+                if (respuestas.Count != _preguntasUsuario.Count)
                 {
-                    MessageBox.Show("No se proporcionaron respuestas.", "Error");
-                    return;
+                     MessageBox.Show("No se pudieron recolectar todas las respuestas. Intente de nuevo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                     return;
                 }
 
                 string usuario = txtUsuario.Text.Trim();
                 _userService.RecuperarContrasena(usuario, respuestas);
-                MessageBox.Show("Si las respuestas son correctas, se envió una nueva contraseña a su correo.", "Info");
+                MessageBox.Show("Si las respuestas son correctas, se envió una nueva contraseña a su correo.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
                 Close();
             }

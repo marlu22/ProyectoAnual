@@ -5,10 +5,8 @@ namespace Presentation
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Label lblUsuario;
         private System.Windows.Forms.TextBox txtUsuario;
-        private System.Windows.Forms.Label lblPregunta1;
-        private System.Windows.Forms.TextBox txtRespuesta1;
-        private System.Windows.Forms.Label lblPregunta2;
-        private System.Windows.Forms.TextBox txtRespuesta2;
+        private System.Windows.Forms.Button btnContinuar;
+        private System.Windows.Forms.TableLayoutPanel preguntasLayoutPanel;
         private System.Windows.Forms.Button btnRecuperar;
 
         protected override void Dispose(bool disposing)
@@ -20,52 +18,76 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            lblUsuario = new System.Windows.Forms.Label();
-            txtUsuario = new System.Windows.Forms.TextBox();
-            lblPregunta1 = new System.Windows.Forms.Label();
-            txtRespuesta1 = new System.Windows.Forms.TextBox();
-            lblPregunta2 = new System.Windows.Forms.Label();
-            txtRespuesta2 = new System.Windows.Forms.TextBox();
-            btnRecuperar = new System.Windows.Forms.Button();
-
-            lblUsuario.Text = "Usuario:";
-            lblUsuario.Location = new System.Drawing.Point(20, 20);
-            lblUsuario.Size = new System.Drawing.Size(100, 25);
-
-            txtUsuario.Location = new System.Drawing.Point(130, 20);
-            txtUsuario.Size = new System.Drawing.Size(180, 25);
-
-            lblPregunta1.Text = "Pregunta 1:";
-            lblPregunta1.Location = new System.Drawing.Point(20, 60);
-            lblPregunta1.Size = new System.Drawing.Size(100, 25);
-
-            txtRespuesta1.Location = new System.Drawing.Point(130, 60);
-            txtRespuesta1.Size = new System.Drawing.Size(180, 25);
-
-            lblPregunta2.Text = "Pregunta 2:";
-            lblPregunta2.Location = new System.Drawing.Point(20, 100);
-            lblPregunta2.Size = new System.Drawing.Size(100, 25);
-
-            txtRespuesta2.Location = new System.Drawing.Point(130, 100);
-            txtRespuesta2.Size = new System.Drawing.Size(180, 25);
-
-            btnRecuperar.Text = "Recuperar";
-            btnRecuperar.Location = new System.Drawing.Point(130, 140);
-            btnRecuperar.Size = new System.Drawing.Size(100, 30);
-
-            ClientSize = new System.Drawing.Size(340, 190);
-            Controls.Add(lblUsuario);
-            Controls.Add(txtUsuario);
-            Controls.Add(lblPregunta1);
-            Controls.Add(txtRespuesta1);
-            Controls.Add(lblPregunta2);
-            Controls.Add(txtRespuesta2);
-            Controls.Add(btnRecuperar);
-            Text = "Recuperar Contraseña";
-            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.lblUsuario = new System.Windows.Forms.Label();
+            this.txtUsuario = new System.Windows.Forms.TextBox();
+            this.btnContinuar = new System.Windows.Forms.Button();
+            this.preguntasLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnRecuperar = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            //
+            // lblUsuario
+            //
+            this.lblUsuario.AutoSize = true;
+            this.lblUsuario.Location = new System.Drawing.Point(12, 15);
+            this.lblUsuario.Name = "lblUsuario";
+            this.lblUsuario.Size = new System.Drawing.Size(50, 15);
+            this.lblUsuario.Text = "Usuario:";
+            //
+            // txtUsuario
+            //
+            this.txtUsuario.Location = new System.Drawing.Point(80, 12);
+            this.txtUsuario.Name = "txtUsuario";
+            this.txtUsuario.Size = new System.Drawing.Size(180, 23);
+            //
+            // btnContinuar
+            //
+            this.btnContinuar.Location = new System.Drawing.Point(266, 11);
+            this.btnContinuar.Name = "btnContinuar";
+            this.btnContinuar.Size = new System.Drawing.Size(75, 23);
+            this.btnContinuar.Text = "Continuar";
+            this.btnContinuar.UseVisualStyleBackColor = true;
+            //
+            // preguntasLayoutPanel
+            //
+            this.preguntasLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.preguntasLayoutPanel.AutoScroll = true;
+            this.preguntasLayoutPanel.ColumnCount = 2;
+            this.preguntasLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.preguntasLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.preguntasLayoutPanel.Location = new System.Drawing.Point(12, 50);
+            this.preguntasLayoutPanel.Name = "preguntasLayoutPanel";
+            this.preguntasLayoutPanel.RowCount = 0;
+            this.preguntasLayoutPanel.Size = new System.Drawing.Size(329, 150);
+            //
+            // btnRecuperar
+            //
+            this.btnRecuperar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRecuperar.Location = new System.Drawing.Point(266, 210);
+            this.btnRecuperar.Name = "btnRecuperar";
+            this.btnRecuperar.Size = new System.Drawing.Size(75, 23);
+            this.btnRecuperar.Text = "Recuperar";
+            this.btnRecuperar.UseVisualStyleBackColor = true;
+            //
+            // RecuperarContrasenaForm
+            //
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(353, 245);
+            this.Controls.Add(this.btnRecuperar);
+            this.Controls.Add(this.preguntasLayoutPanel);
+            this.Controls.Add(this.btnContinuar);
+            this.Controls.Add(this.txtUsuario);
+            this.Controls.Add(this.lblUsuario);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "RecuperarContrasenaForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Recuperar Contraseña";
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
     }
 }

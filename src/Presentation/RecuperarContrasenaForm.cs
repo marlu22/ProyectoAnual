@@ -62,23 +62,29 @@ namespace Presentation
 
         private void MostrarPreguntas(List<PreguntaSeguridad> preguntas)
         {
-            LimpiarPreguntas();
+            LimpiarPreguntas(); // Limpia controles y estilos de fila anteriores
+
             preguntasLayoutPanel.RowCount = preguntas.Count;
             for (int i = 0; i < preguntas.Count; i++)
             {
                 var pregunta = preguntas[i];
 
+                // Añadir un estilo de fila para la nueva fila
+                preguntasLayoutPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
                 var label = new Label
                 {
                     Text = pregunta.Pregunta,
                     Dock = DockStyle.Fill,
-                    TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+                    TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
+                    Margin = new Padding(3, 0, 3, 10) // Margen inferior para espaciar
                 };
 
                 var textBox = new TextBox
                 {
                     Dock = DockStyle.Fill,
-                    Tag = pregunta.IdPregunta // Store question ID
+                    Tag = pregunta.IdPregunta, // Store question ID
+                    Margin = new Padding(3, 0, 3, 10) // Margen inferior
                 };
 
                 preguntasLayoutPanel.Controls.Add(label, 0, i);
@@ -90,6 +96,7 @@ namespace Presentation
         {
             _preguntasUsuario.Clear();
             preguntasLayoutPanel.Controls.Clear();
+            preguntasLayoutPanel.RowStyles.Clear(); // Limpiar los estilos de fila
             preguntasLayoutPanel.RowCount = 0;
             preguntasLayoutPanel.Visible = false;
             btnRecuperar.Visible = false;

@@ -42,10 +42,11 @@ namespace Presentation
                 if (_preguntasUsuario.Count > 0)
                 {
                     MostrarPreguntas(_preguntasUsuario);
-                    preguntasPanel.Visible = true; // Cambiado
+                    preguntasPanel.Visible = true;
                     btnRecuperar.Visible = true;
                     txtUsuario.Enabled = false; // Prevent user from changing username
                     btnContinuar.Enabled = false; // Prevent clicking again
+                    this.Refresh(); // Forzar redibujo de todo el formulario
                 }
                 else
                 {

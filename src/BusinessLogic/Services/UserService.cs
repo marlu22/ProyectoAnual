@@ -70,13 +70,22 @@ namespace BusinessLogic.Services
             var persona = _userRepository.GetPersonaById(int.Parse(request.PersonaId))
                 ?? throw new ValidationException("Persona no encontrada");
 
-            var generatedPassword = GenerateRandomPassword(request.Username, persona.Nombre, persona.Apellido);
+            string passwordToUse;
+            if (!string.IsNullOrWhiteSpace(request.Password))
+            {
+                ValidatePasswordPolicy(request.Password, request.Username, persona.Nombre, persona.Apellido);
+                passwordToUse = request.Password;
+            }
+            else
+            {
+                passwordToUse = GenerateRandomPassword(request.Username, persona.Nombre, persona.Apellido);
+            }
 
             var usuario = new Usuario
             {
                 IdPersona = int.Parse(request.PersonaId),
                 UsuarioNombre = request.Username,
-                ContrasenaScript = HashUsuarioContrasena(request.Username, generatedPassword),
+                ContrasenaScript = HashUsuarioContrasena(request.Username, passwordToUse),
                 IdRol = _userRepository.GetRolByNombre(request.Rol)?.IdRol ?? throw new ValidationException("Rol no encontrado"),
                 FechaUltimoCambio = DateTime.Now,
                 FechaBloqueo = new DateTime(9999, 12, 31),
@@ -85,7 +94,7 @@ namespace BusinessLogic.Services
             _userRepository.AddUsuario(usuario);
 
             // Enviar la contraseña generada por correo
-            // _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {generatedPassword}");
+            // _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {passwordToUse}");
         }, "creating a user");
 
         public UserResponse? Authenticate(string username, string password) => ExecuteServiceOperation(() =>

@@ -27,7 +27,7 @@ namespace Presentation
             }
 
             string usuario = txtUsuario.Text.Trim();
-            string contrasena = txtContrasena.Text;
+            string contrasena = txtContrasena.Text.Trim();
 
             var user = _userService.Authenticate(usuario, contrasena);
 

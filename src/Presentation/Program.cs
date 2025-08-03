@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using DataAccess;
 using DataAccess.Repositories;
 using BusinessLogic.Services;
+using BusinessLogic.Configuration;
+using Microsoft.Extensions.Options;
 using Presentation; // Add this if LoginForm is in Presentation.Forms namespace
 using UserManagementSystem.BusinessLogic.Exceptions;
 using UserManagementSystem.DataAccess.Exceptions;
@@ -33,7 +35,13 @@ internal static class Program
         var connectionFactory = new DatabaseConnectionFactory(config);
         IUserRepository userRepository = new SqlUserRepository(connectionFactory);
 
-        IUserService userService = new UserService(userRepository);
+        // Configurar y crear EmailService
+        var smtpSettings = new SmtpSettings();
+        config.GetSection("SmtpSettings").Bind(smtpSettings);
+        IEmailService emailService = new EmailService(Options.Create(smtpSettings));
+
+        // Modificar la instanciación de UserService para incluir el nuevo servicio
+        IUserService userService = new UserService(userRepository, emailService);
 
         Application.Run(new LoginForm(userService));
     }

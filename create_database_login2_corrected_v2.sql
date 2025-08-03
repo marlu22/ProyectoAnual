@@ -876,6 +876,14 @@ GO
 EXEC sp_insert_rol @rol = 'Administrador';
 GO
 
+-- Insert Preguntas de Seguridad
+EXEC sp_insert_pregunta_seguridad @pregunta = '¿Cuál era el nombre de tu primera mascota?';
+EXEC sp_insert_pregunta_seguridad @pregunta = '¿Cuál es el apellido de soltera de tu madre?';
+EXEC sp_insert_pregunta_seguridad @pregunta = '¿Cómo se llamaba tu escuela primaria?';
+EXEC sp_insert_pregunta_seguridad @pregunta = '¿En qué ciudad naciste?';
+EXEC sp_insert_pregunta_seguridad @pregunta = '¿Cuál es tu libro favorito?';
+GO
+
 -- Insert Persona for Admin
 DECLARE @id_tipo_doc INT, @id_localidad INT, @id_genero INT;
 SELECT @id_tipo_doc = id_tipo_doc FROM tipo_doc WHERE tipo_doc = 'DNI';

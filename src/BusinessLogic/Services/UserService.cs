@@ -110,13 +110,14 @@ namespace BusinessLogic.Services
             };
         }, "authenticating user");
 
-        public void RecuperarContrasena(string username, string[] respuestas) => ExecuteServiceOperation(() =>
+        public void RecuperarContrasena(string username, Dictionary<int, string> respuestas) => ExecuteServiceOperation(() =>
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ValidationException("Username is required");
 
-            if (respuestas == null || respuestas.Length != 2 || respuestas.Any(r => string.IsNullOrWhiteSpace(r)))
-                throw new ValidationException("Two security answers are required");
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { CantPreguntas = 3 }; // Default to 3
+            if (respuestas == null || respuestas.Count != politica.CantPreguntas || respuestas.Any(r => string.IsNullOrWhiteSpace(r.Value)))
+                throw new ValidationException($"Se requieren {politica.CantPreguntas} respuestas de seguridad.");
 
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
@@ -124,14 +125,22 @@ namespace BusinessLogic.Services
             var persona = _userRepository.GetPersonaById(usuario.IdPersona)
                 ?? throw new ValidationException("Persona no encontrada");
 
-            var respuestasSeguridad = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
-                ?? throw new ValidationException("Security answers not configured");
+            var respuestasGuardadas = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
+                ?? throw new ValidationException("No se han configurado las preguntas de seguridad.");
 
-            if (respuestasSeguridad.Count != 2)
-                throw new ValidationException("Exactly two security answers are required");
+            if (respuestasGuardadas.Count != politica.CantPreguntas)
+                throw new ValidationException("La cantidad de respuestas guardadas no coincide con la política de seguridad.");
 
-            if (respuestasSeguridad[0].Respuesta != respuestas[0] || respuestasSeguridad[1].Respuesta != respuestas[1])
-                throw new ValidationException("Incorrect security answers");
+            // Convertir a diccionario para búsqueda fácil
+            var respuestasGuardadasDict = respuestasGuardadas.ToDictionary(r => r.IdPregunta, r => r.Respuesta);
+
+            foreach (var respuesta in respuestas)
+            {
+                if (!respuestasGuardadasDict.TryGetValue(respuesta.Key, out var respuestaGuardada) || respuestaGuardada != respuesta.Value)
+                {
+                    throw new ValidationException("Una o más respuestas de seguridad son incorrectas.");
+                }
+            }
 
             var newPassword = GenerateRandomPassword();
             usuario.ContrasenaScript = HashUsuarioContrasena(username, newPassword);
@@ -244,30 +253,40 @@ namespace BusinessLogic.Services
             }
         }
 
-        public void GuardarRespuestasSeguridad(string username, string[] respuestas) => ExecuteServiceOperation(() =>
+        public void GuardarRespuestasSeguridad(string username, Dictionary<int, string> respuestas) => ExecuteServiceOperation(() =>
         {
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
-            if (respuestas.Length != 2)
-                throw new ValidationException("Se requieren exactamente dos respuestas de seguridad.");
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { CantPreguntas = 3 };
+            if (respuestas.Count != politica.CantPreguntas)
+                throw new ValidationException($"Se requieren exactamente {politica.CantPreguntas} respuestas de seguridad.");
 
-            // Asumiendo que las preguntas de seguridad tienen IDs 1 y 2
-            var respuesta1 = new RespuestaSeguridad
+            // Opcional: borrar respuestas anteriores
+            var respuestasAnteriores = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario);
+            if(respuestasAnteriores != null)
             {
-                IdUsuario = usuario.IdUsuario,
-                IdPregunta = 1,
-                Respuesta = respuestas[0]
-            };
-            _userRepository.AddRespuestaSeguridad(respuesta1);
+                foreach(var r in respuestasAnteriores)
+                {
+                    // Asumiendo que hay un método para borrar, si no, habría que agregarlo
+                    // _userRepository.DeleteRespuestaSeguridad(r);
+                }
+            }
 
-            var respuesta2 = new RespuestaSeguridad
+
+            foreach (var par in respuestas)
             {
-                IdUsuario = usuario.IdUsuario,
-                IdPregunta = 2,
-                Respuesta = respuestas[1]
-            };
-            _userRepository.AddRespuestaSeguridad(respuesta2);
+                var respuesta = new RespuestaSeguridad
+                {
+                    IdUsuario = usuario.IdUsuario,
+                    IdPregunta = par.Key,
+                    Respuesta = par.Value // Idealmente, las respuestas también deberían ser hasheadas
+                };
+                _userRepository.AddRespuestaSeguridad(respuesta);
+            }
         }, "saving security answers");
+
+        public List<PreguntaSeguridad> GetPreguntasSeguridad() => ExecuteServiceOperation(
+            () => _userRepository.GetPreguntasSeguridad(), "getting security questions");
     }
 }

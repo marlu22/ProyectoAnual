@@ -1,7 +1,9 @@
-// src/Presentation/PreguntasSeguridadForm.cs
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using BusinessLogic.Services;
+using DataAccess.Entities;
 
 namespace Presentation
 {
@@ -9,6 +11,9 @@ namespace Presentation
     {
         private readonly IUserService _userService;
         private readonly string _username;
+        private List<PreguntaSeguridad> _preguntas = new List<PreguntaSeguridad>();
+        private List<ComboBox> _comboBoxes = new List<ComboBox>();
+        private List<TextBox> _textBoxes = new List<TextBox>();
 
         public PreguntasSeguridadForm(IUserService userService, string username)
         {
@@ -18,18 +23,110 @@ namespace Presentation
             btnGuardar.Click += BtnGuardar_Click;
         }
 
+        private void PreguntasSeguridadForm_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                _preguntas = _userService.GetPreguntasSeguridad();
+                var politica = _userService.GetPoliticaSeguridad();
+                int cantidadPreguntas = politica?.CantPreguntas ?? 3; // Default a 3
+
+                for (int i = 0; i < cantidadPreguntas; i++)
+                {
+                    var panel = new FlowLayoutPanel
+                    {
+                        FlowDirection = FlowDirection.LeftToRight,
+                        AutoSize = true,
+                        Margin = new Padding(3, 3, 3, 10) // Add some margin
+                    };
+
+                    var label = new Label
+                    {
+                        Text = $"Pregunta {i + 1}:",
+                        Width = 80,
+                        Anchor = AnchorStyles.Left,
+                        TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+                    };
+
+                    var comboBox = new ComboBox
+                    {
+                        DataSource = new BindingSource(_preguntas, null),
+                        DisplayMember = "Pregunta",
+                        ValueMember = "IdPregunta",
+                        Width = 300,
+                        DropDownStyle = ComboBoxStyle.DropDownList
+                    };
+                    _comboBoxes.Add(comboBox);
+
+                    var textBox = new TextBox
+                    {
+                        Width = 300,
+                        Margin = new Padding(10, 0, 0, 0)
+                    };
+                    _textBoxes.Add(textBox);
+
+                    var answerLabel = new Label
+                    {
+                        Text = "Respuesta:",
+                        Width = 80,
+                        Anchor = AnchorStyles.Left,
+                        TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
+                        Margin = new Padding(20, 0, 0, 0)
+                    };
+
+                    panel.Controls.Add(label);
+                    panel.Controls.Add(comboBox);
+                    panel.Controls.Add(answerLabel);
+                    panel.Controls.Add(textBox);
+
+                    flowLayoutPanel.Controls.Add(panel);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar las preguntas de seguridad: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+            }
+        }
+
         private void BtnGuardar_Click(object? sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtRespuesta1.Text) || string.IsNullOrWhiteSpace(txtRespuesta2.Text))
+            var respuestas = new Dictionary<int, string>();
+            var selectedQuestions = new HashSet<int>();
+
+            for (int i = 0; i < _comboBoxes.Count; i++)
             {
-                MessageBox.Show("Por favor, responda ambas preguntas.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                var comboBox = _comboBoxes[i];
+                var textBox = _textBoxes[i];
+
+                if (comboBox.SelectedValue == null)
+                {
+                    MessageBox.Show($"Por favor, seleccione una pregunta para la fila {i + 1}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int selectedQuestionId = (int)comboBox.SelectedValue;
+
+                if (string.IsNullOrWhiteSpace(textBox.Text))
+                {
+                    MessageBox.Show($"Por favor, ingrese una respuesta para la pregunta seleccionada en la fila {i + 1}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (!selectedQuestions.Add(selectedQuestionId))
+                {
+                    MessageBox.Show("No puede seleccionar la misma pregunta más de una vez.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                respuestas.Add(selectedQuestionId, textBox.Text);
             }
 
             try
             {
-                _userService.GuardarRespuestasSeguridad(_username, new string[] { txtRespuesta1.Text, txtRespuesta2.Text });
+                _userService.GuardarRespuestasSeguridad(_username, respuestas);
                 MessageBox.Show("Respuestas de seguridad guardadas exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DialogResult = DialogResult.OK;
                 Close();
             }
             catch (Exception ex)

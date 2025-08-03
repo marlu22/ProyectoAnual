@@ -99,14 +99,14 @@ namespace DataAccess.Repositories
             return new PoliticaSeguridad
             {
                 IdPolitica = (int)reader["id_politica"],
-                MinCaracteres = reader["min_caracteres"] as int?,
-                CantPreguntas = reader["cant_preguntas"] as int?,
-                MayusYMinus = reader["mayus_y_minus"] as bool?,
-                LetrasYNumeros = reader["letras_y_numeros"] as bool?,
-                CaracterEspecial = reader["caracter_especial"] as bool?,
-                Autenticacion2FA = reader["autenticacion_2fa"] as bool?,
-                NoRepetirAnteriores = reader["no_repetir_anteriores"] as bool?,
-                SinDatosPersonales = reader["sin_datos_personales"] as bool?
+                MinCaracteres = reader["min_caracteres"] as int? ?? 8,
+                CantPreguntas = reader["cant_preguntas"] as int? ?? 3,
+                MayusYMinus = reader["mayus_y_minus"] as bool? ?? false,
+                LetrasYNumeros = reader["letras_y_numeros"] as bool? ?? false,
+                CaracterEspecial = reader["caracter_especial"] as bool? ?? false,
+                Autenticacion2FA = reader["autenticacion_2fa"] as bool? ?? false,
+                NoRepetirAnteriores = reader["no_repetir_anteriores"] as bool? ?? false,
+                SinDatosPersonales = reader["sin_datos_personales"] as bool? ?? false
             };
         });
 

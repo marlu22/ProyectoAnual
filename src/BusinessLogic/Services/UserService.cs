@@ -234,8 +234,7 @@ namespace BusinessLogic.Services
         {
             using (var sha256 = SHA256.Create())
             {
-                var salted = $"{username}:{password}";
-                return sha256.ComputeHash(Encoding.UTF8.GetBytes(salted));
+                return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
 

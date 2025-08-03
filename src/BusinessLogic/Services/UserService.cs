@@ -148,7 +148,7 @@ namespace BusinessLogic.Services
             usuario.CambioContrasenaObligatorio = true;
             _userRepository.UpdateUsuario(usuario);
 
-            ArmarMail.DireccionCorreo = persona.Correo;
+            ArmarMail.DireccionCorreo = persona.Correo ?? string.Empty;
             ArmarMail.Asunto = "Recuperación de Contraseña";
             ArmarMail.NuevaContraseña = newPassword;
             ArmarMail.Preparar();
@@ -179,10 +179,16 @@ namespace BusinessLogic.Services
                 }
             }
 
+            var oldPasswordHash = usuario.ContrasenaScript;
+            if (oldPasswordHash == null)
+            {
+                // This case should ideally not happen if data is consistent
+                throw new InvalidOperationException("User password hash cannot be null.");
+            }
             _userRepository.AddHistorialContrasena(new HistorialContrasena
             {
                 IdUsuario = usuario.IdUsuario,
-                ContrasenaScript = usuario.ContrasenaScript,
+                ContrasenaScript = oldPasswordHash,
                 FechaCambio = DateTime.Now
             });
 
@@ -288,5 +294,21 @@ namespace BusinessLogic.Services
 
         public List<PreguntaSeguridad> GetPreguntasSeguridad() => ExecuteServiceOperation(
             () => _userRepository.GetPreguntasSeguridad(), "getting security questions");
+
+        public List<PreguntaSeguridad> GetPreguntasDeUsuario(string username) => ExecuteServiceOperation(() =>
+        {
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+                ?? throw new ValidationException($"Usuario '{username}' not found");
+
+            var respuestas = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
+                ?? throw new ValidationException("No se han configurado las preguntas de seguridad.");
+
+            var idPreguntas = respuestas.Select(r => r.IdPregunta).ToList();
+
+            var preguntas = _userRepository.GetPreguntasSeguridad();
+
+            return preguntas.Where(p => idPreguntas.Contains(p.IdPregunta)).ToList();
+
+        }, "getting user security questions");
     }
 }

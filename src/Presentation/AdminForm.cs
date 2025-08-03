@@ -29,7 +29,7 @@ namespace Presentation
             btnConfiguracion.Click += BtnConfiguracion_Click;
         }
 
-        private void BtnConfiguracion_Click(object sender, EventArgs e) // Fixed nullable annotations
+        private void BtnConfiguracion_Click(object? sender, EventArgs e) // Fixed nullable annotations
         {
             var form = new ConfiguracionForm(_userService);
             form.ShowDialog();
@@ -112,7 +112,7 @@ namespace Presentation
             cbxRolUsuario.ValueMember = "IdRol"; // Changed to match Rol
         }
 
-        private void BtnGuardarPersona_Click(object sender, EventArgs e) // Fixed nullable annotations
+        private void BtnGuardarPersona_Click(object? sender, EventArgs e) // Fixed nullable annotations
         {
             try
             {
@@ -160,7 +160,7 @@ namespace Presentation
             }
         }
 
-        private void BtnCrearUsuario_Click(object sender, EventArgs e) // Fixed nullable annotations
+        private void BtnCrearUsuario_Click(object? sender, EventArgs e) // Fixed nullable annotations
         {
             try
             {

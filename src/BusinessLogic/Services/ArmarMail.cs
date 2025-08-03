@@ -8,6 +8,13 @@ namespace BusinessLogic.Services
         public static string Asunto { get; set; }
         public static string NuevaContraseña { get; set; }
 
+        static ArmarMail()
+        {
+            DireccionCorreo = string.Empty;
+            Asunto = string.Empty;
+            NuevaContraseña = string.Empty;
+        }
+
         public static void Preparar()
         {
             string body = @"<style>

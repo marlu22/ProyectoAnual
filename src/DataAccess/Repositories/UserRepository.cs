@@ -124,5 +124,7 @@ namespace DataAccess.Repositories
             _context.RespuestasSeguridad.Add(respuesta);
             _context.SaveChanges();
         }, "adding security answer");
+
+        public List<PreguntaSeguridad> GetPreguntasSeguridad() => ExecuteDbOperation(() => _context.PreguntasSeguridad.ToList(), "getting all security questions");
     }
 }

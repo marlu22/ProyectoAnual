@@ -27,5 +27,6 @@ namespace DataAccess.Repositories
         List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario);
         void AddHistorialContrasena(HistorialContrasena historial);
         void AddRespuestaSeguridad(RespuestaSeguridad respuesta);
+        List<PreguntaSeguridad> GetPreguntasSeguridad();
     }
 }

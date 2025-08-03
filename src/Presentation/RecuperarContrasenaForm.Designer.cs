@@ -6,7 +6,7 @@ namespace Presentation
         private System.Windows.Forms.Label lblUsuario;
         private System.Windows.Forms.TextBox txtUsuario;
         private System.Windows.Forms.Button btnContinuar;
-        private System.Windows.Forms.TableLayoutPanel preguntasLayoutPanel;
+        private System.Windows.Forms.Panel preguntasPanel; // Cambiado de TableLayoutPanel a Panel
         private System.Windows.Forms.Button btnRecuperar;
 
         protected override void Dispose(bool disposing)
@@ -21,7 +21,7 @@ namespace Presentation
             this.lblUsuario = new System.Windows.Forms.Label();
             this.txtUsuario = new System.Windows.Forms.TextBox();
             this.btnContinuar = new System.Windows.Forms.Button();
-            this.preguntasLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.preguntasPanel = new System.Windows.Forms.Panel(); // Cambiado
             this.btnRecuperar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             //
@@ -47,19 +47,16 @@ namespace Presentation
             this.btnContinuar.Text = "Continuar";
             this.btnContinuar.UseVisualStyleBackColor = true;
             //
-            // preguntasLayoutPanel
             //
-            this.preguntasLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            // preguntasPanel
+            //
+            this.preguntasPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.preguntasLayoutPanel.AutoScroll = true;
-            this.preguntasLayoutPanel.ColumnCount = 2;
-            this.preguntasLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.preguntasLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.preguntasLayoutPanel.Location = new System.Drawing.Point(12, 50);
-            this.preguntasLayoutPanel.Name = "preguntasLayoutPanel";
-            this.preguntasLayoutPanel.RowCount = 0;
-            this.preguntasLayoutPanel.Size = new System.Drawing.Size(329, 150);
+            this.preguntasPanel.AutoScroll = true;
+            this.preguntasPanel.Location = new System.Drawing.Point(12, 50);
+            this.preguntasPanel.Name = "preguntasPanel";
+            this.preguntasPanel.Size = new System.Drawing.Size(329, 150);
             //
             // btnRecuperar
             //

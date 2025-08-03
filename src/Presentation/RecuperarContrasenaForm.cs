@@ -42,7 +42,7 @@ namespace Presentation
                 if (_preguntasUsuario.Count > 0)
                 {
                     MostrarPreguntas(_preguntasUsuario);
-                    preguntasLayoutPanel.Visible = true;
+                    preguntasPanel.Visible = true; // Cambiado
                     btnRecuperar.Visible = true;
                     txtUsuario.Enabled = false; // Prevent user from changing username
                     btnContinuar.Enabled = false; // Prevent clicking again
@@ -62,45 +62,42 @@ namespace Presentation
 
         private void MostrarPreguntas(List<PreguntaSeguridad> preguntas)
         {
-            LimpiarPreguntas(); // Limpia controles y estilos de fila anteriores
+            LimpiarPreguntas();
+            int topPosition = 10; // Posición Y inicial
 
-            preguntasLayoutPanel.RowCount = preguntas.Count;
-            for (int i = 0; i < preguntas.Count; i++)
+            foreach (var pregunta in preguntas)
             {
-                var pregunta = preguntas[i];
-
-                // Añadir un estilo de fila para la nueva fila
-                preguntasLayoutPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
                 var label = new Label
                 {
                     Text = pregunta.Pregunta,
-                    Dock = DockStyle.Fill,
-                    TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                    Margin = new Padding(3, 0, 3, 10) // Margen inferior para espaciar
+                    Left = 10,
+                    Top = topPosition,
+                    Width = preguntasPanel.Width - 20, // Ancho completo menos un margen
+                    AutoSize = true // Permitir que el alto se ajuste
                 };
+
+                topPosition += label.Height + 5; // Espacio entre pregunta y respuesta
 
                 var textBox = new TextBox
                 {
-                    Dock = DockStyle.Fill,
-                    Tag = pregunta.IdPregunta, // Store question ID
-                    Margin = new Padding(3, 0, 3, 10) // Margen inferior
+                    Left = 10,
+                    Top = topPosition,
+                    Width = preguntasPanel.Width - 20,
+                    Tag = pregunta.IdPregunta // Guardar el ID de la pregunta
                 };
 
-                preguntasLayoutPanel.Controls.Add(label, 0, i);
-                preguntasLayoutPanel.Controls.Add(textBox, 1, i);
+                topPosition += textBox.Height + 15; // Espacio para la siguiente pregunta
+
+                preguntasPanel.Controls.Add(label);
+                preguntasPanel.Controls.Add(textBox);
             }
-            // Forzar al panel a redibujar su contenido
-            preguntasLayoutPanel.PerformLayout();
         }
 
         private void LimpiarPreguntas()
         {
             _preguntasUsuario.Clear();
-            preguntasLayoutPanel.Controls.Clear();
-            preguntasLayoutPanel.RowStyles.Clear(); // Limpiar los estilos de fila
-            preguntasLayoutPanel.RowCount = 0;
-            preguntasLayoutPanel.Visible = false;
+            preguntasPanel.Controls.Clear(); // Solo limpiar controles
+            preguntasPanel.Visible = false;
             btnRecuperar.Visible = false;
         }
 
@@ -109,7 +106,7 @@ namespace Presentation
             try
             {
                 var respuestas = new Dictionary<int, string>();
-                foreach (Control control in preguntasLayoutPanel.Controls)
+                foreach (Control control in preguntasPanel.Controls)
                 {
                     if (control is TextBox textBox)
                     {

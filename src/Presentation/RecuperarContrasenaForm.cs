@@ -90,6 +90,8 @@ namespace Presentation
                 preguntasLayoutPanel.Controls.Add(label, 0, i);
                 preguntasLayoutPanel.Controls.Add(textBox, 1, i);
             }
+            // Forzar al panel a redibujar su contenido
+            preguntasLayoutPanel.PerformLayout();
         }
 
         private void LimpiarPreguntas()

@@ -151,10 +151,10 @@ namespace DataAccess.Repositories
             {
                 IdPersona = (int)reader["id_persona"],
                 Legajo = (int)reader["legajo"],
-                Nombre = (string)reader["nombre"],
-                Apellido = (string)reader["apellido"],
+                Nombre = reader["nombre"] as string ?? string.Empty,
+                Apellido = reader["apellido"] as string ?? string.Empty,
                 IdTipoDoc = (int)reader["id_tipo_doc"],
-                NumDoc = (string)reader["num_doc"],
+                NumDoc = reader["num_doc"] as string ?? string.Empty,
                 Cuil = reader["cuil"] as string,
                 Calle = reader["calle"] as string,
                 Altura = reader["altura"] as string,
@@ -197,7 +197,7 @@ namespace DataAccess.Repositories
             return new Usuario
             {
                 IdUsuario = (int)reader["id_usuario"],
-                UsuarioNombre = (string)reader["usuario"],
+                UsuarioNombre = reader["usuario"] as string ?? string.Empty,
                 ContrasenaScript = (byte[])reader["contrasena_script"],
                 IdPersona = (int)reader["id_persona"],
                 FechaBloqueo = (DateTime)reader["fecha_bloqueo"],
@@ -206,7 +206,7 @@ namespace DataAccess.Repositories
                 IdRol = (int)reader["id_rol"],
                 IdPolitica = reader["id_politica"] as int?,
                 CambioContrasenaObligatorio = (bool)reader["CambioContrasenaObligatorio"],
-                Rol = new Rol { IdRol = (int)reader["rol_id_rol"], Nombre = (string)reader["rol"] }
+                Rol = new Rol { IdRol = (int)reader["rol_id_rol"], Nombre = reader["rol"] as string ?? string.Empty }
             };
         }, p => p.AddWithValue("@usuario_nombre", nombre), CommandType.StoredProcedure);
 
@@ -218,7 +218,7 @@ namespace DataAccess.Repositories
                 list.Add(new Usuario
                 {
                     IdUsuario = (int)reader["id_usuario"],
-                    UsuarioNombre = (string)reader["usuario"],
+                    UsuarioNombre = reader["usuario"] as string ?? string.Empty,
                     ContrasenaScript = (byte[])reader["contrasena_script"],
                     IdPersona = (int)reader["id_persona"],
                     FechaBloqueo = (DateTime)reader["fecha_bloqueo"],
@@ -227,15 +227,15 @@ namespace DataAccess.Repositories
                     IdRol = (int)reader["id_rol"],
                     IdPolitica = reader["id_politica"] as int?,
                     CambioContrasenaObligatorio = (bool)reader["CambioContrasenaObligatorio"],
-                    Rol = new Rol { IdRol = (int)reader["rol_id_rol"], Nombre = (string)reader["rol"] },
+                    Rol = new Rol { IdRol = (int)reader["rol_id_rol"], Nombre = reader["rol"] as string ?? string.Empty },
                     Persona = new Persona
                     {
                         IdPersona = (int)reader["persona_id_persona"],
                         Legajo = (int)reader["legajo"],
-                        Nombre = (string)reader["nombre"],
-                        Apellido = (string)reader["apellido"],
+                        Nombre = reader["nombre"] as string ?? string.Empty,
+                        Apellido = reader["apellido"] as string ?? string.Empty,
                         IdTipoDoc = (int)reader["id_tipo_doc"],
-                        NumDoc = (string)reader["num_doc"],
+                        NumDoc = reader["num_doc"] as string ?? string.Empty,
                         Cuil = reader["cuil"] as string,
                         Calle = reader["calle"] as string,
                         Altura = reader["altura"] as string,
@@ -258,10 +258,10 @@ namespace DataAccess.Repositories
                 {
                     IdPersona = (int)reader["id_persona"],
                     Legajo = (int)reader["legajo"],
-                    Nombre = (string)reader["nombre"],
-                    Apellido = (string)reader["apellido"],
+                    Nombre = reader["nombre"] as string ?? string.Empty,
+                    Apellido = reader["apellido"] as string ?? string.Empty,
                     IdTipoDoc = (int)reader["id_tipo_doc"],
-                    NumDoc = (string)reader["num_doc"],
+                    NumDoc = reader["num_doc"] as string ?? string.Empty,
                     Cuil = reader["cuil"] as string,
                     Calle = reader["calle"] as string,
                     Altura = reader["altura"] as string,

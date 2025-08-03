@@ -1,7 +1,6 @@
 using DataAccess;
 using DataAccess.Repositories;
 using BusinessLogic.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserManagementSystem.Services.Middleware;
@@ -23,10 +22,8 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<DatabaseConnectionFactory>();
+builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();

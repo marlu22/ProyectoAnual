@@ -2,16 +2,21 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using BusinessLogic.Services;
 using UserManagementSystem.BusinessLogic.Exceptions;
 using BusinessLogic.Models;
+using DataAccess.Entities;
 
 namespace Presentation
 {
     public partial class AdminForm : Form
     {
         private readonly IUserService _userService;
+        private PoliticaSeguridad? _politica;
         private readonly List<int> _dirtyUserIds = new List<int>();
 
         public AdminForm(IUserService userService)
@@ -26,9 +31,11 @@ namespace Presentation
             LoadPersonas();
             LoadRoles();
 
+            LoadPoliticaSeguridad();
+
             btnGuardarPersona.Click += BtnGuardarPersona_Click;
             btnCrearUsuario.Click += BtnCrearUsuario_Click;
-            btnConfiguracion.Click += BtnConfiguracion_Click;
+            btnGuardarConfig.Click += BtnGuardarConfig_Click;
 
             // Gestion de Usuarios
             btnRefrescarUsuarios.Click += (s, e) => LoadUsers();
@@ -141,10 +148,62 @@ namespace Presentation
             }
         }
 
-        private void BtnConfiguracion_Click(object? sender, EventArgs e) // Fixed nullable annotations
+        private void LoadPoliticaSeguridad()
         {
-            var form = new ConfiguracionForm(_userService);
-            form.ShowDialog();
+            _politica = _userService.GetPoliticaSeguridad();
+            if (_politica != null)
+            {
+                chkMayusculasMinusculas.Checked = _politica.MayusYMinus;
+                chkNumeros.Checked = _politica.LetrasYNumeros;
+                chkCaracteresEspeciales.Checked = _politica.CaracterEspecial;
+                chkDobleFactor.Checked = _politica.Autenticacion2FA;
+                chkNoRepetirContrasenas.Checked = _politica.NoRepetirAnteriores;
+                chkVerificarDatosPersonales.Checked = _politica.SinDatosPersonales;
+                txtMinCaracteres.Text = _politica.MinCaracteres.ToString();
+                txtCantPreguntas.Text = _politica.CantPreguntas.ToString();
+            }
+            else
+            {
+                chkMayusculasMinusculas.Checked = false;
+                chkNumeros.Checked = false;
+                chkCaracteresEspeciales.Checked = false;
+                chkDobleFactor.Checked = false;
+                chkNoRepetirContrasenas.Checked = false;
+                chkVerificarDatosPersonales.Checked = false;
+                txtMinCaracteres.Text = "8";
+                txtCantPreguntas.Text = "0";
+            }
+        }
+
+        private void BtnGuardarConfig_Click(object? sender, EventArgs e)
+        {
+            if (!int.TryParse(txtMinCaracteres.Text, out var minChars) || minChars <= 0)
+            {
+                MessageBox.Show("Por favor, ingrese un número válido de caracteres mínimos.", "Error");
+                return;
+            }
+            if (!int.TryParse(txtCantPreguntas.Text, out var cantPreg) || cantPreg < 0)
+            {
+                MessageBox.Show("Por favor, ingrese un número válido de preguntas de seguridad.", "Error");
+                return;
+            }
+
+            if (_politica == null)
+            {
+                _politica = new PoliticaSeguridad { IdPolitica = 1 };
+            }
+
+            _politica.MayusYMinus = chkMayusculasMinusculas.Checked;
+            _politica.LetrasYNumeros = chkNumeros.Checked;
+            _politica.CaracterEspecial = chkCaracteresEspeciales.Checked;
+            _politica.Autenticacion2FA = chkDobleFactor.Checked;
+            _politica.NoRepetirAnteriores = chkNoRepetirContrasenas.Checked;
+            _politica.SinDatosPersonales = chkVerificarDatosPersonales.Checked;
+            _politica.MinCaracteres = minChars;
+            _politica.CantPreguntas = cantPreg;
+
+            _userService.UpdatePoliticaSeguridad(_politica);
+            MessageBox.Show("Configuración guardada correctamente.", "Info");
         }
 
         private void LoadTipoDoc()

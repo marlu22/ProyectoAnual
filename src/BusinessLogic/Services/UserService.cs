@@ -130,7 +130,7 @@ namespace BusinessLogic.Services
             _userRepository.AddUsuario(usuario);
 
             // Enviar la contraseña generada por correo
-            var task = _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {passwordToUse}");
+            var task = _emailService.SendPasswordResetEmailAsync(persona.Correo, passwordToUse);
             task.ContinueWith(t => {
                 // Log exception if email sending fails
                 if (t.IsFaulted)

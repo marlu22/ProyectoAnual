@@ -23,8 +23,8 @@ namespace Presentation
 
             btnCambiarPreguntas.Click += (s, e) =>
             {
-                // Aquí iría la lógica para abrir el formulario de cambio de preguntas de seguridad
-                MessageBox.Show("Funcionalidad no implementada.", "Info");
+                var form = new PreguntasSeguridadForm(_userService, _username);
+                form.ShowDialog();
             };
         }
     }

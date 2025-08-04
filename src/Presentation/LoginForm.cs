@@ -17,7 +17,7 @@ namespace Presentation
             btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
         }
 
-        private void BtnLogin_Click(object? sender, EventArgs? e)
+        private async void BtnLogin_Click(object? sender, EventArgs? e)
         {
             if (string.IsNullOrWhiteSpace(txtUsuario.Text) ||
                 string.IsNullOrWhiteSpace(txtContrasena.Text))
@@ -26,13 +26,36 @@ namespace Presentation
                 return;
             }
 
-            string usuario = txtUsuario.Text.Trim();
-            string contrasena = txtContrasena.Text.Trim();
+            string username = txtUsuario.Text.Trim();
+            string password = txtContrasena.Text.Trim();
 
-            var user = _userService.Authenticate(usuario, contrasena);
+            var authResult = await _userService.AuthenticateAsync(username, password);
 
-            if (user != null)
+            if (authResult.Success)
             {
+                BusinessLogic.Models.UserResponse? user = authResult.User;
+
+                if (authResult.Requires2fa)
+                {
+                    var twoFactorForm = new TwoFactorAuthForm(_userService, username);
+                    if (twoFactorForm.ShowDialog() == DialogResult.OK)
+                    {
+                        // Re-fetch user details after successful 2FA
+                        var finalAuthResult = await _userService.AuthenticateAsync(username, password);
+                        user = finalAuthResult.User;
+                    }
+                    else
+                    {
+                        return; // 2FA cancelled or failed
+                    }
+                }
+
+                if (user == null)
+                {
+                    MessageBox.Show("Ocurrió un error inesperado después de la verificación. Intente de nuevo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 if (user.CambioContrasenaObligatorio)
                 {
                     Hide();
@@ -60,7 +83,7 @@ namespace Presentation
             }
             else
             {
-                MessageBox.Show("Usuario o contraseña incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(authResult.ErrorMessage, "Error de Autenticación", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -68,6 +91,18 @@ namespace Presentation
         {
             var form = new RecuperarContrasenaForm(_userService);
             form.ShowDialog();
+        }
+
+        private void ChkMostrarContrasena_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (chkMostrarContrasena.Checked)
+            {
+                txtContrasena.PasswordChar = '\0'; // Show password
+            }
+            else
+            {
+                txtContrasena.PasswordChar = '●'; // Hide password
+            }
         }
     }
 }

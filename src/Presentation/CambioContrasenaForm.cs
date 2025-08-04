@@ -23,24 +23,35 @@ namespace Presentation
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtNueva.Text) ||
+                if (string.IsNullOrWhiteSpace(txtActual.Text) ||
+                    string.IsNullOrWhiteSpace(txtNueva.Text) ||
                     string.IsNullOrWhiteSpace(txtRepetir.Text))
                 {
-                    MessageBox.Show("Por favor, ingrese y repita la nueva contraseña.", "Error");
+                    MessageBox.Show("Por favor, complete todos los campos.", "Error");
                     return;
                 }
 
+                string actual = txtActual.Text;
                 string nueva = txtNueva.Text;
                 string repetir = txtRepetir.Text;
 
                 if (nueva != repetir)
-                    throw new ValidationException("Las contraseñas no coinciden.");
+                {
+                    MessageBox.Show("Las contraseñas nuevas no coinciden.", "Error");
+                    return;
+                }
 
-                _userService.CambiarContrasena(_usuario, nueva);
+                _userService.CambiarContrasena(_usuario, nueva, actual);
                 MessageBox.Show("Contraseña cambiada correctamente.", "Info");
 
-                var preguntasForm = new PreguntasSeguridadForm(_userService, _usuario);
-                preguntasForm.ShowDialog();
+                // Check if this is the first time the user is changing the password
+                // If so, force them to set security questions.
+                var user = _userService.GetPreguntasDeUsuario(_usuario);
+                if (user == null || user.Count == 0)
+                {
+                    var preguntasForm = new PreguntasSeguridadForm(_userService, _usuario);
+                    preguntasForm.ShowDialog();
+                }
 
                 DialogResult = DialogResult.OK;
                 Close();

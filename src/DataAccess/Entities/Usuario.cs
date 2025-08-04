@@ -43,6 +43,13 @@ namespace DataAccess.Entities
         [Column("CambioContrasenaObligatorio")]
         public bool CambioContrasenaObligatorio { get; set; }
 
+        [Column("Codigo2FA")]
+        [StringLength(10)]
+        public string? Codigo2FA { get; set; }
+
+        [Column("Codigo2FAExpiracion")]
+        public DateTime? Codigo2FAExpiracion { get; set; }
+
         [ForeignKey("IdPersona")]
         public virtual Persona Persona { get; set; } = null!;
 

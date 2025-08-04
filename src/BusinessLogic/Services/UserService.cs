@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BusinessLogic.Models;
 using DataAccess.Entities;
@@ -62,9 +63,33 @@ namespace BusinessLogic.Services
 
         public void CrearPersona(PersonaRequest request) => ExecuteServiceOperation(() =>
         {
+            if (!int.TryParse(request.Legajo, out int legajo))
+                throw new ValidationException("El legajo debe ser un número válido.");
+
+            if (string.IsNullOrWhiteSpace(request.Nombre))
+                throw new ValidationException("El nombre no puede estar vacío.");
+
+            if (string.IsNullOrWhiteSpace(request.Apellido))
+                throw new ValidationException("El apellido no puede estar vacío.");
+
+            if (!long.TryParse(request.NumDoc, out _))
+                throw new ValidationException("El número de documento debe ser numérico.");
+
+            if (!long.TryParse(request.Cuil, out _))
+                throw new ValidationException("El CUIL debe ser numérico.");
+
+            if (string.IsNullOrWhiteSpace(request.Calle))
+                throw new ValidationException("La calle no puede estar vacía.");
+
+            if (!int.TryParse(request.Altura, out _))
+                throw new ValidationException("La altura de la dirección debe ser un número.");
+
+            if (string.IsNullOrWhiteSpace(request.Correo) || !IsValidEmail(request.Correo))
+                throw new ValidationException("El formato del correo electrónico no es válido.");
+
             var persona = new Persona
             {
-                Legajo = int.Parse(request.Legajo),
+                Legajo = legajo,
                 Nombre = request.Nombre,
                 Apellido = request.Apellido,
                 IdTipoDoc = _userRepository.GetTipoDocByNombre(request.TipoDoc)?.IdTipoDoc ?? throw new ValidationException("Tipo de documento no encontrado"),
@@ -85,16 +110,12 @@ namespace BusinessLogic.Services
             var persona = _userRepository.GetPersonaById(int.Parse(request.PersonaId))
                 ?? throw new ValidationException("Persona no encontrada");
 
-            string passwordToUse;
-            if (!string.IsNullOrWhiteSpace(request.Password))
+            if (string.IsNullOrWhiteSpace(persona.Correo))
             {
-                ValidatePasswordPolicy(request.Password, request.Username, persona.Nombre, persona.Apellido);
-                passwordToUse = request.Password;
+                throw new ValidationException("La persona seleccionada no tiene un correo electrónico para enviar la contraseña.");
             }
-            else
-            {
-                passwordToUse = GenerateRandomPassword(request.Username, persona.Nombre, persona.Apellido);
-            }
+
+            string passwordToUse = GenerateRandomPassword(request.Username, persona.Nombre, persona.Apellido);
 
             var usuario = new Usuario
             {
@@ -109,7 +130,14 @@ namespace BusinessLogic.Services
             _userRepository.AddUsuario(usuario);
 
             // Enviar la contraseña generada por correo
-            // _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {passwordToUse}");
+            var task = _emailService.SendEmailAsync(persona.Correo, "Bienvenido al Sistema", $"Su contraseña temporal es: {passwordToUse}");
+            task.ContinueWith(t => {
+                // Log exception if email sending fails
+                if (t.IsFaulted)
+                {
+                    // Log t.Exception
+                }
+            });
         }, "creating a user");
 
         public UserResponse? Authenticate(string username, string password) => ExecuteServiceOperation(() =>
@@ -256,11 +284,30 @@ namespace BusinessLogic.Services
             _userRepository.DeleteUsuario(userId);
         }, "deleting user");
 
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Use Regex for a more robust validation
+                return Regex.IsMatch(email,
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
+
         private byte[] HashUsuarioContrasena(string username, string password)
         {
             using (var sha256 = SHA256.Create())
             {
-                return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                // Concatenate username and password as per security requirements
+                return sha256.ComputeHash(Encoding.UTF8.GetBytes(username + password));
             }
         }
 

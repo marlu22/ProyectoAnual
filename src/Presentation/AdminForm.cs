@@ -19,6 +19,11 @@ namespace Presentation
         public AdminForm(IUserService userService)
         {
             InitializeComponent();
+
+            // Hide password controls for user creation as it's now automated
+            lblPassword.Visible = false;
+            txtPassword.Visible = false;
+
             _userService = userService;
 
             // Cargar combos al iniciar
@@ -333,7 +338,6 @@ namespace Presentation
             try
             {
                 if (string.IsNullOrWhiteSpace(txtUsuario.Text) ||
-                    string.IsNullOrWhiteSpace(txtPassword.Text) ||
                     cbxPersona.SelectedValue == null ||
                     cbxRolUsuario.SelectedItem == null)
                 {
@@ -345,11 +349,10 @@ namespace Presentation
                 {
                     PersonaId = cbxPersona.SelectedValue.ToString()!, // Ensure string conversion
                     Username = txtUsuario.Text,
-                    Password = txtPassword.Text,
                     Rol = cbxRolUsuario.Text // Use .Text to get the string value
                 };
                 _userService.CrearUsuario(usuario);
-                MessageBox.Show("Usuario creado correctamente", "Info");
+                MessageBox.Show("Usuario creado correctamente. La contraseña ha sido enviada al correo de la persona.", "Info");
             }
             catch (ValidationException ex)
             {

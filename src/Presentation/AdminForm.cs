@@ -44,9 +44,15 @@ namespace Presentation
             btnGuardarCambios.Click += BtnGuardarCambios_Click;
             btnEliminarUsuario.Click += BtnEliminarUsuario_Click;
             dgvUsuarios.CellEndEdit += DgvUsuarios_CellEndEdit;
+            dgvUsuarios.SelectionChanged += dgvUsuarios_SelectionChanged;
+            dtpFechaExpiracionGestion.ValueChanged += dtpFechaExpiracionGestion_ValueChanged;
+            dgvUsuarios.CellFormatting += dgvUsuarios_CellFormatting;
 
 
             LoadUsers();
+
+            dtpFechaExpiracionGestion.ShowCheckBox = true;
+            dtpFechaExpiracionGestion.Checked = false;
         }
 
         private void LoadUsers()
@@ -61,7 +67,9 @@ namespace Presentation
                     NombreCompleto = u.Persona != null ? $"{u.Persona.Nombre} {u.Persona.Apellido}" : "N/A",
                     Rol = u.Rol?.Nombre,
                     IdRol = u.IdRol,
-                    CambioContrasenaObligatorio = u.CambioContrasenaObligatorio
+                    CambioContrasenaObligatorio = u.CambioContrasenaObligatorio,
+                    FechaExpiracion = u.FechaExpiracion,
+                    Habilitado = u.FechaBloqueo > DateTime.Now
                 }).ToList();
 
                 dgvUsuarios.DataSource = userDtos;
@@ -71,6 +79,16 @@ namespace Presentation
                 dgvUsuarios.Columns["IdRol"].Visible = false;
                 dgvUsuarios.Columns["NombreCompleto"].ReadOnly = true;
                 dgvUsuarios.Columns["CambioContrasenaObligatorio"].ReadOnly = true;
+
+                if (dgvUsuarios.Columns["FechaExpiracion"] != null)
+                {
+                    dgvUsuarios.Columns["FechaExpiracion"].HeaderText = "Fecha de Expiración";
+                    dgvUsuarios.Columns["FechaExpiracion"].DefaultCellStyle.Format = "dd/MM/yyyy";
+                }
+                if (dgvUsuarios.Columns["Habilitado"] != null)
+                {
+                    dgvUsuarios.Columns["Habilitado"].HeaderText = "Habilitado";
+                }
             }
             catch (Exception ex)
             {
@@ -317,7 +335,8 @@ namespace Presentation
                     Altura = txtAltura.Text,
                     Localidad = cbxLocalidad.Text, // Use .Text to get the string value
                     Genero = cbxGenero.Text, // Use .Text to get the string value
-                    Correo = txtCorreo.Text
+                    Correo = txtCorreo.Text,
+                    FechaIngreso = dtpFechaIngreso.Value
                 };
                 _userService.CrearPersona(persona);
                 MessageBox.Show("Persona guardada correctamente", "Info");
@@ -364,5 +383,66 @@ namespace Presentation
             }
         }
 
+        private void dgvUsuarios_SelectionChanged(object? sender, EventArgs e)
+        {
+            if (dgvUsuarios.SelectedRows.Count > 0)
+            {
+                var selectedUser = (UserDto)dgvUsuarios.SelectedRows[0].DataBoundItem;
+                // Temporarily unsubscribe to prevent the ValueChanged event from firing
+                dtpFechaExpiracionGestion.ValueChanged -= dtpFechaExpiracionGestion_ValueChanged;
+
+                if (selectedUser.FechaExpiracion.HasValue)
+                {
+                    dtpFechaExpiracionGestion.Value = selectedUser.FechaExpiracion.Value;
+                    dtpFechaExpiracionGestion.Checked = true;
+                }
+                else
+                {
+                    dtpFechaExpiracionGestion.Checked = false;
+                }
+                // Re-subscribe to the event
+                dtpFechaExpiracionGestion.ValueChanged += dtpFechaExpiracionGestion_ValueChanged;
+            }
+        }
+
+        private void dtpFechaExpiracionGestion_ValueChanged(object? sender, EventArgs e)
+        {
+            if (dgvUsuarios.SelectedRows.Count > 0)
+            {
+                var selectedUser = (UserDto)dgvUsuarios.SelectedRows[0].DataBoundItem;
+                var newValue = dtpFechaExpiracionGestion.Checked ? dtpFechaExpiracionGestion.Value : (DateTime?)null;
+
+                if (selectedUser.FechaExpiracion != newValue)
+                {
+                    selectedUser.FechaExpiracion = newValue;
+                    if (!_dirtyUserIds.Contains(selectedUser.IdUsuario))
+                    {
+                        _dirtyUserIds.Add(selectedUser.IdUsuario);
+                    }
+                    dgvUsuarios.Refresh();
+                }
+            }
+        }
+
+        private void dgvUsuarios_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.RowIndex < dgvUsuarios.Rows.Count)
+            {
+                var userDto = (UserDto)dgvUsuarios.Rows[e.RowIndex].DataBoundItem;
+                if (userDto != null)
+                {
+                    if (!userDto.Habilitado)
+                    {
+                        dgvUsuarios.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
+                        dgvUsuarios.Rows[e.RowIndex].DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
+                    }
+                    else
+                    {
+                        dgvUsuarios.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.SystemColors.Window;
+                        dgvUsuarios.Rows[e.RowIndex].DefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
+                    }
+                }
+            }
+        }
     }
 }

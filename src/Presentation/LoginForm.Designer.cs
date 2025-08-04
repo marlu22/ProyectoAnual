@@ -1,3 +1,9 @@
+using Presentation.Controles;
+
+using Presentation.Controles;
+
+using Presentation.Controles;
+
 namespace Presentation
 {
     partial class LoginForm
@@ -27,9 +33,17 @@ namespace Presentation
             lblUsuario = new System.Windows.Forms.Label();
             txtUsuario = new System.Windows.Forms.TextBox();
             lblContrasena = new System.Windows.Forms.Label();
-            txtContrasena = new System.Windows.Forms.TextBox();
-            btnLogin = new System.Windows.Forms.Button();
-            btnRecuperarContrasena = new System.Windows.Forms.Button();
+            txtContrasena = new RoundedTextBox();
+            btnLogin = new RoundedButton();
+            btnRecuperarContrasena = new RoundedButton();
+            txtUsuario = new RoundedTextBox();
+            txtContrasena = new RoundedTextBox();
+            btnLogin = new RoundedButton();
+            btnRecuperarContrasena = new RoundedButton();
+            txtContrasena = new RoundedTextBox();
+            btnLogin = new RoundedButton();
+            btnRecuperarContrasena = new RoundedButton();
+            chkMostrarContrasena = new System.Windows.Forms.CheckBox();
             tableLayoutPanel.SuspendLayout();
             SuspendLayout();
             // 
@@ -42,18 +56,8 @@ namespace Presentation
             tableLayoutPanel.Controls.Add(txtUsuario, 1, 0);
             tableLayoutPanel.Controls.Add(lblContrasena, 0, 1);
             tableLayoutPanel.Controls.Add(txtContrasena, 1, 1);
-            this.chkMostrarContrasena = new System.Windows.Forms.CheckBox();
-            this.chkMostrarContrasena.AutoSize = true;
-            this.chkMostrarContrasena.Location = new System.Drawing.Point(128, 83);
-            this.chkMostrarContrasena.Name = "chkMostrarContrasena";
-            this.chkMostrarContrasena.Size = new System.Drawing.Size(139, 19);
-            this.chkMostrarContrasena.TabIndex = 6;
-            this.chkMostrarContrasena.Text = "Mostrar contraseña";
-            this.chkMostrarContrasena.UseVisualStyleBackColor = true;
-            this.chkMostrarContrasena.CheckedChanged += new System.EventHandler(this.ChkMostrarContrasena_CheckedChanged);
-            tableLayoutPanel.Controls.Add(this.chkMostrarContrasena, 1, 2);
+            tableLayoutPanel.Controls.Add(chkMostrarContrasena, 1, 2);
             tableLayoutPanel.Controls.Add(btnLogin, 1, 3);
-            btnRecuperarContrasena.Click += new System.EventHandler(this.BtnRecuperarContrasena_Click);
             tableLayoutPanel.Controls.Add(btnRecuperarContrasena, 1, 4);
             tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
@@ -67,6 +71,7 @@ namespace Presentation
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             tableLayoutPanel.Size = new System.Drawing.Size(350, 250);
             tableLayoutPanel.TabIndex = 0;
+            tableLayoutPanel.BackColor = System.Drawing.Color.FromArgb(24, 24, 36);
             // 
             // lblUsuario
             // 
@@ -77,6 +82,8 @@ namespace Presentation
             lblUsuario.TabIndex = 0;
             lblUsuario.Text = "Usuario:";
             lblUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblUsuario.ForeColor = System.Drawing.Color.Gainsboro;
+            lblUsuario.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             // 
             // txtUsuario
             // 
@@ -85,6 +92,10 @@ namespace Presentation
             txtUsuario.Name = "txtUsuario";
             txtUsuario.Size = new System.Drawing.Size(209, 25);
             txtUsuario.TabIndex = 1;
+            txtUsuario.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtUsuario.ForeColor = System.Drawing.Color.White;
+            txtUsuario.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            txtUsuario.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             // 
             // lblContrasena
             // 
@@ -95,6 +106,8 @@ namespace Presentation
             lblContrasena.TabIndex = 2;
             lblContrasena.Text = "Contraseña:";
             lblContrasena.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblContrasena.ForeColor = System.Drawing.Color.Gainsboro;
+            lblContrasena.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             // 
             // txtContrasena
             // 
@@ -104,37 +117,50 @@ namespace Presentation
             txtContrasena.PasswordChar = '●';
             txtContrasena.Size = new System.Drawing.Size(209, 25);
             txtContrasena.TabIndex = 3;
+            txtContrasena.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtContrasena.ForeColor = System.Drawing.Color.White;
+            txtContrasena.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            txtContrasena.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            // 
+            // chkMostrarContrasena
+            // 
+            chkMostrarContrasena.AutoSize = true;
+            chkMostrarContrasena.Location = new System.Drawing.Point(128, 83);
+            chkMostrarContrasena.Name = "chkMostrarContrasena";
+            chkMostrarContrasena.Size = new System.Drawing.Size(139, 19);
+            chkMostrarContrasena.TabIndex = 6;
+            chkMostrarContrasena.Text = "Mostrar contraseña";
+            chkMostrarContrasena.UseVisualStyleBackColor = true;
+            chkMostrarContrasena.ForeColor = System.Drawing.Color.Gainsboro;
+            chkMostrarContrasena.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             // 
             // btnLogin
             // 
             btnLogin.Dock = System.Windows.Forms.DockStyle.Right;
-            btnLogin.Location = new System.Drawing.Point(217, 83);
+            btnLogin.Location = new System.Drawing.Point(217, 113);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new System.Drawing.Size(120, 84);
+            btnLogin.Size = new System.Drawing.Size(120, 39);
             btnLogin.TabIndex = 4;
             btnLogin.Text = "Iniciar sesión";
+            btnLogin.BackColor = System.Drawing.Color.FromArgb(59, 130, 246);
+            btnLogin.ForeColor = System.Drawing.Color.White;
+            btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnLogin.FlatAppearance.BorderSize = 0;
+            btnLogin.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             // 
             // btnRecuperarContrasena
             // 
             btnRecuperarContrasena.Dock = System.Windows.Forms.DockStyle.Fill;
             btnRecuperarContrasena.Name = "btnRecuperarContrasena";
-            btnRecuperarContrasena.Size = new System.Drawing.Size(209, 29);
+            btnRecuperarContrasena.Size = new System.Drawing.Size(209, 39);
             btnRecuperarContrasena.TabIndex = 5;
             btnRecuperarContrasena.Text = "¿Olvidaste tu contraseña?";
-            btnRecuperarContrasena.UseVisualStyleBackColor = true;
-            //
-            // chkMostrarContrasena
-            //
-            this.chkMostrarContrasena = new System.Windows.Forms.CheckBox();
-            this.chkMostrarContrasena.AutoSize = true;
-            this.chkMostrarContrasena.Location = new System.Drawing.Point(128, 118);
-            this.chkMostrarContrasena.Name = "chkMostrarContrasena";
-            this.chkMostrarContrasena.Size = new System.Drawing.Size(139, 19);
-            this.chkMostrarContrasena.TabIndex = 6;
-            this.chkMostrarContrasena.Text = "Mostrar contraseña";
-            this.chkMostrarContrasena.UseVisualStyleBackColor = true;
-            this.chkMostrarContrasena.CheckedChanged += new System.EventHandler(this.ChkMostrarContrasena_CheckedChanged);
-            this.tableLayoutPanel.Controls.Add(this.chkMostrarContrasena, 1, 2);
+            btnRecuperarContrasena.UseVisualStyleBackColor = false;
+            btnRecuperarContrasena.BackColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            btnRecuperarContrasena.ForeColor = System.Drawing.Color.White;
+            btnRecuperarContrasena.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnRecuperarContrasena.FlatAppearance.BorderSize = 0;
+            btnRecuperarContrasena.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             // 
             // LoginForm
             // 
@@ -142,6 +168,7 @@ namespace Presentation
             ClientSize = new System.Drawing.Size(350, 250);
             Controls.Add(tableLayoutPanel);
             Font = new System.Drawing.Font("Segoe UI", 10F);
+            BackColor = System.Drawing.Color.FromArgb(24, 24, 36);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;

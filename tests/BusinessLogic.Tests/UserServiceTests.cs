@@ -1,25 +1,25 @@
+using Xunit;
+using System.Threading.Tasks;
+using BusinessLogic.Services;
+using DataAccess.Repositories;
+using DataAccess.Entities;
 using System;
 using System.Collections.Generic;
-using DataAccess.Entities;
-using DataAccess.Repositories;
-using BusinessLogic.Services;
-using System.Text;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
+using System.Text;
 using BusinessLogic.Models;
 
 public class MockEmailService : IEmailService
 {
     public Task SendPasswordResetEmailAsync(string toEmail, string newPassword)
     {
-        Console.WriteLine($"Simulando envío de correo a {toEmail} con la contraseña {newPassword}");
+        // In a real test, you might want to record that this was called.
         return Task.CompletedTask;
     }
 
     public Task Send2faCodeEmailAsync(string toEmail, string code)
     {
-        Console.WriteLine($"Simulando envío de correo 2FA a {toEmail} con el código {code}");
+        // In a real test, you might want to record that this was called.
         return Task.CompletedTask;
     }
 }
@@ -28,22 +28,19 @@ public class MockUserRepository : IUserRepository
 {
     private readonly List<Usuario> _users = new List<Usuario>();
     private readonly List<Persona> _personas = new List<Persona>();
-    private readonly PoliticaSeguridad _politica = new PoliticaSeguridad { Autenticacion2FA = false };
+    private PoliticaSeguridad _politica = new PoliticaSeguridad { Autenticacion2FA = false };
 
     public MockUserRepository()
     {
-        var username = "testuser";
-        var password = "password123";
-        var hashedPassword = HashUsuarioContrasena(username, password);
-
         var persona = new Persona { IdPersona = 1, Correo = "test@test.com", Nombre = "Test", Apellido = "User" };
         _personas.Add(persona);
 
+        // Regular user
         _users.Add(new Usuario
         {
             IdUsuario = 1,
-            UsuarioNombre = username,
-            ContrasenaScript = hashedPassword,
+            UsuarioNombre = "testuser",
+            ContrasenaScript = HashUsuarioContrasena("testuser", "password123"),
             IdPersona = 1,
             IdRol = 1,
             CambioContrasenaObligatorio = false,
@@ -77,6 +74,24 @@ public class MockUserRepository : IUserRepository
             FechaBloqueo = DateTime.Now.AddDays(-1), // Blocked yesterday
             Rol = new Rol { IdRol = 1, Nombre = "Usuario" }
         });
+
+        // User with 2FA
+        _users.Add(new Usuario
+        {
+            IdUsuario = 4,
+            UsuarioNombre = "2fauser",
+            ContrasenaScript = HashUsuarioContrasena("2fauser", "password"),
+            IdPersona = 1,
+            IdRol = 1,
+            CambioContrasenaObligatorio = false,
+            FechaBloqueo = new DateTime(9999, 12, 31),
+            Rol = new Rol { IdRol = 1, Nombre = "Usuario" }
+        });
+    }
+
+    public void Enable2FA()
+    {
+        _politica = new PoliticaSeguridad { Autenticacion2FA = true };
     }
 
     public Usuario? GetUsuarioByNombreUsuario(string nombre) => _users.Find(u => u.UsuarioNombre == nombre);
@@ -123,65 +138,109 @@ public class MockUserRepository : IUserRepository
     }
 }
 
-public class Program
+public class UserServiceTests
 {
-    public static async Task Main(string[] args)
+    private readonly MockUserRepository _userRepository;
+    private readonly IEmailService _emailService;
+    private readonly IUserService _userService;
+
+    public UserServiceTests()
     {
-        try
-        {
-            Console.WriteLine("Iniciando prueba de autenticación...");
+        _userRepository = new MockUserRepository();
+        _emailService = new MockEmailService();
+        _userService = new UserService(_userRepository, _emailService);
+    }
 
-            var userRepository = new MockUserRepository();
-            var emailService = new MockEmailService();
-            var userService = new UserService(userRepository, emailService);
+    [Fact]
+    public async Task AuthenticateAsync_ValidCredentials_ReturnsSuccess()
+    {
+        // Arrange
+        var username = "testuser";
+        var password = "password123";
 
-            var username = "testuser";
-            var password = "password123";
+        // Act
+        var result = await _userService.AuthenticateAsync(username, password);
 
-            Console.WriteLine("Intentando autenticar...");
-            var authResult = await userService.AuthenticateAsync(username, password);
+        // Assert
+        Assert.True(result.Success);
+        Assert.False(result.Requires2fa);
+        Assert.NotNull(result.User);
+        Assert.Equal(username, result.User.Username);
+    }
 
-            if (authResult.Success && !authResult.Requires2fa)
-            {
-                Console.WriteLine($"¡Autenticación exitosa para {authResult.User?.Username}!");
-                Console.WriteLine("La solución funciona correctamente.");
-            }
-            else if (authResult.Requires2fa)
-            {
-                 Console.WriteLine("Error: La autenticación requiere 2FA, pero no se esperaba en esta prueba.");
-            }
-            else
-            {
-                Console.WriteLine($"Error: La autenticación falló. Motivo: {authResult.ErrorMessage}");
-            }
+    [Fact]
+    public async Task AuthenticateAsync_ExpiredUser_ReturnsFailure()
+    {
+        // Arrange
+        var username = "expireduser";
+        var password = "password";
 
-            // Test expired user
-            Console.WriteLine("\nIntentando autenticar usuario expirado...");
-            var expiredResult = await userService.AuthenticateAsync("expireduser", "password");
-            if (!expiredResult.Success && expiredResult.ErrorMessage == "La cuenta ha expirado.")
-            {
-                Console.WriteLine("Prueba de usuario expirado exitosa.");
-            }
-            else
-            {
-                Console.WriteLine("Error: La prueba de usuario expirado falló.");
-            }
+        // Act
+        var result = await _userService.AuthenticateAsync(username, password);
 
-            // Test disabled user
-            Console.WriteLine("\nIntentando autenticar usuario deshabilitado...");
-            var disabledResult = await userService.AuthenticateAsync("disableduser", "password");
-            if (!disabledResult.Success && disabledResult.ErrorMessage == "La cuenta se encuentra deshabilitada.")
-            {
-                Console.WriteLine("Prueba de usuario deshabilitado exitosa.");
-            }
-            else
-            {
-                Console.WriteLine("Error: La prueba de usuario deshabilitado falló.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Se produjo una excepción inesperada: {ex.ToString()}");
-        }
+        // Assert
+        Assert.False(result.Success);
+        Assert.Equal("La cuenta ha expirado.", result.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_DisabledUser_ReturnsFailure()
+    {
+        // Arrange
+        var username = "disableduser";
+        var password = "password";
+
+        // Act
+        var result = await _userService.AuthenticateAsync(username, password);
+
+        // Assert
+        Assert.False(result.Success);
+        Assert.Equal("La cuenta se encuentra deshabilitada.", result.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_IncorrectPassword_ReturnsFailure()
+    {
+        // Arrange
+        var username = "testuser";
+        var password = "wrongpassword";
+
+        // Act
+        var result = await _userService.AuthenticateAsync(username, password);
+
+        // Assert
+        Assert.False(result.Success);
+        Assert.Equal("Usuario o contraseña incorrectos.", result.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_UserNotFound_ReturnsFailure()
+    {
+        // Arrange
+        var username = "nonexistentuser";
+        var password = "password";
+
+        // Act
+        var result = await _userService.AuthenticateAsync(username, password);
+
+        // Assert
+        Assert.False(result.Success);
+        Assert.Equal("Usuario o contraseña incorrectos.", result.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_2faRequired_ReturnsRequires2fa()
+    {
+        // Arrange
+        _userRepository.Enable2FA();
+        var username = "2fauser";
+        var password = "password";
+
+        // Act
+        var result = await _userService.AuthenticateAsync(username, password);
+
+        // Assert
+        Assert.True(result.Success);
+        Assert.True(result.Requires2fa);
     }
 }

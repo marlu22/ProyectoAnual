@@ -46,7 +46,7 @@ namespace Presentation
                     btnRecuperar.Visible = true;
                     txtUsuario.Enabled = false; // Prevent user from changing username
                     btnContinuar.Enabled = false; // Prevent clicking again
-                    this.Refresh(); // Forzar redibujo de todo el formulario
+                    preguntasPanel.PerformLayout();
                 }
                 else
                 {
@@ -66,31 +66,39 @@ namespace Presentation
             LimpiarPreguntas();
             int topPosition = 10; // Posición Y inicial
 
-            foreach (var pregunta in preguntas)
+            preguntasPanel.SuspendLayout();
+            try
             {
-                var label = new Label
+                foreach (var pregunta in preguntas)
                 {
-                    Text = pregunta.Pregunta,
-                    Left = 10,
-                    Top = topPosition,
-                    Width = preguntasPanel.Width - 20, // Ancho completo menos un margen
-                    AutoSize = true // Permitir que el alto se ajuste
-                };
+                    var label = new Label
+                    {
+                        Text = pregunta.Pregunta,
+                        Left = 10,
+                        Top = topPosition,
+                        Width = preguntasPanel.Width - 20, // Ancho completo menos un margen
+                        AutoSize = true // Permitir que el alto se ajuste
+                    };
 
-                topPosition += label.Height + 5; // Espacio entre pregunta y respuesta
+                    topPosition += label.Height + 5; // Espacio entre pregunta y respuesta
 
-                var textBox = new TextBox
-                {
-                    Left = 10,
-                    Top = topPosition,
-                    Width = preguntasPanel.Width - 20,
-                    Tag = pregunta.IdPregunta // Guardar el ID de la pregunta
-                };
+                    var textBox = new TextBox
+                    {
+                        Left = 10,
+                        Top = topPosition,
+                        Width = preguntasPanel.Width - 20,
+                        Tag = pregunta.IdPregunta // Guardar el ID de la pregunta
+                    };
 
-                topPosition += textBox.Height + 15; // Espacio para la siguiente pregunta
+                    topPosition += textBox.Height + 15; // Espacio para la siguiente pregunta
 
-                preguntasPanel.Controls.Add(label);
-                preguntasPanel.Controls.Add(textBox);
+                    preguntasPanel.Controls.Add(label);
+                    preguntasPanel.Controls.Add(textBox);
+                }
+            }
+            finally
+            {
+                preguntasPanel.ResumeLayout(performLayout: true);
             }
         }
 

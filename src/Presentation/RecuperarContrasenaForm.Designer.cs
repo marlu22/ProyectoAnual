@@ -73,7 +73,7 @@ namespace Presentation
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(353, 245);
             this.Controls.Add(this.btnRecuperar);
-            this.Controls.Add(this.preguntasLayoutPanel);
+            this.Controls.Add(this.preguntasPanel);
             this.Controls.Add(this.btnContinuar);
             this.Controls.Add(this.txtUsuario);
             this.Controls.Add(this.lblUsuario);

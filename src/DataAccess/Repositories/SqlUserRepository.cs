@@ -155,12 +155,12 @@ namespace DataAccess.Repositories
                 Apellido = reader["apellido"] as string ?? string.Empty,
                 IdTipoDoc = (int)reader["id_tipo_doc"],
                 NumDoc = reader["num_doc"] as string ?? string.Empty,
-                Cuil = reader["cuil"] as string,
-                Calle = reader["calle"] as string,
-                Altura = reader["altura"] as string,
+                Cuil = reader["cuil"] as string ?? string.Empty,
+                Calle = reader["calle"] as string ?? string.Empty,
+                Altura = reader["altura"] as string ?? string.Empty,
                 IdLocalidad = (int)reader["id_localidad"],
                 IdGenero = (int)reader["id_genero"],
-                Correo = reader["correo"] as string,
+                Correo = reader["correo"] as string ?? string.Empty,
                 FechaIngreso = (DateTime)reader["fecha_ingreso"]
             };
         }, p => p.AddWithValue("@id", id));
@@ -201,7 +201,7 @@ namespace DataAccess.Repositories
                 ContrasenaScript = (byte[])reader["contrasena_script"],
                 IdPersona = (int)reader["id_persona"],
                 FechaBloqueo = (DateTime)reader["fecha_bloqueo"],
-                NombreUsuarioBloqueo = reader["nombre_usuario_bloqueo"] as string,
+                NombreUsuarioBloqueo = reader["nombre_usuario_bloqueo"] as string ?? string.Empty,
                 FechaUltimoCambio = (DateTime)reader["fecha_ultimo_cambio"],
                 IdRol = (int)reader["id_rol"],
                 IdPolitica = reader["id_politica"] as int?,
@@ -222,7 +222,7 @@ namespace DataAccess.Repositories
                     ContrasenaScript = (byte[])reader["contrasena_script"],
                     IdPersona = (int)reader["id_persona"],
                     FechaBloqueo = (DateTime)reader["fecha_bloqueo"],
-                    NombreUsuarioBloqueo = reader["nombre_usuario_bloqueo"] as string,
+                    NombreUsuarioBloqueo = reader["nombre_usuario_bloqueo"] as string ?? string.Empty,
                     FechaUltimoCambio = (DateTime)reader["fecha_ultimo_cambio"],
                     IdRol = (int)reader["id_rol"],
                     IdPolitica = reader["id_politica"] as int?,
@@ -236,12 +236,12 @@ namespace DataAccess.Repositories
                         Apellido = reader["apellido"] as string ?? string.Empty,
                         IdTipoDoc = (int)reader["id_tipo_doc"],
                         NumDoc = reader["num_doc"] as string ?? string.Empty,
-                        Cuil = reader["cuil"] as string,
-                        Calle = reader["calle"] as string,
-                        Altura = reader["altura"] as string,
+                        Cuil = reader["cuil"] as string ?? string.Empty,
+                        Calle = reader["calle"] as string ?? string.Empty,
+                        Altura = reader["altura"] as string ?? string.Empty,
                         IdLocalidad = (int)reader["id_localidad"],
                         IdGenero = (int)reader["id_genero"],
-                        Correo = reader["correo"] as string,
+                        Correo = reader["correo"] as string ?? string.Empty,
                         FechaIngreso = (DateTime)reader["fecha_ingreso"]
                     }
                 });
@@ -262,12 +262,12 @@ namespace DataAccess.Repositories
                     Apellido = reader["apellido"] as string ?? string.Empty,
                     IdTipoDoc = (int)reader["id_tipo_doc"],
                     NumDoc = reader["num_doc"] as string ?? string.Empty,
-                    Cuil = reader["cuil"] as string,
-                    Calle = reader["calle"] as string,
-                    Altura = reader["altura"] as string,
+                    Cuil = reader["cuil"] as string ?? string.Empty,
+                    Calle = reader["calle"] as string ?? string.Empty,
+                    Altura = reader["altura"] as string ?? string.Empty,
                     IdLocalidad = (int)reader["id_localidad"],
                     IdGenero = (int)reader["id_genero"],
-                    Correo = reader["correo"] as string,
+                    Correo = reader["correo"] as string ?? string.Empty,
                     FechaIngreso = (DateTime)reader["fecha_ingreso"]
                 });
             }
@@ -287,12 +287,12 @@ namespace DataAccess.Repositories
             p.AddWithValue("@apellido", persona.Apellido);
             p.AddWithValue("@id_tipo_doc", persona.IdTipoDoc);
             p.AddWithValue("@num_doc", persona.NumDoc);
-            p.AddWithValue("@cuil", (object)persona.Cuil ?? DBNull.Value);
-            p.AddWithValue("@calle", (object)persona.Calle ?? DBNull.Value);
-            p.AddWithValue("@altura", (object)persona.Altura ?? DBNull.Value);
+            p.AddWithValue("@cuil", (object?)persona.Cuil ?? DBNull.Value);
+            p.AddWithValue("@calle", (object?)persona.Calle ?? DBNull.Value);
+            p.AddWithValue("@altura", (object?)persona.Altura ?? DBNull.Value);
             p.AddWithValue("@id_localidad", persona.IdLocalidad);
             p.AddWithValue("@id_genero", persona.IdGenero);
-            p.AddWithValue("@correo", (object)persona.Correo ?? DBNull.Value);
+            p.AddWithValue("@correo", (object?)persona.Correo ?? DBNull.Value);
         });
 
         public void AddRespuestaSeguridad(RespuestaSeguridad respuesta) => ExecuteNonQuery("sp_insert_respuesta_seguridad", p =>
@@ -308,7 +308,7 @@ namespace DataAccess.Repositories
             p.AddWithValue("@contrasena_script", usuario.ContrasenaScript);
             p.AddWithValue("@id_persona", usuario.IdPersona);
             p.AddWithValue("@fecha_bloqueo", usuario.FechaBloqueo);
-            p.AddWithValue("@nombre_usuario_bloqueo", (object)usuario.NombreUsuarioBloqueo ?? DBNull.Value);
+            p.AddWithValue("@nombre_usuario_bloqueo", (object?)usuario.NombreUsuarioBloqueo ?? DBNull.Value);
             p.AddWithValue("@fecha_ultimo_cambio", usuario.FechaUltimoCambio);
             p.AddWithValue("@id_rol", usuario.IdRol);
             p.AddWithValue("@CambioContrasenaObligatorio", usuario.CambioContrasenaObligatorio);
@@ -321,7 +321,7 @@ namespace DataAccess.Repositories
             p.AddWithValue("@contrasena_script", usuario.ContrasenaScript);
             p.AddWithValue("@id_persona", usuario.IdPersona);
             p.AddWithValue("@fecha_bloqueo", usuario.FechaBloqueo);
-            p.AddWithValue("@nombre_usuario_bloqueo", (object)usuario.NombreUsuarioBloqueo ?? DBNull.Value);
+            p.AddWithValue("@nombre_usuario_bloqueo", (object?)usuario.NombreUsuarioBloqueo ?? DBNull.Value);
             p.AddWithValue("@fecha_ultimo_cambio", usuario.FechaUltimoCambio);
             p.AddWithValue("@id_rol", usuario.IdRol);
             p.AddWithValue("@CambioContrasenaObligatorio", usuario.CambioContrasenaObligatorio);

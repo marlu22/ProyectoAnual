@@ -158,6 +158,10 @@ namespace BusinessLogic.Services
             usuario.CambioContrasenaObligatorio = true;
             _userRepository.UpdateUsuario(usuario);
 
+            if (string.IsNullOrEmpty(persona.Correo))
+            {
+                throw new ValidationException("El usuario no tiene una dirección de correo electrónico configurada.");
+            }
             // Enviar correo con la nueva contraseña usando el servicio de email
             _emailService.SendPasswordResetEmailAsync(persona.Correo, newPassword)
                          .GetAwaiter()

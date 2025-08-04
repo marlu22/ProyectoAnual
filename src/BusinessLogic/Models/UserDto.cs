@@ -8,5 +8,7 @@ namespace BusinessLogic.Models
         public string? Rol { get; set; }
         public int IdRol { get; set; }
         public bool CambioContrasenaObligatorio { get; set; }
+        public DateTime? FechaExpiracion { get; set; }
+        public bool Habilitado { get; set; }
     }
 }

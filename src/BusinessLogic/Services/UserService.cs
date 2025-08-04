@@ -112,7 +112,7 @@ namespace BusinessLogic.Services
                 IdLocalidad = _userRepository.GetLocalidadByNombre(request.Localidad)?.IdLocalidad ?? throw new ValidationException("Localidad no encontrada"),
                 IdGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero ?? throw new ValidationException("Género no encontrado"),
                 Correo = request.Correo,
-                FechaIngreso = DateTime.Now
+                FechaIngreso = request.FechaIngreso
             };
             _userRepository.AddPersona(persona);
         }, "creating a person");
@@ -166,6 +166,16 @@ namespace BusinessLogic.Services
                 var hash = HashUsuarioContrasena(username, password);
                 if (!hash.SequenceEqual(usuario.ContrasenaScript))
                     return AuthenticationResult.Failed("Usuario o contraseña incorrectos.");
+
+                if (usuario.FechaBloqueo < DateTime.Now)
+                {
+                    return AuthenticationResult.Failed("La cuenta se encuentra deshabilitada.");
+                }
+
+                if (usuario.FechaExpiracion.HasValue && usuario.FechaExpiracion.Value < DateTime.Now)
+                {
+                    return AuthenticationResult.Failed("La cuenta ha expirado.");
+                }
 
                 var politica = _userRepository.GetPoliticaSeguridad();
                 if (politica?.Autenticacion2FA ?? false)
@@ -339,6 +349,18 @@ namespace BusinessLogic.Services
 
             usuario.UsuarioNombre = userDto.Username;
             usuario.IdRol = userDto.IdRol;
+            usuario.FechaExpiracion = userDto.FechaExpiracion;
+
+            if (userDto.Habilitado)
+            {
+                usuario.FechaBloqueo = new DateTime(9999, 12, 31);
+                usuario.NombreUsuarioBloqueo = null;
+            }
+            else
+            {
+                usuario.FechaBloqueo = DateTime.Now;
+                usuario.NombreUsuarioBloqueo = "Admin"; // Placeholder for current admin user
+            }
 
             _userRepository.UpdateUsuario(usuario);
         }, "updating user");

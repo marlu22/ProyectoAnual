@@ -10,9 +10,10 @@ namespace Presentation
 
         // Controles para "Añadir Persona"
         private System.Windows.Forms.TableLayoutPanel personaLayout;
-        private System.Windows.Forms.Label lblLegajo, lblNombre, lblApellido, lblTipoDoc, lblNumDoc, lblCuil, lblCalle, lblAltura, lblLocalidad, lblGenero, lblCorreo;
+        private System.Windows.Forms.Label lblLegajo, lblNombre, lblApellido, lblTipoDoc, lblNumDoc, lblCuil, lblCalle, lblAltura, lblLocalidad, lblGenero, lblCorreo, lblFechaIngreso;
         private System.Windows.Forms.TextBox txtLegajo, txtNombre, txtApellido, txtNumDoc, txtCuil, txtCalle, txtAltura, txtCorreo;
         private System.Windows.Forms.ComboBox cbxTipoDoc, cbxLocalidad, cbxGenero;
+        private System.Windows.Forms.DateTimePicker dtpFechaIngreso;
         private System.Windows.Forms.Button btnGuardarPersona;
 
         // Controles para "Crear Usuario"
@@ -39,6 +40,8 @@ namespace Presentation
         // Controles para "Gestion de Usuarios"
         private System.Windows.Forms.TableLayoutPanel gestionUsuariosLayout;
         private System.Windows.Forms.DataGridView dgvUsuarios;
+        private System.Windows.Forms.Label lblFechaExpiracionGestion;
+        private System.Windows.Forms.DateTimePicker dtpFechaExpiracionGestion;
         private System.Windows.Forms.Button btnRefrescarUsuarios, btnGuardarCambios, btnEliminarUsuario;
 
         protected override void Dispose(bool disposing)
@@ -75,6 +78,8 @@ namespace Presentation
             cbxGenero = new System.Windows.Forms.ComboBox();
             lblCorreo = new System.Windows.Forms.Label();
             txtCorreo = new System.Windows.Forms.TextBox();
+            lblFechaIngreso = new System.Windows.Forms.Label();
+            dtpFechaIngreso = new System.Windows.Forms.DateTimePicker();
             btnGuardarPersona = new System.Windows.Forms.Button();
             tabUsuarios = new System.Windows.Forms.TabPage();
             usuarioLayout = new System.Windows.Forms.TableLayoutPanel();
@@ -89,6 +94,8 @@ namespace Presentation
             btnCrearUsuario = new System.Windows.Forms.Button();
             tabGestionUsuarios = new System.Windows.Forms.TabPage();
             gestionUsuariosLayout = new System.Windows.Forms.TableLayoutPanel();
+            lblFechaExpiracionGestion = new System.Windows.Forms.Label();
+            dtpFechaExpiracionGestion = new System.Windows.Forms.DateTimePicker();
             dgvUsuarios = new System.Windows.Forms.DataGridView();
             buttonPanel = new System.Windows.Forms.FlowLayoutPanel();
             btnEliminarUsuario = new System.Windows.Forms.Button();
@@ -169,11 +176,14 @@ namespace Presentation
             personaLayout.Controls.Add(cbxGenero, 1, 9);
             personaLayout.Controls.Add(lblCorreo, 0, 10);
             personaLayout.Controls.Add(txtCorreo, 1, 10);
-            personaLayout.Controls.Add(btnGuardarPersona, 1, 11);
+            personaLayout.Controls.Add(lblFechaIngreso, 0, 11);
+            personaLayout.Controls.Add(dtpFechaIngreso, 1, 11);
+            personaLayout.Controls.Add(btnGuardarPersona, 1, 12);
             personaLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             personaLayout.Location = new System.Drawing.Point(0, 0);
             personaLayout.Name = "personaLayout";
-            personaLayout.RowCount = 11;
+            personaLayout.RowCount = 13;
+            personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
@@ -375,10 +385,27 @@ namespace Presentation
             txtCorreo.Name = "txtCorreo";
             txtCorreo.Size = new System.Drawing.Size(100, 25);
             txtCorreo.TabIndex = 21;
+            //
+            // lblFechaIngreso
+            //
+            lblFechaIngreso.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFechaIngreso.AutoSize = true;
+            lblFechaIngreso.Location = new System.Drawing.Point(45, 335);
+            lblFechaIngreso.Name = "lblFechaIngreso";
+            lblFechaIngreso.Size = new System.Drawing.Size(124, 19);
+            lblFechaIngreso.TabIndex = 22;
+            lblFechaIngreso.Text = "Fecha de Ingreso:";
+            //
+            // dtpFechaIngreso
+            //
+            dtpFechaIngreso.Location = new System.Drawing.Point(175, 333);
+            dtpFechaIngreso.Name = "dtpFechaIngreso";
+            dtpFechaIngreso.Size = new System.Drawing.Size(200, 25);
+            dtpFechaIngreso.TabIndex = 23;
             // 
             // btnGuardarPersona
             // 
-            btnGuardarPersona.Location = new System.Drawing.Point(175, 333);
+            btnGuardarPersona.Location = new System.Drawing.Point(175, 363);
             btnGuardarPersona.Name = "btnGuardarPersona";
             btnGuardarPersona.Size = new System.Drawing.Size(75, 23);
             btnGuardarPersona.TabIndex = 22;
@@ -512,23 +539,45 @@ namespace Presentation
             gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
             gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
             gestionUsuariosLayout.Controls.Add(dgvUsuarios, 0, 0);
-            gestionUsuariosLayout.Controls.Add(buttonPanel, 0, 1);
+            gestionUsuariosLayout.Controls.Add(lblFechaExpiracionGestion, 0, 1);
+            gestionUsuariosLayout.Controls.Add(dtpFechaExpiracionGestion, 1, 1);
+            gestionUsuariosLayout.Controls.Add(buttonPanel, 0, 2);
             gestionUsuariosLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             gestionUsuariosLayout.Location = new System.Drawing.Point(0, 0);
             gestionUsuariosLayout.Name = "gestionUsuariosLayout";
-            gestionUsuariosLayout.RowCount = 2;
-            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 85F));
-            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            gestionUsuariosLayout.RowCount = 3;
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 75F));
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             gestionUsuariosLayout.Size = new System.Drawing.Size(492, 372);
             gestionUsuariosLayout.TabIndex = 0;
             // 
             // dgvUsuarios
             // 
             gestionUsuariosLayout.SetColumnSpan(dgvUsuarios, 3);
+            dgvUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvUsuarios.Location = new System.Drawing.Point(3, 3);
             dgvUsuarios.Name = "dgvUsuarios";
-            dgvUsuarios.Size = new System.Drawing.Size(240, 150);
+            dgvUsuarios.Size = new System.Drawing.Size(486, 250);
             dgvUsuarios.TabIndex = 0;
+            //
+            // lblFechaExpiracionGestion
+            //
+            lblFechaExpiracionGestion.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFechaExpiracionGestion.AutoSize = true;
+            lblFechaExpiracionGestion.Location = new System.Drawing.Point(50, 261);
+            lblFechaExpiracionGestion.Name = "lblFechaExpiracionGestion";
+            lblFechaExpiracionGestion.Size = new System.Drawing.Size(110, 19);
+            lblFechaExpiracionGestion.TabIndex = 2;
+            lblFechaExpiracionGestion.Text = "Fecha Expiración:";
+            //
+            // dtpFechaExpiracionGestion
+            //
+            dtpFechaExpiracionGestion.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            dtpFechaExpiracionGestion.Location = new System.Drawing.Point(167, 259);
+            dtpFechaExpiracionGestion.Name = "dtpFechaExpiracionGestion";
+            dtpFechaExpiracionGestion.Size = new System.Drawing.Size(200, 25);
+            dtpFechaExpiracionGestion.TabIndex = 3;
             // 
             // buttonPanel
             // 
@@ -536,7 +585,8 @@ namespace Presentation
             buttonPanel.Controls.Add(btnEliminarUsuario);
             buttonPanel.Controls.Add(btnGuardarCambios);
             buttonPanel.Controls.Add(btnRefrescarUsuarios);
-            buttonPanel.Location = new System.Drawing.Point(3, 319);
+            buttonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            buttonPanel.Location = new System.Drawing.Point(3, 289);
             buttonPanel.Name = "buttonPanel";
             buttonPanel.Size = new System.Drawing.Size(200, 50);
             buttonPanel.TabIndex = 1;

@@ -118,6 +118,7 @@ CREATE TABLE usuarios (
     CambioContrasenaObligatorio BIT NOT NULL DEFAULT 0,
     Codigo2FA VARCHAR(10),
     Codigo2FAExpiracion DATETIME,
+    FechaExpiracion DATETIME NULL,
     FOREIGN KEY (id_persona) REFERENCES personas(id_persona),
     FOREIGN KEY (id_rol) REFERENCES roles(id_rol),
     FOREIGN KEY (id_politica) REFERENCES politicas_seguridad(id_politica)
@@ -437,18 +438,19 @@ CREATE PROCEDURE sp_insert_usuario
     @id_rol INT,
     @CambioContrasenaObligatorio BIT = 0,
     @Codigo2FA VARCHAR(10) = NULL,
-    @Codigo2FAExpiracion DATETIME = NULL
+    @Codigo2FAExpiracion DATETIME = NULL,
+    @FechaExpiracion DATETIME = NULL
 AS
 BEGIN
     INSERT INTO usuarios (
         usuario, contrasena_script, id_persona, fecha_bloqueo,
         nombre_usuario_bloqueo, fecha_ultimo_cambio, id_rol, CambioContrasenaObligatorio,
-        Codigo2FA, Codigo2FAExpiracion
+        Codigo2FA, Codigo2FAExpiracion, FechaExpiracion
     )
     VALUES (
         @usuario, @contrasena_script, @id_persona, @fecha_bloqueo,
         @nombre_usuario_bloqueo, @fecha_ultimo_cambio, @id_rol, @CambioContrasenaObligatorio,
-        @Codigo2FA, @Codigo2FAExpiracion
+        @Codigo2FA, @Codigo2FAExpiracion, @FechaExpiracion
     )
 END
 GO
@@ -466,7 +468,8 @@ CREATE PROCEDURE sp_actualizar_usuario
     @id_rol INT,
     @CambioContrasenaObligatorio BIT,
     @Codigo2FA VARCHAR(10) = NULL,
-    @Codigo2FAExpiracion DATETIME = NULL
+    @Codigo2FAExpiracion DATETIME = NULL,
+    @FechaExpiracion DATETIME = NULL
 AS
 BEGIN
     UPDATE usuarios
@@ -479,7 +482,8 @@ BEGIN
         id_rol = @id_rol,
         CambioContrasenaObligatorio = @CambioContrasenaObligatorio,
         Codigo2FA = @Codigo2FA,
-        Codigo2FAExpiracion = @Codigo2FAExpiracion
+        Codigo2FAExpiracion = @Codigo2FAExpiracion,
+        FechaExpiracion = @FechaExpiracion
     WHERE id_usuario = @id_usuario
 END
 GO
@@ -503,6 +507,7 @@ BEGIN
         u.CambioContrasenaObligatorio,
         u.Codigo2FA,
         u.Codigo2FAExpiracion,
+        u.FechaExpiracion,
         r.id_rol AS rol_id_rol,
         r.rol
     FROM usuarios u
@@ -529,6 +534,7 @@ BEGIN
         u.CambioContrasenaObligatorio,
         u.Codigo2FA,
         u.Codigo2FAExpiracion,
+        u.FechaExpiracion,
         r.id_rol AS rol_id_rol,
         r.rol,
         p.id_persona AS persona_id_persona,

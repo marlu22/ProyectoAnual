@@ -50,6 +50,33 @@ public class MockUserRepository : IUserRepository
             FechaBloqueo = new DateTime(9999, 12, 31),
             Rol = new Rol { IdRol = 1, Nombre = "Administrador" }
         });
+
+        // Expired user
+        _users.Add(new Usuario
+        {
+            IdUsuario = 2,
+            UsuarioNombre = "expireduser",
+            ContrasenaScript = HashUsuarioContrasena("expireduser", "password"),
+            IdPersona = 1,
+            IdRol = 1,
+            CambioContrasenaObligatorio = false,
+            FechaBloqueo = new DateTime(9999, 12, 31),
+            FechaExpiracion = DateTime.Now.AddDays(-1), // Expired yesterday
+            Rol = new Rol { IdRol = 1, Nombre = "Usuario" }
+        });
+
+        // Disabled user
+        _users.Add(new Usuario
+        {
+            IdUsuario = 3,
+            UsuarioNombre = "disableduser",
+            ContrasenaScript = HashUsuarioContrasena("disableduser", "password"),
+            IdPersona = 1,
+            IdRol = 1,
+            CambioContrasenaObligatorio = false,
+            FechaBloqueo = DateTime.Now.AddDays(-1), // Blocked yesterday
+            Rol = new Rol { IdRol = 1, Nombre = "Usuario" }
+        });
     }
 
     public Usuario? GetUsuarioByNombreUsuario(string nombre) => _users.Find(u => u.UsuarioNombre == nombre);
@@ -126,6 +153,30 @@ public class Program
             else
             {
                 Console.WriteLine($"Error: La autenticación falló. Motivo: {authResult.ErrorMessage}");
+            }
+
+            // Test expired user
+            Console.WriteLine("\nIntentando autenticar usuario expirado...");
+            var expiredResult = await userService.AuthenticateAsync("expireduser", "password");
+            if (!expiredResult.Success && expiredResult.ErrorMessage == "La cuenta ha expirado.")
+            {
+                Console.WriteLine("Prueba de usuario expirado exitosa.");
+            }
+            else
+            {
+                Console.WriteLine("Error: La prueba de usuario expirado falló.");
+            }
+
+            // Test disabled user
+            Console.WriteLine("\nIntentando autenticar usuario deshabilitado...");
+            var disabledResult = await userService.AuthenticateAsync("disableduser", "password");
+            if (!disabledResult.Success && disabledResult.ErrorMessage == "La cuenta se encuentra deshabilitada.")
+            {
+                Console.WriteLine("Prueba de usuario deshabilitado exitosa.");
+            }
+            else
+            {
+                Console.WriteLine("Error: La prueba de usuario deshabilitado falló.");
             }
         }
         catch (Exception ex)

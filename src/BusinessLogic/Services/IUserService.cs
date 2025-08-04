@@ -1,5 +1,6 @@
 // src/BusinessLogic/Services/IUserService.cs
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BusinessLogic.Models;
 using DataAccess.Entities;
 
@@ -10,7 +11,7 @@ namespace BusinessLogic.Services
         void CrearPersona(PersonaRequest request);
         void CrearUsuario(UserRequest request);
         UserResponse? Authenticate(string username, string password);
-        void RecuperarContrasena(string username, Dictionary<int, string> respuestas);
+        Task RecuperarContrasena(string username, Dictionary<int, string> respuestas);
         void CambiarContrasena(string username, string newPassword);
         List<TipoDoc> GetTiposDoc();
         List<Localidad> GetLocalidades();

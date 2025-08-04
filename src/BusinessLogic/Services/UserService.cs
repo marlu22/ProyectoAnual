@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using BusinessLogic.Models;
 using DataAccess.Entities;
 using DataAccess.Repositories;
@@ -28,6 +29,18 @@ namespace BusinessLogic.Services
             try
             {
                 return operation();
+            }
+            catch (InfrastructureException ex)
+            {
+                throw new DataAccessLayerException($"A data access error occurred during {operationName}.", ex);
+            }
+        }
+
+        private async Task ExecuteServiceOperationAsync(Func<Task> operation, string operationName)
+        {
+            try
+            {
+                await operation();
             }
             catch (InfrastructureException ex)
             {
@@ -120,7 +133,7 @@ namespace BusinessLogic.Services
             };
         }, "authenticating user");
 
-        public void RecuperarContrasena(string username, Dictionary<int, string> respuestas) => ExecuteServiceOperation(() =>
+        public async Task RecuperarContrasena(string username, Dictionary<int, string> respuestas) => await ExecuteServiceOperationAsync(async () =>
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ValidationException("Username is required");
@@ -162,10 +175,9 @@ namespace BusinessLogic.Services
             {
                 throw new ValidationException("El usuario no tiene una dirección de correo electrónico configurada.");
             }
+
             // Enviar correo con la nueva contraseña usando el servicio de email
-            _emailService.SendPasswordResetEmailAsync(persona.Correo, newPassword)
-                         .GetAwaiter()
-                         .GetResult(); // Llamada síncrona para no cambiar la firma del método
+            await _emailService.SendPasswordResetEmailAsync(persona.Correo, newPassword);
         }, "recovering password");
 
         public void CambiarContrasena(string username, string newPassword) => ExecuteServiceOperation(() =>

@@ -100,36 +100,39 @@ namespace Presentation
             grpUsuario.Enabled = true;
         }
 
-        private void BtnRecuperar_Click(object? sender, EventArgs e)
+        private async void BtnRecuperar_Click(object? sender, EventArgs e)
         {
-            try
+            var respuestas = new Dictionary<int, string>();
+            foreach (Control control in pnlPreguntas.Controls)
             {
-                var respuestas = new Dictionary<int, string>();
-                foreach (Control control in pnlPreguntas.Controls)
+                if (control is TextBox textBox)
                 {
-                    if (control is TextBox textBox)
+                    if (string.IsNullOrWhiteSpace(textBox.Text))
                     {
-                        if (string.IsNullOrWhiteSpace(textBox.Text))
-                        {
-                            MessageBox.Show("Por favor, responda todas las preguntas de seguridad.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
+                        MessageBox.Show("Por favor, responda todas las preguntas de seguridad.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
-                        if (textBox.Tag is int idPregunta)
-                        {
-                            respuestas.Add(idPregunta, textBox.Text.Trim());
-                        }
+                    if (textBox.Tag is int idPregunta)
+                    {
+                        respuestas.Add(idPregunta, textBox.Text.Trim());
                     }
                 }
+            }
 
-                if (respuestas.Count != _preguntasUsuario.Count)
-                {
-                     MessageBox.Show("No se pudieron recolectar todas las respuestas. Intente de nuevo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                     return;
-                }
+            if (respuestas.Count != _preguntasUsuario.Count)
+            {
+                 MessageBox.Show("No se pudieron recolectar todas las respuestas. Intente de nuevo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                 return;
+            }
 
+            btnRecuperar.Enabled = false;
+            this.Cursor = Cursors.WaitCursor;
+
+            try
+            {
                 string usuario = txtUsuario.Text.Trim();
-                _userService.RecuperarContrasena(usuario, respuestas);
+                await _userService.RecuperarContrasena(usuario, respuestas);
 
                 MessageBox.Show("Si las respuestas proporcionadas son correctas, se ha enviado una nueva contraseña a su dirección de correo electrónico.", "Recuperación Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
@@ -142,6 +145,11 @@ namespace Presentation
             catch (Exception ex)
             {
                 MessageBox.Show($"Se produjo un error inesperado durante la recuperación: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnRecuperar.Enabled = true;
+                this.Cursor = Cursors.Default;
             }
         }
     }

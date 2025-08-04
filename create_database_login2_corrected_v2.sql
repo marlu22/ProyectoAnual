@@ -956,6 +956,7 @@ GO
 -- Step 7: Insert Admin User
 -- Insert Rol "Administrador"
 EXEC sp_insert_rol @rol = 'Administrador';
+EXEC sp_insert_rol @rol = 'Usuario';
 GO
 
 -- Insert Preguntas de Seguridad

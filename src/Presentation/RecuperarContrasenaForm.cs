@@ -18,7 +18,7 @@ namespace Presentation
             _userService = userService;
 
             // Configure initial state
-            preguntasLayoutPanel.Visible = false;
+            preguntasPanel.Visible = false;
             btnRecuperar.Visible = false;
 
             // Wire up events

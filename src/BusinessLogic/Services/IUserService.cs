@@ -10,9 +10,10 @@ namespace BusinessLogic.Services
     {
         void CrearPersona(PersonaRequest request);
         void CrearUsuario(UserRequest request);
-        UserResponse? Authenticate(string username, string password);
+        Task<AuthenticationResult> AuthenticateAsync(string username, string password);
+        Task<UserResponse?> Validate2faAsync(string username, string code);
         Task RecuperarContrasena(string username, Dictionary<int, string> respuestas);
-        void CambiarContrasena(string username, string newPassword);
+        void CambiarContrasena(string username, string newPassword, string oldPassword);
         List<TipoDoc> GetTiposDoc();
         List<Localidad> GetLocalidades();
         List<Genero> GetGeneros();

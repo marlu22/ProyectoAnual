@@ -116,6 +116,8 @@ CREATE TABLE usuarios (
     id_rol INT NOT NULL,
     id_politica INT,
     CambioContrasenaObligatorio BIT NOT NULL DEFAULT 0,
+    Codigo2FA VARCHAR(10),
+    Codigo2FAExpiracion DATETIME,
     FOREIGN KEY (id_persona) REFERENCES personas(id_persona),
     FOREIGN KEY (id_rol) REFERENCES roles(id_rol),
     FOREIGN KEY (id_politica) REFERENCES politicas_seguridad(id_politica)
@@ -433,16 +435,20 @@ CREATE PROCEDURE sp_insert_usuario
     @nombre_usuario_bloqueo VARCHAR(30),
     @fecha_ultimo_cambio DATETIME,
     @id_rol INT,
-    @CambioContrasenaObligatorio BIT = 0
+    @CambioContrasenaObligatorio BIT = 0,
+    @Codigo2FA VARCHAR(10) = NULL,
+    @Codigo2FAExpiracion DATETIME = NULL
 AS
 BEGIN
     INSERT INTO usuarios (
         usuario, contrasena_script, id_persona, fecha_bloqueo,
-        nombre_usuario_bloqueo, fecha_ultimo_cambio, id_rol, CambioContrasenaObligatorio
+        nombre_usuario_bloqueo, fecha_ultimo_cambio, id_rol, CambioContrasenaObligatorio,
+        Codigo2FA, Codigo2FAExpiracion
     )
     VALUES (
         @usuario, @contrasena_script, @id_persona, @fecha_bloqueo,
-        @nombre_usuario_bloqueo, @fecha_ultimo_cambio, @id_rol, @CambioContrasenaObligatorio
+        @nombre_usuario_bloqueo, @fecha_ultimo_cambio, @id_rol, @CambioContrasenaObligatorio,
+        @Codigo2FA, @Codigo2FAExpiracion
     )
 END
 GO
@@ -458,7 +464,9 @@ CREATE PROCEDURE sp_actualizar_usuario
     @nombre_usuario_bloqueo VARCHAR(30),
     @fecha_ultimo_cambio DATETIME,
     @id_rol INT,
-    @CambioContrasenaObligatorio BIT
+    @CambioContrasenaObligatorio BIT,
+    @Codigo2FA VARCHAR(10) = NULL,
+    @Codigo2FAExpiracion DATETIME = NULL
 AS
 BEGIN
     UPDATE usuarios
@@ -469,7 +477,9 @@ BEGIN
         nombre_usuario_bloqueo = @nombre_usuario_bloqueo,
         fecha_ultimo_cambio = @fecha_ultimo_cambio,
         id_rol = @id_rol,
-        CambioContrasenaObligatorio = @CambioContrasenaObligatorio
+        CambioContrasenaObligatorio = @CambioContrasenaObligatorio,
+        Codigo2FA = @Codigo2FA,
+        Codigo2FAExpiracion = @Codigo2FAExpiracion
     WHERE id_usuario = @id_usuario
 END
 GO
@@ -491,6 +501,8 @@ BEGIN
         u.id_rol,
         u.id_politica,
         u.CambioContrasenaObligatorio,
+        u.Codigo2FA,
+        u.Codigo2FAExpiracion,
         r.id_rol AS rol_id_rol,
         r.rol
     FROM usuarios u
@@ -515,6 +527,8 @@ BEGIN
         u.id_rol,
         u.id_politica,
         u.CambioContrasenaObligatorio,
+        u.Codigo2FA,
+        u.Codigo2FAExpiracion,
         r.id_rol AS rol_id_rol,
         r.rol,
         p.id_persona AS persona_id_persona,

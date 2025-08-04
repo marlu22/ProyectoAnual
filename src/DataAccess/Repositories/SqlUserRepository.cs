@@ -206,9 +206,22 @@ namespace DataAccess.Repositories
                 IdRol = (int)reader["id_rol"],
                 IdPolitica = reader["id_politica"] as int?,
                 CambioContrasenaObligatorio = (bool)reader["CambioContrasenaObligatorio"],
+                Codigo2FA = reader["Codigo2FA"] as string,
+                Codigo2FAExpiracion = reader["Codigo2FAExpiracion"] as DateTime?,
                 Rol = new Rol { IdRol = (int)reader["rol_id_rol"], Nombre = reader["rol"] as string ?? string.Empty }
             };
         }, p => p.AddWithValue("@usuario_nombre", nombre), CommandType.StoredProcedure);
+
+        public void Set2faCode(string username, string? code, DateTime? expiry) => ExecuteNonQuery(
+            "UPDATE usuarios SET Codigo2FA = @code, Codigo2FAExpiracion = @expiry WHERE usuario = @username",
+            p =>
+            {
+                p.AddWithValue("@code", (object?)code ?? DBNull.Value);
+                p.AddWithValue("@expiry", (object?)expiry ?? DBNull.Value);
+                p.AddWithValue("@username", username);
+            },
+            CommandType.Text
+        );
 
         public List<Usuario> GetAllUsers() => ExecuteReader("sp_get_all_users", reader =>
         {
@@ -227,6 +240,8 @@ namespace DataAccess.Repositories
                     IdRol = (int)reader["id_rol"],
                     IdPolitica = reader["id_politica"] as int?,
                     CambioContrasenaObligatorio = (bool)reader["CambioContrasenaObligatorio"],
+                    Codigo2FA = reader["Codigo2FA"] as string,
+                    Codigo2FAExpiracion = reader["Codigo2FAExpiracion"] as DateTime?,
                     Rol = new Rol { IdRol = (int)reader["rol_id_rol"], Nombre = reader["rol"] as string ?? string.Empty },
                     Persona = new Persona
                     {

@@ -49,6 +49,18 @@ namespace BusinessLogic.Services
             }
         }
 
+        private async Task<T> ExecuteServiceOperationAsync<T>(Func<Task<T>> operation, string operationName)
+        {
+            try
+            {
+                return await operation();
+            }
+            catch (InfrastructureException ex)
+            {
+                throw new DataAccessLayerException($"A data access error occurred during {operationName}.", ex);
+            }
+        }
+
         private void ExecuteServiceOperation(Action operation, string operationName)
         {
             try
@@ -140,33 +152,79 @@ namespace BusinessLogic.Services
             });
         }, "creating a user");
 
-        public UserResponse? Authenticate(string username, string password) => ExecuteServiceOperation(() =>
+        public async Task<AuthenticationResult> AuthenticateAsync(string username, string password)
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-                return null;
-
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
-            if (usuario == null)
-                return null;
-
-            var hash = HashUsuarioContrasena(username, password);
-            if (!hash.SequenceEqual(usuario.ContrasenaScript))
-                return null;
-
-            return new UserResponse
+            return await ExecuteServiceOperationAsync<AuthenticationResult>(async () =>
             {
-                Username = usuario.UsuarioNombre,
-                Rol = usuario.Rol?.Nombre,
-                CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
-            };
-        }, "authenticating user");
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                    return AuthenticationResult.Failed("Usuario o contraseña no pueden estar vacíos.");
+
+                var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
+                if (usuario == null)
+                    return AuthenticationResult.Failed("Usuario o contraseña incorrectos.");
+
+                var hash = HashUsuarioContrasena(username, password);
+                if (!hash.SequenceEqual(usuario.ContrasenaScript))
+                    return AuthenticationResult.Failed("Usuario o contraseña incorrectos.");
+
+                var politica = _userRepository.GetPoliticaSeguridad();
+                if (politica?.Autenticacion2FA ?? false)
+                {
+                    var persona = _userRepository.GetPersonaById(usuario.IdPersona);
+                    if (persona == null || string.IsNullOrWhiteSpace(persona.Correo))
+                    {
+                        return AuthenticationResult.Failed("No se puede usar 2FA sin un correo configurado.");
+                    }
+
+                    var code = new Random().Next(100000, 999999).ToString();
+                    var expiry = DateTime.UtcNow.AddMinutes(5);
+
+                    _userRepository.Set2faCode(username, code, expiry);
+                    await _emailService.Send2faCodeEmailAsync(persona.Correo, code);
+
+                    return AuthenticationResult.TwoFactorRequired();
+                }
+
+                var userResponse = new UserResponse
+                {
+                    Username = usuario.UsuarioNombre,
+                    Rol = usuario.Rol?.Nombre,
+                    CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
+                };
+                return AuthenticationResult.Succeeded(userResponse);
+            }, "authenticating user");
+        }
+
+        public async Task<UserResponse?> Validate2faAsync(string username, string code)
+        {
+            return await ExecuteServiceOperationAsync<UserResponse?>(async () =>
+            {
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(code))
+                    return null;
+
+                var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
+                if (usuario == null || usuario.Codigo2FA != code || usuario.Codigo2FAExpiracion < DateTime.UtcNow)
+                {
+                    return null;
+                }
+
+                _userRepository.Set2faCode(username, null, null);
+
+                return new UserResponse
+                {
+                    Username = usuario.UsuarioNombre,
+                    Rol = usuario.Rol?.Nombre,
+                    CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
+                };
+            }, "validating 2FA");
+        }
 
         public async Task RecuperarContrasena(string username, Dictionary<int, string> respuestas) => await ExecuteServiceOperationAsync(async () =>
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ValidationException("Username is required");
 
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { CantPreguntas = 3 }; // Default to 3
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { CantPreguntas = 3 };
             if (respuestas == null || respuestas.Count != politica.CantPreguntas || respuestas.Any(r => string.IsNullOrWhiteSpace(r.Value)))
                 throw new ValidationException($"Se requieren {politica.CantPreguntas} respuestas de seguridad.");
 
@@ -208,13 +266,19 @@ namespace BusinessLogic.Services
             await _emailService.SendPasswordResetEmailAsync(persona.Correo, newPassword);
         }, "recovering password");
 
-        public void CambiarContrasena(string username, string newPassword) => ExecuteServiceOperation(() =>
+        public void CambiarContrasena(string username, string newPassword, string oldPassword) => ExecuteServiceOperation(() =>
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(newPassword))
-                throw new ValidationException("Username and new password are required");
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(oldPassword))
+                throw new ValidationException("Todos los campos son requeridos.");
 
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
+
+            var oldPasswordHash = HashUsuarioContrasena(username, oldPassword);
+            if (!oldPasswordHash.SequenceEqual(usuario.ContrasenaScript))
+            {
+                throw new ValidationException("La contraseña actual es incorrecta.");
+            }
 
             var persona = _userRepository.GetPersonaById(usuario.IdPersona)
                 ?? throw new ValidationException("Persona no encontrada");
@@ -233,8 +297,8 @@ namespace BusinessLogic.Services
                 }
             }
 
-            var oldPasswordHash = usuario.ContrasenaScript;
-            if (oldPasswordHash == null)
+            var currentPasswordHash = usuario.ContrasenaScript;
+            if (currentPasswordHash == null)
             {
                 // This case should ideally not happen if data is consistent
                 throw new InvalidOperationException("User password hash cannot be null.");
@@ -242,7 +306,7 @@ namespace BusinessLogic.Services
             _userRepository.AddHistorialContrasena(new HistorialContrasena
             {
                 IdUsuario = usuario.IdUsuario,
-                ContrasenaScript = oldPasswordHash,
+                ContrasenaScript = currentPasswordHash,
                 FechaCambio = DateTime.Now
             });
 

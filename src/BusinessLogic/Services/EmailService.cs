@@ -68,5 +68,51 @@ namespace BusinessLogic.Services
                     <p style='font-size: 0.8em; color: #777;'>Si usted no solicitó este cambio, por favor ignore este correo electrónico.</p>
                 </div>";
         }
+
+        public async Task Send2faCodeEmailAsync(string toEmail, string code)
+        {
+            if (string.IsNullOrWhiteSpace(toEmail))
+            {
+                Console.WriteLine("No se proporcionó una dirección de correo para el código 2FA.");
+                return;
+            }
+
+            try
+            {
+                using var client = new SmtpClient(_smtpSettings.Server, _smtpSettings.Port)
+                {
+                    Credentials = new NetworkCredential(_smtpSettings.Username, _smtpSettings.Password),
+                    EnableSsl = _smtpSettings.UseSsl
+                };
+
+                var from = new MailAddress(_smtpSettings.SenderEmail, _smtpSettings.SenderName);
+                var to = new MailAddress(toEmail);
+
+                using var mailMessage = new MailMessage(from, to)
+                {
+                    Subject = "Código de Autenticación de Dos Factores",
+                    IsBodyHtml = true,
+                    Body = Get2faEmailBody(code)
+                };
+
+                await client.SendMailAsync(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error al enviar el correo 2FA. Verifique la configuración SMTP. Detalles: {ex.Message}", ex);
+            }
+        }
+
+        private static string Get2faEmailBody(string code)
+        {
+            return $@"
+                <div style='font-family: Arial, sans-serif; color: #333;'>
+                    <h1 style='color: #0056b3;'>Código de Verificación</h1>
+                    <p>Use el siguiente código para completar su inicio de sesión. El código es válido por 5 minutos.</p>
+                    <h2 style='color: #darkorange; border: 1px solid #ddd; padding: 10px; display: inline-block;'>{code}</h2>
+                    <hr>
+                    <p style='font-size: 0.8em; color: #777;'>Si usted no intentó iniciar sesión, por favor ignore este correo electrónico.</p>
+                </div>";
+        }
     }
 }

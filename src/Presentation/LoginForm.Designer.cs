@@ -10,6 +10,7 @@ namespace Presentation
         private System.Windows.Forms.TextBox txtContrasena;
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Button btnRecuperarContrasena;
+        private System.Windows.Forms.CheckBox chkMostrarContrasena;
 
         protected override void Dispose(bool disposing)
         {
@@ -41,18 +42,30 @@ namespace Presentation
             tableLayoutPanel.Controls.Add(txtUsuario, 1, 0);
             tableLayoutPanel.Controls.Add(lblContrasena, 0, 1);
             tableLayoutPanel.Controls.Add(txtContrasena, 1, 1);
-            tableLayoutPanel.Controls.Add(btnLogin, 1, 2);
-            tableLayoutPanel.Controls.Add(btnRecuperarContrasena, 1, 3);
+            this.chkMostrarContrasena = new System.Windows.Forms.CheckBox();
+            this.chkMostrarContrasena.AutoSize = true;
+            this.chkMostrarContrasena.Location = new System.Drawing.Point(128, 83);
+            this.chkMostrarContrasena.Name = "chkMostrarContrasena";
+            this.chkMostrarContrasena.Size = new System.Drawing.Size(139, 19);
+            this.chkMostrarContrasena.TabIndex = 6;
+            this.chkMostrarContrasena.Text = "Mostrar contraseña";
+            this.chkMostrarContrasena.UseVisualStyleBackColor = true;
+            this.chkMostrarContrasena.CheckedChanged += new System.EventHandler(this.ChkMostrarContrasena_CheckedChanged);
+            tableLayoutPanel.Controls.Add(this.chkMostrarContrasena, 1, 2);
+            tableLayoutPanel.Controls.Add(btnLogin, 1, 3);
+            btnRecuperarContrasena.Click += new System.EventHandler(this.BtnRecuperarContrasena_Click);
+            tableLayoutPanel.Controls.Add(btnRecuperarContrasena, 1, 4);
             tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel.Name = "tableLayoutPanel";
             tableLayoutPanel.Padding = new System.Windows.Forms.Padding(10);
-            tableLayoutPanel.RowCount = 4;
+            tableLayoutPanel.RowCount = 5;
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            tableLayoutPanel.Size = new System.Drawing.Size(350, 220);
+            tableLayoutPanel.Size = new System.Drawing.Size(350, 250);
             tableLayoutPanel.TabIndex = 0;
             // 
             // lblUsuario
@@ -109,12 +122,24 @@ namespace Presentation
             btnRecuperarContrasena.TabIndex = 5;
             btnRecuperarContrasena.Text = "¿Olvidaste tu contraseña?";
             btnRecuperarContrasena.UseVisualStyleBackColor = true;
-            btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
+            //
+            // chkMostrarContrasena
+            //
+            this.chkMostrarContrasena = new System.Windows.Forms.CheckBox();
+            this.chkMostrarContrasena.AutoSize = true;
+            this.chkMostrarContrasena.Location = new System.Drawing.Point(128, 118);
+            this.chkMostrarContrasena.Name = "chkMostrarContrasena";
+            this.chkMostrarContrasena.Size = new System.Drawing.Size(139, 19);
+            this.chkMostrarContrasena.TabIndex = 6;
+            this.chkMostrarContrasena.Text = "Mostrar contraseña";
+            this.chkMostrarContrasena.UseVisualStyleBackColor = true;
+            this.chkMostrarContrasena.CheckedChanged += new System.EventHandler(this.ChkMostrarContrasena_CheckedChanged);
+            this.tableLayoutPanel.Controls.Add(this.chkMostrarContrasena, 1, 2);
             // 
             // LoginForm
             // 
             AcceptButton = btnLogin;
-            ClientSize = new System.Drawing.Size(350, 220);
+            ClientSize = new System.Drawing.Size(350, 250);
             Controls.Add(tableLayoutPanel);
             Font = new System.Drawing.Font("Segoe UI", 10F);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

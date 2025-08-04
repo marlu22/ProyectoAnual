@@ -14,6 +14,7 @@ namespace DataAccess.Repositories
         void AddUsuario(Usuario usuario);
         Usuario? GetUsuarioByNombreUsuario(string nombre);
         void UpdateUsuario(Usuario usuario);
+        void Set2faCode(string username, string? code, System.DateTime? expiry);
         List<RespuestaSeguridad>? GetRespuestasSeguridadByUsuarioId(int idUsuario);
         List<TipoDoc> GetAllTiposDoc();
         List<Localidad> GetAllLocalidades();

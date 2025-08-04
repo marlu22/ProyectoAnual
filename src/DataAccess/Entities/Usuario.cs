@@ -50,6 +50,9 @@ namespace DataAccess.Entities
         [Column("Codigo2FAExpiracion")]
         public DateTime? Codigo2FAExpiracion { get; set; }
 
+        [Column("FechaExpiracion")]
+        public DateTime? FechaExpiracion { get; set; }
+
         [ForeignKey("IdPersona")]
         public virtual Persona Persona { get; set; } = null!;
 

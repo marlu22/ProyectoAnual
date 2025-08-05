@@ -8,6 +8,7 @@ using DataAccess.Repositories;
 using BusinessLogic.Services;
 using BusinessLogic.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using Presentation; // Add this if LoginForm is in Presentation.Forms namespace
 using UserManagementSystem.BusinessLogic.Exceptions;
 using UserManagementSystem.DataAccess.Exceptions;
@@ -33,7 +34,20 @@ internal static class Program
             .Build();
 
         var connectionFactory = new DatabaseConnectionFactory(config);
-        IUserRepository userRepository = new SqlUserRepository(connectionFactory);
+
+        // Configurar logging
+        var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder
+                .AddFilter("Microsoft", LogLevel.Warning)
+                .AddFilter("System", LogLevel.Warning)
+                .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug)
+                .AddConsole()
+                .AddEventLog();
+        });
+
+        ILogger<SqlUserRepository> sqlLogger = loggerFactory.CreateLogger<SqlUserRepository>();
+        IUserRepository userRepository = new SqlUserRepository(connectionFactory, sqlLogger);
 
         // Configurar y crear EmailService
         var smtpSettings = new SmtpSettings();
@@ -41,7 +55,8 @@ internal static class Program
         IEmailService emailService = new EmailService(Options.Create(smtpSettings));
 
         // Modificar la instanciación de UserService para incluir el nuevo servicio
-        IUserService userService = new UserService(userRepository, emailService);
+        ILogger<UserService> userLogger = loggerFactory.CreateLogger<UserService>();
+        IUserService userService = new UserService(userRepository, emailService, userLogger);
 
         Application.Run(new LoginForm(userService));
     }

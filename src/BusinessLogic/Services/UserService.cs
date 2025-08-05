@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using BusinessLogic.Models;
 using DataAccess.Entities;
 using DataAccess.Repositories;
+using Microsoft.Extensions.Logging;
 using UserManagementSystem.DataAccess.Exceptions;
 using UserManagementSystem.BusinessLogic.Exceptions;
 
@@ -18,11 +19,13 @@ namespace BusinessLogic.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository, IEmailService emailService)
+        public UserService(IUserRepository userRepository, IEmailService emailService, ILogger<UserService> logger)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         private T ExecuteServiceOperation<T>(Func<T> operation, string operationName)
@@ -95,8 +98,13 @@ namespace BusinessLogic.Services
 
         public void CrearPersona(PersonaRequest request) => ExecuteServiceOperation(() =>
         {
+            _logger.LogInformation("Iniciando la creación de la persona con legajo: {Legajo}", request.Legajo);
+
             if (!int.TryParse(request.Legajo, out int legajo))
+            {
+                _logger.LogWarning("El legajo '{Legajo}' no es un número válido.", request.Legajo);
                 throw new ValidationException("El legajo debe ser un número válido.");
+            }
 
             if (string.IsNullOrWhiteSpace(request.Nombre))
                 throw new ValidationException("El nombre no puede estar vacío.");
@@ -105,23 +113,36 @@ namespace BusinessLogic.Services
                 throw new ValidationException("El apellido no puede estar vacío.");
 
             if (!long.TryParse(request.NumDoc, out _))
+            {
+                _logger.LogWarning("El número de documento '{NumDoc}' no es numérico.", request.NumDoc);
                 throw new ValidationException("El número de documento debe ser numérico.");
+            }
 
             if (!long.TryParse(request.Cuil, out _))
+            {
+                _logger.LogWarning("El CUIL '{Cuil}' no es numérico.", request.Cuil);
                 throw new ValidationException("El CUIL debe ser numérico.");
+            }
 
             if (string.IsNullOrWhiteSpace(request.Calle))
                 throw new ValidationException("La calle no puede estar vacía.");
 
             if (!int.TryParse(request.Altura, out _))
+            {
+                _logger.LogWarning("La altura '{Altura}' no es un número.", request.Altura);
                 throw new ValidationException("La altura de la dirección debe ser un número.");
+            }
 
             if (string.IsNullOrWhiteSpace(request.Correo) || !IsValidEmail(request.Correo))
                 throw new ValidationException("El formato del correo electrónico no es válido.");
 
             if (!int.TryParse(request.Localidad, out int localidadId))
+            {
+                _logger.LogWarning("El ID de localidad '{Localidad}' no es válido.", request.Localidad);
                 throw new ValidationException("El ID de localidad no es válido.");
+            }
 
+            _logger.LogInformation("Mapeando PersonaRequest a la entidad Persona.");
             var persona = new Persona
             {
                 Legajo = legajo,
@@ -139,7 +160,10 @@ namespace BusinessLogic.Services
                 Celular = request.Celular,
                 FechaIngreso = request.FechaIngreso
             };
+
+            _logger.LogInformation("Llamando a AddPersona en el repositorio.");
             _userRepository.AddPersona(persona);
+            _logger.LogInformation("Persona creada con éxito en el repositorio.");
         }, "creating a person");
 
         public void CrearUsuario(UserRequest request) => ExecuteServiceOperation(() =>

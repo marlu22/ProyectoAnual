@@ -23,90 +23,134 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            this.lblActual = new System.Windows.Forms.Label();
-            this.lblNueva = new System.Windows.Forms.Label();
-            this.lblRepetir = new System.Windows.Forms.Label();
-            this.txtActual = new RoundedTextBox();
-            this.txtNueva = new RoundedTextBox();
-            this.txtRepetir = new RoundedTextBox();
-            this.btnCambiar = new RoundedButton();
-            this.SuspendLayout();
-
-            // Form
-            this.BackColor = ThemeColors.FormBackground;
-            this.ForeColor = ThemeColors.TextPrimary;
-
+            lblActual = new System.Windows.Forms.Label();
+            lblNueva = new System.Windows.Forms.Label();
+            lblRepetir = new System.Windows.Forms.Label();
+            txtActual = new RoundedTextBox();
+            txtNueva = new RoundedTextBox();
+            txtRepetir = new RoundedTextBox();
+            btnCambiar = new RoundedButton();
+            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
+            SuspendLayout();
+            // 
             // lblActual
-            this.lblActual.AutoSize = true;
-            this.lblActual.Location = new System.Drawing.Point(30, 33);
-            this.lblActual.Name = "lblActual";
-            this.lblActual.Size = new System.Drawing.Size(110, 15);
-            this.lblActual.TabIndex = 0;
-            this.lblActual.Text = "Contraseña actual:";
-            this.lblActual.ForeColor = ThemeColors.TextPrimary;
-
-            // txtActual
-            this.txtActual.Location = new System.Drawing.Point(160, 30);
-            this.txtActual.Name = "txtActual";
-            this.txtActual.PasswordChar = '●';
-            this.txtActual.Size = new System.Drawing.Size(200, 28);
-            this.txtActual.TabIndex = 1;
-
+            // 
+            lblActual.AutoSize = true;
+            lblActual.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblActual.Location = new System.Drawing.Point(18, 33);
+            lblActual.Name = "lblActual";
+            lblActual.Size = new System.Drawing.Size(138, 20);
+            lblActual.TabIndex = 0;
+            lblActual.Text = "Contraseña actual:";
+            // 
             // lblNueva
-            this.lblNueva.AutoSize = true;
-            this.lblNueva.Location = new System.Drawing.Point(30, 73);
-            this.lblNueva.Name = "lblNueva";
-            this.lblNueva.Size = new System.Drawing.Size(112, 15);
-            this.lblNueva.TabIndex = 2;
-            this.lblNueva.Text = "Nueva contraseña:";
-            this.lblNueva.ForeColor = ThemeColors.TextPrimary;
-
-            // txtNueva
-            this.txtNueva.Location = new System.Drawing.Point(160, 70);
-            this.txtNueva.Name = "txtNueva";
-            this.txtNueva.PasswordChar = '●';
-            this.txtNueva.Size = new System.Drawing.Size(200, 28);
-            this.txtNueva.TabIndex = 3;
-
+            // 
+            lblNueva.AutoSize = true;
+            lblNueva.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblNueva.Location = new System.Drawing.Point(18, 73);
+            lblNueva.Name = "lblNueva";
+            lblNueva.Size = new System.Drawing.Size(139, 20);
+            lblNueva.TabIndex = 2;
+            lblNueva.Text = "Nueva contraseña:";
+            // 
             // lblRepetir
-            this.lblRepetir.AutoSize = true;
-            this.lblRepetir.Location = new System.Drawing.Point(30, 113);
-            this.lblRepetir.Name = "lblRepetir";
-            this.lblRepetir.Size = new System.Drawing.Size(115, 15);
-            this.lblRepetir.TabIndex = 4;
-            this.lblRepetir.Text = "Repetir contraseña:";
-            this.lblRepetir.ForeColor = ThemeColors.TextPrimary;
-
+            // 
+            lblRepetir.AutoSize = true;
+            lblRepetir.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblRepetir.Location = new System.Drawing.Point(18, 113);
+            lblRepetir.Name = "lblRepetir";
+            lblRepetir.Size = new System.Drawing.Size(145, 20);
+            lblRepetir.TabIndex = 4;
+            lblRepetir.Text = "Repetir contraseña:";
+            // 
+            // txtActual
+            // 
+            txtActual.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtActual.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtActual.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtActual.ForeColor = System.Drawing.Color.White;
+            txtActual.Location = new System.Drawing.Point(160, 30);
+            txtActual.Name = "txtActual";
+            txtActual.PasswordChar = '●';
+            txtActual.Size = new System.Drawing.Size(200, 23);
+            txtActual.TabIndex = 1;
+            // 
+            // txtNueva
+            // 
+            txtNueva.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtNueva.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtNueva.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtNueva.ForeColor = System.Drawing.Color.White;
+            txtNueva.Location = new System.Drawing.Point(160, 70);
+            txtNueva.Name = "txtNueva";
+            txtNueva.PasswordChar = '●';
+            txtNueva.Size = new System.Drawing.Size(200, 23);
+            txtNueva.TabIndex = 3;
+            // 
             // txtRepetir
-            this.txtRepetir.Location = new System.Drawing.Point(160, 110);
-            this.txtRepetir.Name = "txtRepetir";
-            this.txtRepetir.PasswordChar = '●';
-            this.txtRepetir.Size = new System.Drawing.Size(200, 28);
-            this.txtRepetir.TabIndex = 5;
-
+            // 
+            txtRepetir.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtRepetir.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtRepetir.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtRepetir.ForeColor = System.Drawing.Color.White;
+            txtRepetir.Location = new System.Drawing.Point(160, 110);
+            txtRepetir.Name = "txtRepetir";
+            txtRepetir.PasswordChar = '●';
+            txtRepetir.Size = new System.Drawing.Size(200, 23);
+            txtRepetir.TabIndex = 5;
+            // 
             // btnCambiar
-            this.btnCambiar.Location = new System.Drawing.Point(260, 150);
-            this.btnCambiar.Name = "btnCambiar";
-            this.btnCambiar.Size = new System.Drawing.Size(100, 35);
-            this.btnCambiar.TabIndex = 6;
-            this.btnCambiar.Text = "Cambiar";
-
+            // 
+            btnCambiar.Cursor = System.Windows.Forms.Cursors.Hand;
+            btnCambiar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnCambiar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnCambiar.ForeColor = System.Drawing.Color.White;
+            btnCambiar.Location = new System.Drawing.Point(237, 151);
+            btnCambiar.Name = "btnCambiar";
+            btnCambiar.Size = new System.Drawing.Size(100, 35);
+            btnCambiar.TabIndex = 6;
+            btnCambiar.Text = "Cambiar";
+            // 
+            // iconPictureBox1
+            // 
+            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
+            iconPictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.MailForward;
+            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconPictureBox1.IconSize = 37;
+            iconPictureBox1.Location = new System.Drawing.Point(354, 180);
+            iconPictureBox1.Name = "iconPictureBox1";
+            iconPictureBox1.Size = new System.Drawing.Size(37, 41);
+            iconPictureBox1.TabIndex = 7;
+            iconPictureBox1.TabStop = false;
+            // 
             // CambioContrasenaForm
-            this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Controls.Add(this.btnCambiar);
-            this.Controls.Add(this.txtRepetir);
-            this.Controls.Add(this.lblRepetir);
-            this.Controls.Add(this.txtNueva);
-            this.Controls.Add(this.lblNueva);
-            this.Controls.Add(this.txtActual);
-            this.Controls.Add(this.lblActual);
-            this.Text = "Cambiar Contraseña";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            // 
+            BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
+            ClientSize = new System.Drawing.Size(403, 233);
+            Controls.Add(iconPictureBox1);
+            Controls.Add(btnCambiar);
+            Controls.Add(txtRepetir);
+            Controls.Add(lblRepetir);
+            Controls.Add(txtNueva);
+            Controls.Add(lblNueva);
+            Controls.Add(txtActual);
+            Controls.Add(lblActual);
+            Cursor = System.Windows.Forms.Cursors.Arrow;
+            ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
+            Name = "CambioContrasenaForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Cambiar Contraseña";
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox1;
     }
 }

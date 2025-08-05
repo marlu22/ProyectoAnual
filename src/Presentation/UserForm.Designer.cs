@@ -21,77 +21,105 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            this.btnCambiarPreguntas = new RoundedButton();
-            this.btnCambiarContrasena = new RoundedButton();
-            this.iconPictureBox1 = new IconPictureBox();
-            this.iconPictureBox2 = new IconPictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).BeginInit();
-            this.SuspendLayout();
-
-            // Form
-            this.BackColor = ThemeColors.FormBackground;
-
-            // btnCambiarContrasena
-            this.btnCambiarContrasena.Location = new System.Drawing.Point(50, 50);
-            this.btnCambiarContrasena.Name = "btnCambiarContrasena";
-            this.btnCambiarContrasena.Size = new System.Drawing.Size(220, 45);
-            this.btnCambiarContrasena.TabIndex = 0;
-            this.btnCambiarContrasena.Text = "Cambiar Contraseña";
-            this.btnCambiarContrasena.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCambiarContrasena.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-
-
+            btnCambiarPreguntas = new RoundedButton();
+            btnCambiarContrasena = new RoundedButton();
+            iconPictureBox1 = new IconPictureBox();
+            iconPictureBox2 = new IconPictureBox();
+            iconPictureBox3 = new IconPictureBox();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox3).BeginInit();
+            SuspendLayout();
+            // 
             // btnCambiarPreguntas
-            this.btnCambiarPreguntas.Location = new System.Drawing.Point(50, 110);
-            this.btnCambiarPreguntas.Name = "btnCambiarPreguntas";
-            this.btnCambiarPreguntas.Size = new System.Drawing.Size(220, 45);
-            this.btnCambiarPreguntas.TabIndex = 1;
-            this.btnCambiarPreguntas.Text = "Cambiar Preguntas";
-            this.btnCambiarPreguntas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCambiarPreguntas.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-
+            // 
+            btnCambiarPreguntas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnCambiarPreguntas.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnCambiarPreguntas.ForeColor = System.Drawing.Color.White;
+            btnCambiarPreguntas.Location = new System.Drawing.Point(50, 110);
+            btnCambiarPreguntas.Name = "btnCambiarPreguntas";
+            btnCambiarPreguntas.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            btnCambiarPreguntas.Size = new System.Drawing.Size(220, 45);
+            btnCambiarPreguntas.TabIndex = 1;
+            btnCambiarPreguntas.Text = "Cambiar Preguntas";
+            btnCambiarPreguntas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // btnCambiarContrasena
+            // 
+            btnCambiarContrasena.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnCambiarContrasena.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnCambiarContrasena.ForeColor = System.Drawing.Color.White;
+            btnCambiarContrasena.Location = new System.Drawing.Point(50, 50);
+            btnCambiarContrasena.Name = "btnCambiarContrasena";
+            btnCambiarContrasena.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            btnCambiarContrasena.Size = new System.Drawing.Size(220, 45);
+            btnCambiarContrasena.TabIndex = 0;
+            btnCambiarContrasena.Text = "Cambiar Contraseña";
+            btnCambiarContrasena.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // iconPictureBox1
-            this.iconPictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.iconPictureBox1.ForeColor = ThemeColors.Primary;
-            this.iconPictureBox1.IconChar = IconChar.Lock;
-            this.iconPictureBox1.IconColor = ThemeColors.Primary;
-            this.iconPictureBox1.IconFont = IconFont.Auto;
-            this.iconPictureBox1.IconSize = 35;
-            this.iconPictureBox1.Location = new System.Drawing.Point(280, 55);
-            this.iconPictureBox1.Name = "iconPictureBox1";
-            this.iconPictureBox1.Size = new System.Drawing.Size(35, 35);
-            this.iconPictureBox1.TabIndex = 2;
-            this.iconPictureBox1.TabStop = false;
-
+            // 
+            iconPictureBox1.BackColor = System.Drawing.Color.Transparent;
+            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlText;
+            iconPictureBox1.IconChar = IconChar.Lock;
+            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlText;
+            iconPictureBox1.IconFont = IconFont.Auto;
+            iconPictureBox1.IconSize = 35;
+            iconPictureBox1.Location = new System.Drawing.Point(280, 55);
+            iconPictureBox1.Name = "iconPictureBox1";
+            iconPictureBox1.Size = new System.Drawing.Size(35, 35);
+            iconPictureBox1.TabIndex = 2;
+            iconPictureBox1.TabStop = false;
+            // 
             // iconPictureBox2
-            this.iconPictureBox2.BackColor = System.Drawing.Color.Transparent;
-            this.iconPictureBox2.ForeColor = ThemeColors.Primary;
-            this.iconPictureBox2.IconChar = IconChar.CircleQuestion;
-            this.iconPictureBox2.IconColor = ThemeColors.Primary;
-            this.iconPictureBox2.IconFont = IconFont.Auto;
-            this.iconPictureBox2.IconSize = 35;
-            this.iconPictureBox2.Location = new System.Drawing.Point(280, 115);
-            this.iconPictureBox2.Name = "iconPictureBox2";
-            this.iconPictureBox2.Size = new System.Drawing.Size(35, 35);
-            this.iconPictureBox2.TabIndex = 3;
-            this.iconPictureBox2.TabStop = false;
-
+            // 
+            iconPictureBox2.BackColor = System.Drawing.Color.Transparent;
+            iconPictureBox2.ForeColor = System.Drawing.SystemColors.ControlText;
+            iconPictureBox2.IconChar = IconChar.CircleQuestion;
+            iconPictureBox2.IconColor = System.Drawing.SystemColors.ControlText;
+            iconPictureBox2.IconFont = IconFont.Auto;
+            iconPictureBox2.IconSize = 35;
+            iconPictureBox2.Location = new System.Drawing.Point(280, 115);
+            iconPictureBox2.Name = "iconPictureBox2";
+            iconPictureBox2.Size = new System.Drawing.Size(35, 35);
+            iconPictureBox2.TabIndex = 3;
+            iconPictureBox2.TabStop = false;
+            // 
+            // iconPictureBox3
+            // 
+            iconPictureBox3.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
+            iconPictureBox3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox3.IconChar = IconChar.MailForward;
+            iconPictureBox3.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox3.IconFont = IconFont.Auto;
+            iconPictureBox3.IconSize = 40;
+            iconPictureBox3.Location = new System.Drawing.Point(325, 155);
+            iconPictureBox3.Name = "iconPictureBox3";
+            iconPictureBox3.Size = new System.Drawing.Size(40, 40);
+            iconPictureBox3.TabIndex = 7;
+            iconPictureBox3.TabStop = false;
+            // 
             // UserForm
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Controls.Add(this.iconPictureBox2);
-            this.Controls.Add(this.iconPictureBox1);
-            this.Controls.Add(this.btnCambiarPreguntas);
-            this.Controls.Add(this.btnCambiarContrasena);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "UserForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Seguridad";
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).EndInit();
-            this.ResumeLayout(false);
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            BackColor = System.Drawing.Color.FromArgb(43, 37, 58);
+            ClientSize = new System.Drawing.Size(377, 207);
+            Controls.Add(iconPictureBox3);
+            Controls.Add(iconPictureBox2);
+            Controls.Add(iconPictureBox1);
+            Controls.Add(btnCambiarPreguntas);
+            Controls.Add(btnCambiarContrasena);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            Name = "UserForm";
+            ShowIcon = false;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Text = "Seguridad";
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox3).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion
@@ -100,5 +128,6 @@ namespace Presentation
         private RoundedButton btnCambiarContrasena;
         private IconPictureBox iconPictureBox1;
         private IconPictureBox iconPictureBox2;
+        private IconPictureBox iconPictureBox3;
     }
 }

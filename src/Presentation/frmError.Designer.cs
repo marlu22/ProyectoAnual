@@ -26,89 +26,137 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            this.lblMessage = new System.Windows.Forms.Label();
-            this.txtMessage = new RoundedTextBox();
-            this.lblExceptionType = new System.Windows.Forms.Label();
-            this.txtExceptionType = new RoundedTextBox();
-            this.lblStackTrace = new System.Windows.Forms.Label();
-            this.txtStackTrace = new RoundedTextBox();
-            this.SuspendLayout();
-
-            // Form
-            this.BackColor = ThemeColors.FormBackground;
-
+            lblMessage = new System.Windows.Forms.Label();
+            txtMessage = new RoundedTextBox();
+            lblExceptionType = new System.Windows.Forms.Label();
+            txtExceptionType = new RoundedTextBox();
+            lblStackTrace = new System.Windows.Forms.Label();
+            txtStackTrace = new RoundedTextBox();
+            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
+            SuspendLayout();
+            // 
             // lblMessage
-            this.lblMessage.AutoSize = true;
-            this.lblMessage.Location = new System.Drawing.Point(12, 15);
-            this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(55, 13);
-            this.lblMessage.TabIndex = 0;
-            this.lblMessage.Text = "Message:";
-            this.lblMessage.ForeColor = ThemeColors.TextPrimary;
-
+            // 
+            lblMessage.AutoSize = true;
+            lblMessage.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblMessage.ForeColor = System.Drawing.SystemColors.Control;
+            lblMessage.Location = new System.Drawing.Point(16, 23);
+            lblMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblMessage.Name = "lblMessage";
+            lblMessage.Size = new System.Drawing.Size(74, 20);
+            lblMessage.TabIndex = 0;
+            lblMessage.Text = "Message:";
+            // 
             // txtMessage
-            this.txtMessage.Location = new System.Drawing.Point(110, 12);
-            this.txtMessage.Multiline = true;
-            this.txtMessage.Name = "txtMessage";
-            this.txtMessage.ReadOnly = true;
-            this.txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtMessage.Size = new System.Drawing.Size(362, 60);
-            this.txtMessage.TabIndex = 1;
-            this.txtMessage.BackColor = ThemeColors.Surface; // Override for readonly
-
+            // 
+            txtMessage.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtMessage.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtMessage.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtMessage.ForeColor = System.Drawing.Color.White;
+            txtMessage.Location = new System.Drawing.Point(147, 18);
+            txtMessage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            txtMessage.Multiline = true;
+            txtMessage.Name = "txtMessage";
+            txtMessage.ReadOnly = true;
+            txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            txtMessage.Size = new System.Drawing.Size(483, 92);
+            txtMessage.TabIndex = 1;
+            // 
             // lblExceptionType
-            this.lblExceptionType.AutoSize = true;
-            this.lblExceptionType.Location = new System.Drawing.Point(12, 81);
-            this.lblExceptionType.Name = "lblExceptionType";
-            this.lblExceptionType.Size = new System.Drawing.Size(86, 13);
-            this.lblExceptionType.TabIndex = 2;
-            this.lblExceptionType.Text = "Exception Type:";
-            this.lblExceptionType.ForeColor = ThemeColors.TextPrimary;
-
+            // 
+            lblExceptionType.AutoSize = true;
+            lblExceptionType.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblExceptionType.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            lblExceptionType.Location = new System.Drawing.Point(16, 125);
+            lblExceptionType.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblExceptionType.Name = "lblExceptionType";
+            lblExceptionType.Size = new System.Drawing.Size(118, 20);
+            lblExceptionType.TabIndex = 2;
+            lblExceptionType.Text = "Exception Type:";
+            // 
             // txtExceptionType
-            this.txtExceptionType.Location = new System.Drawing.Point(110, 78);
-            this.txtExceptionType.Name = "txtExceptionType";
-            this.txtExceptionType.ReadOnly = true;
-            this.txtExceptionType.Size = new System.Drawing.Size(362, 28);
-            this.txtExceptionType.TabIndex = 3;
-            this.txtExceptionType.BackColor = ThemeColors.Surface; // Override for readonly
-
+            // 
+            txtExceptionType.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtExceptionType.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtExceptionType.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtExceptionType.ForeColor = System.Drawing.Color.White;
+            txtExceptionType.Location = new System.Drawing.Point(147, 120);
+            txtExceptionType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            txtExceptionType.Name = "txtExceptionType";
+            txtExceptionType.ReadOnly = true;
+            txtExceptionType.Size = new System.Drawing.Size(483, 23);
+            txtExceptionType.TabIndex = 3;
+            // 
             // lblStackTrace
-            this.lblStackTrace.AutoSize = true;
-            this.lblStackTrace.Location = new System.Drawing.Point(12, 117);
-            this.lblStackTrace.Name = "lblStackTrace";
-            this.lblStackTrace.Size = new System.Drawing.Size(69, 13);
-            this.lblStackTrace.TabIndex = 4;
-            this.lblStackTrace.Text = "Stack Trace:";
-            this.lblStackTrace.ForeColor = ThemeColors.TextPrimary;
-
+            // 
+            lblStackTrace.AutoSize = true;
+            lblStackTrace.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblStackTrace.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            lblStackTrace.Location = new System.Drawing.Point(16, 160);
+            lblStackTrace.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblStackTrace.Name = "lblStackTrace";
+            lblStackTrace.Size = new System.Drawing.Size(91, 20);
+            lblStackTrace.TabIndex = 4;
+            lblStackTrace.Text = "Stack Trace:";
+            // 
             // txtStackTrace
-            this.txtStackTrace.Location = new System.Drawing.Point(15, 133);
-            this.txtStackTrace.Multiline = true;
-            this.txtStackTrace.Name = "txtStackTrace";
-            this.txtStackTrace.ReadOnly = true;
-            this.txtStackTrace.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtStackTrace.Size = new System.Drawing.Size(457, 116);
-            this.txtStackTrace.TabIndex = 5;
-            this.txtStackTrace.BackColor = ThemeColors.Surface; // Override for readonly
-
+            // 
+            txtStackTrace.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtStackTrace.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtStackTrace.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtStackTrace.ForeColor = System.Drawing.Color.White;
+            txtStackTrace.Location = new System.Drawing.Point(0, 185);
+            txtStackTrace.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            txtStackTrace.Multiline = true;
+            txtStackTrace.Name = "txtStackTrace";
+            txtStackTrace.ReadOnly = true;
+            txtStackTrace.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            txtStackTrace.Size = new System.Drawing.Size(556, 178);
+            txtStackTrace.TabIndex = 5;
+            // 
+            // iconPictureBox1
+            // 
+            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
+            iconPictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.MailForward;
+            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconPictureBox1.IconSize = 41;
+            iconPictureBox1.Location = new System.Drawing.Point(579, 349);
+            iconPictureBox1.Name = "iconPictureBox1";
+            iconPictureBox1.Size = new System.Drawing.Size(51, 41);
+            iconPictureBox1.TabIndex = 6;
+            iconPictureBox1.TabStop = false;
+            // 
             // frmError
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 261);
-            this.Controls.Add(this.txtStackTrace);
-            this.Controls.Add(this.lblStackTrace);
-            this.Controls.Add(this.txtExceptionType);
-            this.Controls.Add(this.lblExceptionType);
-            this.Controls.Add(this.txtMessage);
-            this.Controls.Add(this.lblMessage);
-            this.Name = "frmError";
-            this.Text = "Error Details";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
+            ClientSize = new System.Drawing.Size(645, 402);
+            Controls.Add(iconPictureBox1);
+            Controls.Add(txtStackTrace);
+            Controls.Add(lblStackTrace);
+            Controls.Add(txtExceptionType);
+            Controls.Add(lblExceptionType);
+            Controls.Add(txtMessage);
+            Controls.Add(lblMessage);
+            ForeColor = System.Drawing.SystemColors.ControlText;
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            Name = "frmError";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Text = "Error Details";
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
         #endregion
+
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox1;
     }
 }

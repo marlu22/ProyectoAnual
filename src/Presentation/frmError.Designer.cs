@@ -110,12 +110,5 @@ namespace Presentation
         }
 
         #endregion
-
-        private System.Windows.Forms.Label lblMessage;
-        private RoundedTextBox txtMessage;
-        private System.Windows.Forms.Label lblExceptionType;
-        private RoundedTextBox txtExceptionType;
-        private System.Windows.Forms.Label lblStackTrace;
-        private RoundedTextBox txtStackTrace;
     }
 }

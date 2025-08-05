@@ -205,27 +205,30 @@ namespace BusinessLogic.Services
             }, "authenticating user");
         }
 
-        public async Task<UserResponse?> Validate2faAsync(string username, string code)
+        public Task<UserResponse?> Validate2faAsync(string username, string code)
         {
-            return await ExecuteServiceOperationAsync<UserResponse?>(async () =>
+            return ExecuteServiceOperationAsync<UserResponse?>(() =>
             {
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(code))
-                    return null;
+                {
+                    return Task.FromResult<UserResponse?>(null);
+                }
 
                 var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
                 if (usuario == null || usuario.Codigo2FA != code || usuario.Codigo2FAExpiracion < DateTime.UtcNow)
                 {
-                    return null;
+                    return Task.FromResult<UserResponse?>(null);
                 }
 
                 _userRepository.Set2faCode(username, null, null);
 
-                return new UserResponse
+                var userResponse = new UserResponse
                 {
                     Username = usuario.UsuarioNombre,
                     Rol = usuario.Rol?.Nombre,
                     CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
                 };
+                return Task.FromResult(userResponse);
             }, "validating 2FA");
         }
 

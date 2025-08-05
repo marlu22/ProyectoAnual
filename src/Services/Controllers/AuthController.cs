@@ -24,19 +24,21 @@ namespace Services.Controllers
 
         // src/Services/Controllers/AuthController.cs (assumed snippet around line 36)
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            // La contraseña ya viene encriptada desde el cliente
-            var user = _userService.Authenticate(request.Username, request.Password);
-            if (user == null)
+            var authResult = await _userService.AuthenticateAsync(request.Username, request.Password);
+
+            if (!authResult.Success || authResult.User == null)
                 return Unauthorized("Invalid credentials");
 
-            // Add null check for user.Rol
+            var user = authResult.User;
+
             var response = new
             {
                 Username = user.Username,
                 Rol = user.Rol ?? "Unknown",
-                CambioContrasenaObligatorio = user.CambioContrasenaObligatorio
+                CambioContrasenaObligatorio = user.CambioContrasenaObligatorio,
+                Requires2fa = authResult.Requires2fa
             };
             return Ok(response);
         }

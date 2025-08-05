@@ -396,7 +396,7 @@ namespace BusinessLogic.Services
             using (var sha256 = SHA256.Create())
             {
                 // Concatenate username and password as per security requirements
-                return sha256.ComputeHash(Encoding.UTF8.GetBytes(username + password));
+                return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
 

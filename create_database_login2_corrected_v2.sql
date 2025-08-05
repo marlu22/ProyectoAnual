@@ -60,7 +60,7 @@ CREATE TABLE personas (
     id_tipo_doc INT NOT NULL,
     num_doc VARCHAR(20) NOT NULL,
     fecha_nacimiento DATE NULL,
-    cuil VARCHAR(10),
+    cuil VARCHAR(15),
     calle VARCHAR(50),
     altura VARCHAR(30),   
     id_localidad INT NOT NULL,
@@ -311,7 +311,7 @@ CREATE PROCEDURE sp_insert_persona
     @id_tipo_doc INT,
     @num_doc VARCHAR(20),
     @fecha_nacimiento DATE,
-    @cuil VARCHAR(10),
+    @cuil VARCHAR(15),
     @calle VARCHAR(50),
     @altura VARCHAR(30),
     @id_localidad INT,
@@ -342,13 +342,14 @@ CREATE PROCEDURE sp_update_persona
     @id_tipo_doc INT,
     @num_doc VARCHAR(20),
     @fecha_nacimiento DATE,
-    @cuil VARCHAR(10),
+    @cuil VARCHAR(15),
     @calle VARCHAR(50),
     @altura VARCHAR(30),
     @id_localidad INT,
     @id_genero INT,
     @correo VARCHAR(100),
-    @celular VARCHAR(30)
+    @celular VARCHAR(30),
+    @fecha_ingreso DATETIME
 AS
 BEGIN
     UPDATE personas
@@ -364,7 +365,8 @@ BEGIN
         id_localidad = @id_localidad,
         id_genero = @id_genero,
         correo = @correo,
-        celular = @celular
+        celular = @celular,
+        fecha_ingreso = @fecha_ingreso
     WHERE id_persona = @id_persona
 END
 GO

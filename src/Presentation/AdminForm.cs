@@ -402,7 +402,7 @@ namespace Presentation
                     Cuil = txtCuil.Text,
                     Calle = txtCalle.Text,
                     Altura = txtAltura.Text,
-                    Localidad = cbxLocalidad.SelectedValue.ToString(),
+                    Localidad = cbxLocalidad.SelectedValue!.ToString()!,
                     Genero = cbxGenero.Text,
                     Correo = txtCorreo.Text,
                     Celular = txtCelular.Text,

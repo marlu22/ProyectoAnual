@@ -31,6 +31,10 @@ namespace BusinessLogic.Services
             {
                 return operation();
             }
+            catch (ValidationException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 // Log the exception ex here
@@ -43,6 +47,10 @@ namespace BusinessLogic.Services
             try
             {
                 await operation();
+            }
+            catch (ValidationException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -57,6 +65,10 @@ namespace BusinessLogic.Services
             {
                 return await operation();
             }
+            catch (ValidationException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 // Log the exception ex here
@@ -69,6 +81,10 @@ namespace BusinessLogic.Services
             try
             {
                 operation();
+            }
+            catch (ValidationException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

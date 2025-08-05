@@ -59,34 +59,27 @@ CREATE TABLE personas (
     apellido VARCHAR(30) NOT NULL,
     id_tipo_doc INT NOT NULL,
     num_doc VARCHAR(20) NOT NULL,
+    fecha_nacimiento DATE NULL,
     cuil VARCHAR(10),
     calle VARCHAR(50),
     altura VARCHAR(30),   
     id_localidad INT NOT NULL,
     id_genero INT NOT NULL,
     correo VARCHAR(100),
+    celular VARCHAR(30),
     fecha_ingreso DATETIME NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (id_tipo_doc) REFERENCES tipo_doc(id_tipo_doc),
     FOREIGN KEY (id_localidad) REFERENCES localidades(id_localidad),
     FOREIGN KEY (id_genero) REFERENCES generos(id_genero)
 );
 
--- 7. Contactos
-CREATE TABLE contactos (
-    id_contacto INT PRIMARY KEY IDENTITY(1,1),
-    email VARCHAR(100) NOT NULL,
-    celular VARCHAR(30) NOT NULL,
-    id_persona INT NOT NULL,
-    FOREIGN KEY (id_persona) REFERENCES personas(id_persona)
-);
-
--- 8. Roles
+-- 7. Roles (was 8)
 CREATE TABLE roles (
     id_rol INT PRIMARY KEY IDENTITY(1,1),
     rol VARCHAR(50) NOT NULL
 );
 
--- 9. Políticas de Seguridad
+-- 8. Políticas de Seguridad (was 9)
 CREATE TABLE politicas_seguridad (
     id_politica INT PRIMARY KEY IDENTITY(1,1),
     min_caracteres INT,
@@ -104,7 +97,7 @@ INSERT INTO politicas_seguridad (min_caracteres, cant_preguntas, mayus_y_minus, 
 VALUES (8, 3, 0, 0, 0, 0, 0, 0);
 GO
 
--- 10. Usuarios
+-- 9. Usuarios (was 10)
 CREATE TABLE usuarios (
     id_usuario INT PRIMARY KEY IDENTITY(1,1),
     usuario VARCHAR(30) NOT NULL,
@@ -124,14 +117,14 @@ CREATE TABLE usuarios (
     FOREIGN KEY (id_politica) REFERENCES politicas_seguridad(id_politica)
 );
 
--- 11. Permisos
+-- 10. Permisos (was 11)
 CREATE TABLE permisos (
     id_permiso INT PRIMARY KEY IDENTITY(1,1),
     permiso VARCHAR(50) NOT NULL,
     descripcion VARCHAR(200)
 );
 
--- 12. Rol - Permiso
+-- 11. Rol - Permiso (was 12)
 CREATE TABLE rol_permiso (
     id_rol INT NOT NULL,
     id_permiso INT NOT NULL,
@@ -140,7 +133,7 @@ CREATE TABLE rol_permiso (
     FOREIGN KEY (id_permiso) REFERENCES permisos(id_permiso)
 );
 
--- 13. Usuario - Permiso
+-- 12. Usuario - Permiso (was 13)
 CREATE TABLE permisos_usuarios (
     id_usuario INT NOT NULL,
     id_permiso INT NOT NULL,
@@ -150,7 +143,7 @@ CREATE TABLE permisos_usuarios (
     FOREIGN KEY (id_permiso) REFERENCES permisos(id_permiso)
 );
 
--- 14. Historial de Contraseñas
+-- 13. Historial de Contraseñas (was 14)
 CREATE TABLE historial_contrasena (
     id INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT NOT NULL,
@@ -159,13 +152,13 @@ CREATE TABLE historial_contrasena (
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
 
--- 15. Preguntas de Seguridad
+-- 14. Preguntas de Seguridad (was 15)
 CREATE TABLE preguntas_seguridad (
     id_pregunta INT PRIMARY KEY IDENTITY(1,1),
     pregunta VARCHAR(255) NOT NULL
 );
 
--- 16. Respuestas de Seguridad
+-- 15. Respuestas de Seguridad (was 16)
 CREATE TABLE respuestas_seguridad (
     id_usuario INT NOT NULL,
     id_pregunta INT NOT NULL,
@@ -317,21 +310,23 @@ CREATE PROCEDURE sp_insert_persona
     @apellido VARCHAR(30),
     @id_tipo_doc INT,
     @num_doc VARCHAR(20),
+    @fecha_nacimiento DATE,
     @cuil VARCHAR(10),
     @calle VARCHAR(50),
     @altura VARCHAR(30),
     @id_localidad INT,
     @id_genero INT,
-    @correo VARCHAR(100)
+    @correo VARCHAR(100),
+    @celular VARCHAR(30)
 AS
 BEGIN
     INSERT INTO personas (
-        legajo, nombre, apellido, id_tipo_doc, num_doc,
-        cuil, calle, altura, id_localidad, id_genero, correo
+        legajo, nombre, apellido, id_tipo_doc, num_doc, fecha_nacimiento,
+        cuil, calle, altura, id_localidad, id_genero, correo, celular
     )
     VALUES (
-        @legajo, @nombre, @apellido, @id_tipo_doc, @num_doc,
-        @cuil, @calle, @altura, @id_localidad, @id_genero, @correo
+        @legajo, @nombre, @apellido, @id_tipo_doc, @num_doc, @fecha_nacimiento,
+        @cuil, @calle, @altura, @id_localidad, @id_genero, @correo, @celular
     )
 END
 GO
@@ -345,12 +340,14 @@ CREATE PROCEDURE sp_update_persona
     @apellido VARCHAR(30),
     @id_tipo_doc INT,
     @num_doc VARCHAR(20),
+    @fecha_nacimiento DATE,
     @cuil VARCHAR(10),
     @calle VARCHAR(50),
     @altura VARCHAR(30),
     @id_localidad INT,
     @id_genero INT,
-    @correo VARCHAR(100)
+    @correo VARCHAR(100),
+    @celular VARCHAR(30)
 AS
 BEGIN
     UPDATE personas
@@ -359,48 +356,19 @@ BEGIN
         apellido = @apellido,
         id_tipo_doc = @id_tipo_doc,
         num_doc = @num_doc,
+        fecha_nacimiento = @fecha_nacimiento,
         cuil = @cuil,
         calle = @calle,
         altura = @altura,
         id_localidad = @id_localidad,
         id_genero = @id_genero,
-        correo = @correo
+        correo = @correo,
+        celular = @celular
     WHERE id_persona = @id_persona
 END
 GO
 
--- 7. Contactos
-DROP PROCEDURE IF EXISTS sp_insert_contacto;
-GO
-CREATE PROCEDURE sp_insert_contacto
-    @email VARCHAR(100),
-    @celular VARCHAR(30),
-    @id_persona INT
-AS
-BEGIN
-    INSERT INTO contactos (email, celular, id_persona)
-    VALUES (@email, @celular, @id_persona)
-END
-GO
-
-DROP PROCEDURE IF EXISTS sp_update_contacto;
-GO
-CREATE PROCEDURE sp_update_contacto
-    @id_contacto INT,
-    @email VARCHAR(100),
-    @celular VARCHAR(30),
-    @id_persona INT
-AS
-BEGIN
-    UPDATE contactos
-    SET email = @email,
-        celular = @celular,
-        id_persona = @id_persona
-    WHERE id_contacto = @id_contacto
-END
-GO
-
--- 8. Roles
+-- 7. Roles (was 8)
 DROP PROCEDURE IF EXISTS sp_insert_rol;
 GO
 CREATE PROCEDURE sp_insert_rol
@@ -425,7 +393,7 @@ BEGIN
 END
 GO
 
--- 9. Usuarios
+-- 8. Usuarios (was 9)
 DROP PROCEDURE IF EXISTS sp_insert_usuario;
 GO
 CREATE PROCEDURE sp_insert_usuario
@@ -543,12 +511,14 @@ BEGIN
         p.apellido,
         p.id_tipo_doc,
         p.num_doc,
+        p.fecha_nacimiento,
         p.cuil,
         p.calle,
         p.altura,
         p.id_localidad,
         p.id_genero,
         p.correo,
+        p.celular,
         p.fecha_ingreso
     FROM usuarios u
     INNER JOIN roles r ON u.id_rol = r.id_rol
@@ -571,7 +541,7 @@ BEGIN
 END
 GO
 
--- 10. Permisos
+-- 9. Permisos (was 10)
 DROP PROCEDURE IF EXISTS sp_insert_permiso;
 GO
 CREATE PROCEDURE sp_insert_permiso
@@ -599,7 +569,7 @@ BEGIN
 END
 GO
 
--- 11. Rol_permiso
+-- 10. Rol_permiso (was 11)
 DROP PROCEDURE IF EXISTS sp_insert_rol_permiso;
 GO
 CREATE PROCEDURE sp_insert_rol_permiso
@@ -612,7 +582,7 @@ BEGIN
 END
 GO
 
--- 12. Permisos_usuarios
+-- 11. Permisos_usuarios (was 12)
 DROP PROCEDURE IF EXISTS sp_insertar_permiso;
 GO
 CREATE PROCEDURE sp_insertar_permiso
@@ -640,7 +610,7 @@ BEGIN
 END
 GO
 
--- 13. Historial_contrasena
+-- 12. Historial_contrasena (was 13)
 DROP PROCEDURE IF EXISTS sp_historial_contrasena;
 GO
 CREATE PROCEDURE sp_historial_contrasena
@@ -653,7 +623,7 @@ BEGIN
 END
 GO
 
--- 14. Preguntas_seguridad
+-- 13. Preguntas_seguridad (was 14)
 DROP PROCEDURE IF EXISTS sp_insert_pregunta_seguridad;
 GO
 CREATE PROCEDURE sp_insert_pregunta_seguridad
@@ -678,7 +648,7 @@ BEGIN
 END
 GO
 
--- 15. Respuestas_seguridad
+-- 14. Respuestas_seguridad (was 15)
 DROP PROCEDURE IF EXISTS sp_insert_respuesta_seguridad;
 GO
 CREATE PROCEDURE sp_insert_respuesta_seguridad
@@ -706,7 +676,7 @@ BEGIN
 END
 GO
 
--- 16. Politicas_seguridad
+-- 15. Politicas_seguridad (was 16)
 DROP PROCEDURE IF EXISTS sp_insert_politica_seguridad;
 GO
 CREATE PROCEDURE sp_insert_politica_seguridad
@@ -1001,12 +971,14 @@ BEGIN
         @apellido = 'User',
         @id_tipo_doc = @id_tipo_doc,
         @num_doc = '12345678',
+        @fecha_nacimiento = '2000-01-01',
         @cuil = '20123456781',
         @calle = 'Admin St',
         @altura = '123',
         @id_localidad = @id_localidad,
         @id_genero = @id_genero,
-        @correo = 'admin@example.com';
+        @correo = 'admin@example.com',
+        @celular = '1122334455';
 END
 ELSE
 BEGIN
@@ -1023,8 +995,8 @@ SET @fecha_ultimo_cambio = GETDATE();
 
 IF @id_persona IS NOT NULL AND @id_rol IS NOT NULL
 BEGIN
-    -- Contraseña "admin123" encriptada con SHA256
-    DECLARE @password VARBINARY(512) = HASHBYTES('SHA2_256', 'admin123');
+    -- Contraseña "admin123" encriptada con SHA256 (concatenada con 'admin')
+    DECLARE @password VARBINARY(512) = HASHBYTES('SHA2_256', 'admin123admin');
     EXEC sp_insert_usuario
         @usuario = 'admin',
         @contrasena_script = @password,

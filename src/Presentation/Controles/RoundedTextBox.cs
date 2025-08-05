@@ -93,7 +93,10 @@ namespace Presentation.Controles
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.Clear(Parent.BackColor);
+            if (Parent != null)
+            {
+                e.Graphics.Clear(Parent.BackColor);
+            }
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             var rect = new Rectangle(0, 0, Width - 1, Height - 1);

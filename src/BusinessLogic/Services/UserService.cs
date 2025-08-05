@@ -232,7 +232,7 @@ namespace BusinessLogic.Services
                     Rol = usuario.Rol?.Nombre,
                     CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
                 };
-                return Task.FromResult(userResponse);
+                return Task.FromResult<UserResponse?>(userResponse);
             }, "validating 2FA");
         }
 

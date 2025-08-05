@@ -99,7 +99,7 @@ namespace Presentation.Controles
             }
         }
 
-        private void AnimationTick(object sender, EventArgs e)
+        private void AnimationTick(object? sender, EventArgs e)
         {
             var targetColor = _hovering ? _hoverColor : _baseColor;
 

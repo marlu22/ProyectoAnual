@@ -119,7 +119,7 @@ namespace Presentation
             this.lblInfo.Text = "Recuperar Contraseña";
 
             // RecuperarContrasenaForm
-            this.ClientSize = new System.Drawing.Size(484, 361);
+            this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.btnRecuperar);
             this.Controls.Add(this.grpPreguntas);

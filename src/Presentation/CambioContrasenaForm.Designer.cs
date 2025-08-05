@@ -92,7 +92,7 @@ namespace Presentation
             this.btnCambiar.Text = "Cambiar";
 
             // CambioContrasenaForm
-            this.ClientSize = new System.Drawing.Size(400, 210);
+            this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(this.btnCambiar);
             this.Controls.Add(this.txtRepetir);
             this.Controls.Add(this.lblRepetir);

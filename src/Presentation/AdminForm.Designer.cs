@@ -6,12 +6,15 @@ namespace Presentation
     partial class AdminForm
     {
         private System.ComponentModel.IContainer components = null;
-        private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tabPersonas;
-        private System.Windows.Forms.TabPage tabUsuarios;
-        private System.Windows.Forms.TabPage tabGestionUsuarios;
+        private System.Windows.Forms.Panel navigationPanel;
+        private System.Windows.Forms.Panel contentPanel;
+        private RoundedButton btnNavigatePersonas;
+        private RoundedButton btnNavigateUsuarios;
+        private RoundedButton btnNavigateGestion;
+        private RoundedButton btnNavigateConfiguracion;
 
         // Controles para "Añadir Persona"
+        private System.Windows.Forms.Panel panelPersonas;
         private System.Windows.Forms.TableLayoutPanel personaLayout;
         private System.Windows.Forms.Label lblLegajo, lblNombre, lblApellido, lblTipoDoc, lblNumDoc, lblCuil, lblCalle, lblAltura, lblLocalidad, lblGenero, lblCorreo, lblFechaIngreso;
         private RoundedTextBox txtLegajo, txtNombre, txtApellido, txtNumDoc, txtCuil, txtCalle, txtAltura, txtCorreo;
@@ -56,8 +59,13 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            tabControl = new System.Windows.Forms.TabControl();
-            tabPersonas = new System.Windows.Forms.TabPage();
+            navigationPanel = new System.Windows.Forms.Panel();
+            contentPanel = new System.Windows.Forms.Panel();
+            btnNavigatePersonas = new RoundedButton();
+            btnNavigateUsuarios = new RoundedButton();
+            btnNavigateGestion = new RoundedButton();
+            btnNavigateConfiguracion = new RoundedButton();
+            panelPersonas = new System.Windows.Forms.Panel();
             personaLayout = new System.Windows.Forms.TableLayoutPanel();
             lblLegajo = new System.Windows.Forms.Label();
             txtLegajo = new RoundedTextBox();
@@ -117,41 +125,98 @@ namespace Presentation
             lblCantPreguntas = new System.Windows.Forms.Label();
             txtCantPreguntas = new RoundedTextBox();
             btnGuardarConfig = new RoundedButton();
-            tabControl.SuspendLayout();
-            tabPersonas.SuspendLayout();
+            navigationPanel.SuspendLayout();
+            contentPanel.SuspendLayout();
+            panelPersonas.SuspendLayout();
             personaLayout.SuspendLayout();
-            tabUsuarios.SuspendLayout();
             usuarioLayout.SuspendLayout();
-            tabGestionUsuarios.SuspendLayout();
             gestionUsuariosLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             buttonPanel.SuspendLayout();
-            tabConfiguracion.SuspendLayout();
             configuracionLayout.SuspendLayout();
             SuspendLayout();
             // 
-            // tabControl
+            // navigationPanel
             // 
-            tabControl.Controls.Add(tabPersonas);
-            tabControl.Controls.Add(tabUsuarios);
-            tabControl.Controls.Add(tabGestionUsuarios);
-            tabControl.Controls.Add(tabConfiguracion);
-            tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            tabControl.Location = new System.Drawing.Point(0, 0);
-            tabControl.Name = "tabControl";
-            tabControl.SelectedIndex = 0;
-            tabControl.Size = new System.Drawing.Size(500, 400);
-            tabControl.TabIndex = 0;
+            navigationPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            navigationPanel.BackColor = ThemeColors.Primary;
+            navigationPanel.Controls.Add(btnNavigatePersonas);
+            navigationPanel.Controls.Add(btnNavigateUsuarios);
+            navigationPanel.Controls.Add(btnNavigateGestion);
+            navigationPanel.Controls.Add(btnNavigateConfiguracion);
+            navigationPanel.Location = new System.Drawing.Point(0, 0);
+            navigationPanel.Name = "navigationPanel";
+            navigationPanel.Size = new System.Drawing.Size(200, 600);
             // 
-            // tabPersonas
+            // contentPanel
             // 
-            tabPersonas.Controls.Add(personaLayout);
-            tabPersonas.Location = new System.Drawing.Point(4, 26);
-            tabPersonas.Name = "tabPersonas";
-            tabPersonas.Size = new System.Drawing.Size(492, 370);
-            tabPersonas.TabIndex = 0;
-            tabPersonas.Text = "Añadir Persona";
-            tabPersonas.BackColor = ThemeColors.FormBackground;
+            contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            contentPanel.Location = new System.Drawing.Point(200, 0);
+            contentPanel.Name = "contentPanel";
+            contentPanel.Size = new System.Drawing.Size(600, 600);
+            contentPanel.Controls.Add(panelPersonas);
+            contentPanel.Controls.Add(panelUsuarios);
+            contentPanel.Controls.Add(panelGestionUsuarios);
+            contentPanel.Controls.Add(panelConfiguracion);
+            //
+            // btnNavigatePersonas
+            //
+            btnNavigatePersonas.Dock = System.Windows.Forms.DockStyle.Top;
+            btnNavigatePersonas.FlatAppearance.BorderSize = 0;
+            btnNavigatePersonas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnNavigatePersonas.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            btnNavigatePersonas.ForeColor = ThemeColors.TextPrimary;
+            btnNavigatePersonas.Location = new System.Drawing.Point(0, 0);
+            btnNavigatePersonas.Name = "btnNavigatePersonas";
+            btnNavigatePersonas.Size = new System.Drawing.Size(200, 50);
+            btnNavigatePersonas.Text = "Añadir Persona";
+            btnNavigatePersonas.UseVisualStyleBackColor = true;
+            //
+            // btnNavigateUsuarios
+            //
+            btnNavigateUsuarios.Dock = System.Windows.Forms.DockStyle.Top;
+            btnNavigateUsuarios.FlatAppearance.BorderSize = 0;
+            btnNavigateUsuarios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnNavigateUsuarios.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            btnNavigateUsuarios.ForeColor = ThemeColors.TextPrimary;
+            btnNavigateUsuarios.Location = new System.Drawing.Point(0, 50);
+            btnNavigateUsuarios.Name = "btnNavigateUsuarios";
+            btnNavigateUsuarios.Size = new System.Drawing.Size(200, 50);
+            btnNavigateUsuarios.Text = "Crear Usuario";
+            btnNavigateUsuarios.UseVisualStyleBackColor = true;
+            //
+            // btnNavigateGestion
+            //
+            btnNavigateGestion.Dock = System.Windows.Forms.DockStyle.Top;
+            btnNavigateGestion.FlatAppearance.BorderSize = 0;
+            btnNavigateGestion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnNavigateGestion.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            btnNavigateGestion.ForeColor = ThemeColors.TextPrimary;
+            btnNavigateGestion.Location = new System.Drawing.Point(0, 100);
+            btnNavigateGestion.Name = "btnNavigateGestion";
+            btnNavigateGestion.Size = new System.Drawing.Size(200, 50);
+            btnNavigateGestion.Text = "Gestión de Usuarios";
+            btnNavigateGestion.UseVisualStyleBackColor = true;
+            //
+            // btnNavigateConfiguracion
+            //
+            btnNavigateConfiguracion.Dock = System.Windows.Forms.DockStyle.Top;
+            btnNavigateConfiguracion.FlatAppearance.BorderSize = 0;
+            btnNavigateConfiguracion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnNavigateConfiguracion.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            btnNavigateConfiguracion.ForeColor = ThemeColors.TextPrimary;
+            btnNavigateConfiguracion.Location = new System.Drawing.Point(0, 150);
+            btnNavigateConfiguracion.Name = "btnNavigateConfiguracion";
+            btnNavigateConfiguracion.Size = new System.Drawing.Size(200, 50);
+            btnNavigateConfiguracion.Text = "Configuración";
+            btnNavigateConfiguracion.UseVisualStyleBackColor = true;
+            //
+            // panelPersonas
+            //
+            panelPersonas.Controls.Add(personaLayout);
+            panelPersonas.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelPersonas.Location = new System.Drawing.Point(0, 0);
+            panelPersonas.Name = "panelPersonas";
             // 
             // personaLayout
             // 
@@ -442,15 +507,13 @@ namespace Presentation
             btnGuardarPersona.TabIndex = 22;
             btnGuardarPersona.Text = "Guardar Persona";
             // 
-            // tabUsuarios
+            // panelUsuarios
             // 
-            tabUsuarios.Controls.Add(usuarioLayout);
-            tabUsuarios.Location = new System.Drawing.Point(4, 24);
-            tabUsuarios.Name = "tabUsuarios";
-            tabUsuarios.Size = new System.Drawing.Size(492, 372);
-            tabUsuarios.TabIndex = 1;
-            tabUsuarios.Text = "Crear Usuario";
-            tabUsuarios.BackColor = ThemeColors.FormBackground;
+            panelUsuarios.Controls.Add(usuarioLayout);
+            panelUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelUsuarios.Location = new System.Drawing.Point(0, 0);
+            panelUsuarios.Name = "panelUsuarios";
+            panelUsuarios.Visible = false;
             // 
             // usuarioLayout
             // 
@@ -566,15 +629,13 @@ namespace Presentation
             btnCrearUsuario.TabIndex = 8;
             btnCrearUsuario.Text = "Crear Usuario";
             // 
-            // tabGestionUsuarios
+            // panelGestionUsuarios
             // 
-            tabGestionUsuarios.Controls.Add(gestionUsuariosLayout);
-            tabGestionUsuarios.Location = new System.Drawing.Point(4, 24);
-            tabGestionUsuarios.Name = "tabGestionUsuarios";
-            tabGestionUsuarios.Size = new System.Drawing.Size(492, 372);
-            tabGestionUsuarios.TabIndex = 2;
-            tabGestionUsuarios.Text = "Gestion de Usuarios";
-            tabGestionUsuarios.BackColor = ThemeColors.FormBackground;
+            panelGestionUsuarios.Controls.Add(gestionUsuariosLayout);
+            panelGestionUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelGestionUsuarios.Location = new System.Drawing.Point(0, 0);
+            panelGestionUsuarios.Name = "panelGestionUsuarios";
+            panelGestionUsuarios.Visible = false;
             // 
             // gestionUsuariosLayout
             // 
@@ -681,15 +742,13 @@ namespace Presentation
             btnRefrescarUsuarios.TabIndex = 2;
             btnRefrescarUsuarios.Text = "Refrescar";
             // 
-            // tabConfiguracion
+            // panelConfiguracion
             // 
-            tabConfiguracion.Controls.Add(configuracionLayout);
-            tabConfiguracion.Location = new System.Drawing.Point(4, 24);
-            tabConfiguracion.Name = "tabConfiguracion";
-            tabConfiguracion.Size = new System.Drawing.Size(492, 372);
-            tabConfiguracion.TabIndex = 3;
-            tabConfiguracion.Text = "Configuración";
-            tabConfiguracion.BackColor = ThemeColors.FormBackground;
+            panelConfiguracion.Controls.Add(configuracionLayout);
+            panelConfiguracion.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelConfiguracion.Location = new System.Drawing.Point(0, 0);
+            panelConfiguracion.Name = "panelConfiguracion";
+            panelConfiguracion.Visible = false;
             // 
             // configuracionLayout
             // 
@@ -824,8 +883,9 @@ namespace Presentation
             // 
             // AdminForm
             // 
-            ClientSize = new System.Drawing.Size(500, 400);
-            Controls.Add(tabControl);
+            ClientSize = new System.Drawing.Size(800, 600);
+            Controls.Add(contentPanel);
+            Controls.Add(navigationPanel);
             Font = new System.Drawing.Font("Segoe UI", 10F);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             MaximizeBox = false;

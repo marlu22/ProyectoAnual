@@ -52,6 +52,11 @@ namespace Presentation
                     LimpiarPreguntas();
                 }
             }
+            catch (ValidationException ex)
+            {
+                MessageBox.Show(ex.Message, "Error de Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                LimpiarPreguntas();
+            }
             catch (Exception ex)
             {
                 MessageBox.Show($"Se produjo un error al cargar las preguntas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

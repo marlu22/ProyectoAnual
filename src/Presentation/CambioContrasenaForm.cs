@@ -58,7 +58,10 @@ namespace Presentation
             }
             catch (ValidationException ex)
             {
-                MessageBox.Show(ex.Message, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                using (var errorForm = new frmNotification(ex.Message))
+                {
+                    errorForm.ShowDialog();
+                }
             }
             catch (Exception ex)
             {

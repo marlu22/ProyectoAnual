@@ -26,6 +26,12 @@ namespace Presentation
 
             _userService = userService;
 
+            // Navigation
+            btnNavigatePersonas.Click += (s, e) => ShowPanel(panelPersonas);
+            btnNavigateUsuarios.Click += (s, e) => ShowPanel(panelUsuarios);
+            btnNavigateGestion.Click += (s, e) => ShowPanel(panelGestionUsuarios);
+            btnNavigateConfiguracion.Click += (s, e) => ShowPanel(panelConfiguracion);
+
             // Cargar combos al iniciar
             LoadTipoDoc();
             LoadLocalidades();
@@ -53,6 +59,16 @@ namespace Presentation
 
             dtpFechaExpiracionGestion.ShowCheckBox = true;
             dtpFechaExpiracionGestion.Checked = false;
+        }
+
+        private void ShowPanel(Panel panelToShow)
+        {
+            panelPersonas.Visible = false;
+            panelUsuarios.Visible = false;
+            panelGestionUsuarios.Visible = false;
+            panelConfiguracion.Visible = false;
+
+            panelToShow.Visible = true;
         }
 
         private void LoadUsers()

@@ -397,10 +397,28 @@ namespace Presentation
             lblCuil.TabIndex = 10;
             lblCuil.Text = "CUIL:";
             lblCuil.ForeColor = ThemeColors.TextPrimary;
+            //
+            // lblFechaNacimiento
+            //
+            lblFechaNacimiento.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFechaNacimiento.AutoSize = true;
+            lblFechaNacimiento.Location = new System.Drawing.Point(45, 155);
+            lblFechaNacimiento.Name = "lblFechaNacimiento";
+            lblFechaNacimiento.Size = new System.Drawing.Size(124, 19);
+            lblFechaNacimiento.TabIndex = 10;
+            lblFechaNacimiento.Text = "Fecha de Nacimiento:";
+            lblFechaNacimiento.ForeColor = ThemeColors.TextPrimary;
+            //
+            // dtpFechaNacimiento
+            //
+            dtpFechaNacimiento.Location = new System.Drawing.Point(175, 153);
+            dtpFechaNacimiento.Name = "dtpFechaNacimiento";
+            dtpFechaNacimiento.Size = new System.Drawing.Size(200, 25);
+            dtpFechaNacimiento.TabIndex = 11;
             // 
             // txtCuil
             // 
-            txtCuil.Location = new System.Drawing.Point(175, 153);
+            txtCuil.Location = new System.Drawing.Point(175, 183);
             txtCuil.Name = "txtCuil";
             txtCuil.Size = new System.Drawing.Size(100, 25);
             txtCuil.TabIndex = 11;
@@ -436,16 +454,52 @@ namespace Presentation
             // 
             // txtAltura
             // 
-            txtAltura.Location = new System.Drawing.Point(175, 213);
+            txtAltura.Location = new System.Drawing.Point(175, 303);
             txtAltura.Name = "txtAltura";
             txtAltura.Size = new System.Drawing.Size(100, 25);
             txtAltura.TabIndex = 15;
+            //
+            // lblProvincia
+            //
+            lblProvincia.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblProvincia.AutoSize = true;
+            lblProvincia.Location = new System.Drawing.Point(100, 215);
+            lblProvincia.Name = "lblProvincia";
+            lblProvincia.Size = new System.Drawing.Size(69, 19);
+            lblProvincia.TabIndex = 16;
+            lblProvincia.Text = "Provincia:";
+            lblProvincia.ForeColor = ThemeColors.TextPrimary;
+            //
+            // cbxProvincia
+            //
+            cbxProvincia.Location = new System.Drawing.Point(175, 213);
+            cbxProvincia.Name = "cbxProvincia";
+            cbxProvincia.Size = new System.Drawing.Size(121, 25);
+            cbxProvincia.TabIndex = 17;
+            //
+            // lblPartido
+            //
+            lblPartido.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblPartido.AutoSize = true;
+            lblPartido.Location = new System.Drawing.Point(100, 245);
+            lblPartido.Name = "lblPartido";
+            lblPartido.Size = new System.Drawing.Size(69, 19);
+            lblPartido.TabIndex = 16;
+            lblPartido.Text = "Partido:";
+            lblPartido.ForeColor = ThemeColors.TextPrimary;
+            //
+            // cbxPartido
+            //
+            cbxPartido.Location = new System.Drawing.Point(175, 243);
+            cbxPartido.Name = "cbxPartido";
+            cbxPartido.Size = new System.Drawing.Size(121, 25);
+            cbxPartido.TabIndex = 17;
             // 
             // lblLocalidad
             // 
             lblLocalidad.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblLocalidad.AutoSize = true;
-            lblLocalidad.Location = new System.Drawing.Point(100, 245);
+            lblLocalidad.Location = new System.Drawing.Point(100, 275);
             lblLocalidad.Name = "lblLocalidad";
             lblLocalidad.Size = new System.Drawing.Size(69, 19);
             lblLocalidad.TabIndex = 16;
@@ -496,10 +550,28 @@ namespace Presentation
             // 
             // txtCorreo
             // 
-            txtCorreo.Location = new System.Drawing.Point(175, 303);
+            txtCorreo.Location = new System.Drawing.Point(175, 393);
             txtCorreo.Name = "txtCorreo";
             txtCorreo.Size = new System.Drawing.Size(100, 25);
             txtCorreo.TabIndex = 21;
+            //
+            // lblCelular
+            //
+            lblCelular.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblCelular.AutoSize = true;
+            lblCelular.Location = new System.Drawing.Point(100, 425);
+            lblCelular.Name = "lblCelular";
+            lblCelular.Size = new System.Drawing.Size(69, 19);
+            lblCelular.TabIndex = 16;
+            lblCelular.Text = "Celular:";
+            lblCelular.ForeColor = ThemeColors.TextPrimary;
+            //
+            // txtCelular
+            //
+            txtCelular.Location = new System.Drawing.Point(175, 423);
+            txtCelular.Name = "txtCelular";
+            txtCelular.Size = new System.Drawing.Size(121, 25);
+            txtCelular.TabIndex = 17;
             //
             // lblFechaIngreso
             //

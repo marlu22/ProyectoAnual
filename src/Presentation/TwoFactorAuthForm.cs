@@ -10,6 +10,8 @@ namespace Presentation
         private readonly IUserService _userService;
         private readonly string _username;
 
+        public BusinessLogic.Models.UserResponse? User { get; private set; }
+
         public TwoFactorAuthForm(IUserService userService, string username)
         {
             InitializeComponent();
@@ -26,9 +28,9 @@ namespace Presentation
                 return;
             }
 
-            var user = await _userService.Validate2faAsync(_username, txtCodigo.Text.Trim());
+            User = await _userService.Validate2faAsync(_username, txtCodigo.Text.Trim());
 
-            if (user != null)
+            if (User != null)
             {
                 this.DialogResult = DialogResult.OK;
                 this.Close();

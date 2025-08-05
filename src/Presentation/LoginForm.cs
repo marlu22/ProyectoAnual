@@ -40,9 +40,7 @@ namespace Presentation
                     var twoFactorForm = new TwoFactorAuthForm(_userService, username);
                     if (twoFactorForm.ShowDialog() == DialogResult.OK)
                     {
-                        // Re-fetch user details after successful 2FA
-                        var finalAuthResult = await _userService.AuthenticateAsync(username, password);
-                        user = finalAuthResult.User;
+                        user = twoFactorForm.User;
                     }
                     else
                     {

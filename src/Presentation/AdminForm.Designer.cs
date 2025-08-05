@@ -290,10 +290,6 @@ namespace Presentation
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            personaLayout.Controls.SetChildIndex(lblFechaNacimiento, 0, 5);
-            personaLayout.Controls.SetChildIndex(dtpFechaNacimiento, 1, 5);
-            personaLayout.Controls.SetChildIndex(lblCelular, 0, 14);
-            personaLayout.Controls.SetChildIndex(txtCelular, 1, 14);
             personaLayout.Size = new System.Drawing.Size(492, 370);
             personaLayout.TabIndex = 0;
             personaLayout.BackColor = System.Drawing.Color.Transparent;

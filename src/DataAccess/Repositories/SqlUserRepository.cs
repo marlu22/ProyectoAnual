@@ -359,5 +359,11 @@ namespace DataAccess.Repositories
         {
             p.AddWithValue("@id_usuario", usuarioId);
         });
+
+        public void DeleteRespuestasSeguridadByUsuarioId(int usuarioId) => ExecuteNonQuery(
+            "DELETE FROM respuestas_seguridad WHERE id_usuario = @id_usuario",
+            p => p.AddWithValue("@id_usuario", usuarioId),
+            CommandType.Text
+        );
     }
 }

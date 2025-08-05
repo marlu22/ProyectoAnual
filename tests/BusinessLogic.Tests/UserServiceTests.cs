@@ -128,6 +128,7 @@ public class MockUserRepository : IUserRepository
     public TipoDoc? GetTipoDocByNombre(string nombre) => throw new NotImplementedException();
     public void UpdatePoliticaSeguridad(PoliticaSeguridad politica) => throw new NotImplementedException();
     public void UpdateUsuario(Usuario usuario) => throw new NotImplementedException();
+    public void DeleteRespuestasSeguridadByUsuarioId(int usuarioId) => throw new NotImplementedException();
 
     private static byte[] HashUsuarioContrasena(string username, string password)
     {

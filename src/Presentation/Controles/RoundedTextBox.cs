@@ -37,6 +37,20 @@ namespace Presentation.Controles
             set { _focusBorderColor = value; if (Focused) _currentBorderColor = value; Invalidate(); }
         }
 
+        // Propiedades para el manejo de contraseñas
+        public new char PasswordChar
+        {
+            get { return base.PasswordChar; }
+            set { base.PasswordChar = value; Invalidate(); }
+        }
+
+        public new bool UseSystemPasswordChar
+        {
+            get { return base.UseSystemPasswordChar; }
+            set { base.UseSystemPasswordChar = value; Invalidate(); }
+        }
+
+
         public RoundedTextBox()
         {
             BorderStyle = BorderStyle.None;
@@ -99,7 +113,17 @@ namespace Presentation.Controles
             }
 
             // Draw the text
-            TextRenderer.DrawText(e.Graphics, Text, Font, ClientRectangle, ForeColor, TextFormatFlags.TextBoxControl);
+            string textToRender = this.Text;
+            if (this.UseSystemPasswordChar)
+            {
+                textToRender = new string('●', this.Text.Length);
+            }
+            else if (this.PasswordChar != '\0')
+            {
+                textToRender = new string(this.PasswordChar, this.Text.Length);
+            }
+
+            TextRenderer.DrawText(e.Graphics, textToRender, Font, ClientRectangle, ForeColor, TextFormatFlags.TextBoxControl);
         }
 
         protected override void WndProc(ref Message m)

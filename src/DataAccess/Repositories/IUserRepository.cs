@@ -30,5 +30,6 @@ namespace DataAccess.Repositories
         void AddRespuestaSeguridad(RespuestaSeguridad respuesta);
         List<PreguntaSeguridad> GetPreguntasSeguridad();
         void DeleteUsuario(int usuarioId);
+        void DeleteRespuestasSeguridadByUsuarioId(int usuarioId);
     }
 }

@@ -107,7 +107,7 @@ public class MockUserRepository : IUserRepository
     }
 
     // Implement other IUserRepository methods as needed, throwing NotImplementedException for simplicity
-    public void AddHistorialContrasena(HistorialContrasena historial) => throw new NotImplementedException();
+    public void AddHistorialContrasena(HistorialContrasena historial) { /* Do nothing for this mock */ }
     public void AddPersona(Persona persona) => throw new NotImplementedException();
     public void AddRespuestaSeguridad(RespuestaSeguridad respuesta) => throw new NotImplementedException();
     public void AddUsuario(Usuario usuario) => throw new NotImplementedException();
@@ -121,7 +121,7 @@ public class MockUserRepository : IUserRepository
     public List<TipoDoc> GetAllTiposDoc() => throw new NotImplementedException();
     public List<Usuario> GetAllUsers() => throw new NotImplementedException();
     public Genero? GetGeneroByNombre(string nombre) => throw new NotImplementedException();
-    public List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario) => throw new NotImplementedException();
+    public List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario) => new List<HistorialContrasena>();
     public Localidad? GetLocalidadByNombre(string nombre) => throw new NotImplementedException();
     public List<PreguntaSeguridad> GetPreguntasDeUsuario(string username) => throw new NotImplementedException();
     public List<PreguntaSeguridad> GetPreguntasSeguridad() => throw new NotImplementedException();
@@ -129,7 +129,13 @@ public class MockUserRepository : IUserRepository
     public Rol? GetRolByNombre(string nombre) => throw new NotImplementedException();
     public TipoDoc? GetTipoDocByNombre(string nombre) => throw new NotImplementedException();
     public void UpdatePoliticaSeguridad(PoliticaSeguridad politica) => throw new NotImplementedException();
-    public void UpdateUsuario(Usuario usuario) => throw new NotImplementedException();
+    public void UpdateUsuario(Usuario usuario) {
+        var userIndex = _users.FindIndex(u => u.IdUsuario == usuario.IdUsuario);
+        if (userIndex != -1)
+        {
+            _users[userIndex] = usuario;
+        }
+    }
     public void DeleteRespuestasSeguridadByUsuarioId(int usuarioId) => throw new NotImplementedException();
 
     private static byte[] HashUsuarioContrasena(string username, string password)
@@ -246,5 +252,20 @@ public class UserServiceTests
         // Assert
         Assert.True(result.Success);
         Assert.True(result.Requires2fa);
+    }
+
+    [Fact]
+    public void CambiarContrasena_IncorrectOldPassword_ThrowsValidationException()
+    {
+        // Arrange
+        var username = "testuser";
+        var newPassword = "newPassword123";
+        var incorrectOldPassword = "wrongpassword";
+
+        // Act & Assert
+        var exception = Assert.Throws<UserManagementSystem.BusinessLogic.Exceptions.ValidationException>(() =>
+            _userService.CambiarContrasena(username, newPassword, incorrectOldPassword));
+
+        Assert.Equal("La contraseña actual es incorrecta. Por favor, intente de nuevo.", exception.Message);
     }
 }

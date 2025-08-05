@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using BusinessLogic.Services;
 using DataAccess.Entities;
+using Presentation.Controles;
+using Presentation.Theme;
 using UserManagementSystem.BusinessLogic.Exceptions;
 
 namespace Presentation
@@ -71,10 +73,11 @@ namespace Presentation
                         Text = pregunta.Pregunta,
                         Font = new Font("Segoe UI", 9.75F, FontStyle.Regular),
                         AutoSize = true,
-                        Margin = new Padding(3, 5, 3, 3)
+                        Margin = new Padding(3, 5, 3, 3),
+                        ForeColor = ThemeColors.TextPrimary
                     };
 
-                    var textBox = new TextBox
+                    var textBox = new RoundedTextBox
                     {
                         Width = pnlPreguntas.Width - 25, // Ajustar al ancho del panel
                         Tag = pregunta.IdPregunta, // Guardar el ID de la pregunta
@@ -105,7 +108,7 @@ namespace Presentation
             var respuestas = new Dictionary<int, string>();
             foreach (Control control in pnlPreguntas.Controls)
             {
-                if (control is TextBox textBox)
+                if (control is RoundedTextBox textBox)
                 {
                     if (string.IsNullOrWhiteSpace(textBox.Text))
                     {

@@ -1,8 +1,5 @@
 using Presentation.Controles;
-
-using Presentation.Controles;
-
-using Presentation.Controles;
+using Presentation.Theme;
 
 namespace Presentation
 {
@@ -31,15 +28,8 @@ namespace Presentation
         {
             tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             lblUsuario = new System.Windows.Forms.Label();
-            txtUsuario = new System.Windows.Forms.TextBox();
-            lblContrasena = new System.Windows.Forms.Label();
-            txtContrasena = new RoundedTextBox();
-            btnLogin = new RoundedButton();
-            btnRecuperarContrasena = new RoundedButton();
             txtUsuario = new RoundedTextBox();
-            txtContrasena = new RoundedTextBox();
-            btnLogin = new RoundedButton();
-            btnRecuperarContrasena = new RoundedButton();
+            lblContrasena = new System.Windows.Forms.Label();
             txtContrasena = new RoundedTextBox();
             btnLogin = new RoundedButton();
             btnRecuperarContrasena = new RoundedButton();
@@ -71,7 +61,7 @@ namespace Presentation
             tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             tableLayoutPanel.Size = new System.Drawing.Size(350, 250);
             tableLayoutPanel.TabIndex = 0;
-            tableLayoutPanel.BackColor = System.Drawing.Color.FromArgb(24, 24, 36);
+            tableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
             // 
             // lblUsuario
             // 
@@ -82,7 +72,7 @@ namespace Presentation
             lblUsuario.TabIndex = 0;
             lblUsuario.Text = "Usuario:";
             lblUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            lblUsuario.ForeColor = System.Drawing.Color.Gainsboro;
+            lblUsuario.ForeColor = ThemeColors.TextPrimary;
             lblUsuario.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             // 
             // txtUsuario
@@ -92,9 +82,6 @@ namespace Presentation
             txtUsuario.Name = "txtUsuario";
             txtUsuario.Size = new System.Drawing.Size(209, 25);
             txtUsuario.TabIndex = 1;
-            txtUsuario.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
-            txtUsuario.ForeColor = System.Drawing.Color.White;
-            txtUsuario.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             txtUsuario.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             // 
             // lblContrasena
@@ -106,7 +93,7 @@ namespace Presentation
             lblContrasena.TabIndex = 2;
             lblContrasena.Text = "Contraseña:";
             lblContrasena.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            lblContrasena.ForeColor = System.Drawing.Color.Gainsboro;
+            lblContrasena.ForeColor = ThemeColors.TextPrimary;
             lblContrasena.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             // 
             // txtContrasena
@@ -117,9 +104,6 @@ namespace Presentation
             txtContrasena.PasswordChar = '●';
             txtContrasena.Size = new System.Drawing.Size(209, 25);
             txtContrasena.TabIndex = 3;
-            txtContrasena.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
-            txtContrasena.ForeColor = System.Drawing.Color.White;
-            txtContrasena.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             txtContrasena.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             // 
             // chkMostrarContrasena
@@ -131,7 +115,7 @@ namespace Presentation
             chkMostrarContrasena.TabIndex = 6;
             chkMostrarContrasena.Text = "Mostrar contraseña";
             chkMostrarContrasena.UseVisualStyleBackColor = true;
-            chkMostrarContrasena.ForeColor = System.Drawing.Color.Gainsboro;
+            chkMostrarContrasena.ForeColor = ThemeColors.TextSecondary;
             chkMostrarContrasena.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             // 
             // btnLogin
@@ -142,8 +126,6 @@ namespace Presentation
             btnLogin.Size = new System.Drawing.Size(120, 39);
             btnLogin.TabIndex = 4;
             btnLogin.Text = "Iniciar sesión";
-            btnLogin.BackColor = System.Drawing.Color.FromArgb(59, 130, 246);
-            btnLogin.ForeColor = System.Drawing.Color.White;
             btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
@@ -156,8 +138,9 @@ namespace Presentation
             btnRecuperarContrasena.TabIndex = 5;
             btnRecuperarContrasena.Text = "¿Olvidaste tu contraseña?";
             btnRecuperarContrasena.UseVisualStyleBackColor = false;
-            btnRecuperarContrasena.BackColor = System.Drawing.Color.FromArgb(37, 99, 235);
-            btnRecuperarContrasena.ForeColor = System.Drawing.Color.White;
+            ((RoundedButton)btnRecuperarContrasena).BaseColor = ThemeColors.Surface;
+            ((RoundedButton)btnRecuperarContrasena).HoverColor = ThemeColors.Border;
+            btnRecuperarContrasena.ForeColor = ThemeColors.TextSecondary;
             btnRecuperarContrasena.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRecuperarContrasena.FlatAppearance.BorderSize = 0;
             btnRecuperarContrasena.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
@@ -168,7 +151,7 @@ namespace Presentation
             ClientSize = new System.Drawing.Size(350, 250);
             Controls.Add(tableLayoutPanel);
             Font = new System.Drawing.Font("Segoe UI", 10F);
-            BackColor = System.Drawing.Color.FromArgb(24, 24, 36);
+            BackColor = ThemeColors.FormBackground;
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;

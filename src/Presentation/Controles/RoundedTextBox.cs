@@ -1,49 +1,114 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using Presentation.Theme;
 
 namespace Presentation.Controles
 {
     public class RoundedTextBox : TextBox
     {
+        // Fields
+        private int _borderRadius = 15;
+        private Color _borderColor = ThemeColors.Border;
+        private Color _focusBorderColor = ThemeColors.Primary;
+        private Color _currentBorderColor;
+
+        // Properties
+        [Category("Appearance")]
+        public int BorderRadius
+        {
+            get => _borderRadius;
+            set { _borderRadius = value; Invalidate(); }
+        }
+
+        [Category("Appearance")]
+        public Color BorderColor
+        {
+            get => _borderColor;
+            set { _borderColor = value; if (!Focused) _currentBorderColor = value; Invalidate(); }
+        }
+
+        [Category("Appearance")]
+        public Color FocusBorderColor
+        {
+            get => _focusBorderColor;
+            set { _focusBorderColor = value; if (Focused) _currentBorderColor = value; Invalidate(); }
+        }
+
         public RoundedTextBox()
         {
             BorderStyle = BorderStyle.None;
             Font = new Font("Segoe UI", 10F, FontStyle.Regular);
-            BackColor = Color.FromArgb(40, 40, 56);
-            ForeColor = Color.White;
-            Padding = new Padding(8, 6, 8, 6);
+            BackColor = ThemeColors.Surface;
+            ForeColor = ThemeColors.TextPrimary;
+            Padding = new Padding(10, 8, 10, 8);
+
+            _currentBorderColor = _borderColor;
+
+            // Events
+            Enter += (s, e) => { _currentBorderColor = _focusBorderColor; this.Invalidate(); };
+            Leave += (s, e) => { _currentBorderColor = _borderColor; this.Invalidate(); };
+        }
+
+        private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
+        {
+            var path = new GraphicsPath();
+            int diameter = radius * 2;
+
+            if (diameter > Math.Min(rect.Width, rect.Height))
+            {
+                diameter = Math.Min(rect.Width, rect.Height);
+            }
+
+            if (diameter > 0)
+            {
+                path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
+                path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
+                path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+                path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
+                path.CloseFigure();
+            }
+            else
+            {
+                path.AddRectangle(rect);
+            }
+            return path;
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            var rect = new Rectangle(0, 0, Width - 1, Height - 1);
-            using (var path = new GraphicsPath())
-            {
-                path.AddArc(rect.X, rect.Y, 15, 15, 180, 90);
-                path.AddArc(rect.Right - 15, rect.Y, 15, 15, 270, 90);
-                path.AddArc(rect.Right - 15, rect.Bottom - 15, 15, 15, 0, 90);
-                path.AddArc(rect.X, rect.Bottom - 15, 15, 15, 90, 90);
-                path.CloseFigure();
 
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                using (var pen = new Pen(Color.FromArgb(59, 130, 246), 2))
-                {
-                    e.Graphics.DrawPath(pen, path);
-                }
+            // We need to clear the region to ensure the background is correct
+            e.Graphics.Clear(this.BackColor);
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            var rect = new Rectangle(0, 0, Width - 1, Height - 1);
+            using (var path = GetRoundedPath(rect, _borderRadius))
+            using (var pen = new Pen(_currentBorderColor, 2))
+            {
+                // Draw the border
+                e.Graphics.DrawPath(pen, path);
             }
+            // The text is drawn by the base TextBox control, so we don't need to render it manually.
         }
 
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
+            // We are hooking into the WM_PAINT message to ensure our custom border is drawn
+            // on top of the base control's painting. This is a common technique for customizing
+            // controls that don't fully support owner drawing.
             if (m.Msg == 0x000F) // WM_PAINT
             {
-                using (var g = CreateGraphics())
+                // Create a new Graphics object from the Handle and call OnPaint
+                // This ensures we are drawing on the correct device context.
+                using (var g = Graphics.FromHwnd(this.Handle))
                 {
-                    OnPaint(new PaintEventArgs(g, ClientRectangle));
+                    OnPaint(new PaintEventArgs(g, this.ClientRectangle));
                 }
             }
         }

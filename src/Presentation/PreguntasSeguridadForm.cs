@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using BusinessLogic.Services;
 using DataAccess.Entities;
+using Presentation.Controles;
+using Presentation.Theme;
 
 namespace Presentation
 {
@@ -13,7 +15,7 @@ namespace Presentation
         private readonly string _username;
         private List<PreguntaSeguridad> _preguntas = new List<PreguntaSeguridad>();
         private List<ComboBox> _comboBoxes = new List<ComboBox>();
-        private List<TextBox> _textBoxes = new List<TextBox>();
+        private List<RoundedTextBox> _textBoxes = new List<RoundedTextBox>();
 
         public PreguntasSeguridadForm(IUserService userService, string username)
         {
@@ -45,7 +47,8 @@ namespace Presentation
                         Text = $"Pregunta {i + 1}:",
                         Width = 80,
                         Anchor = AnchorStyles.Left,
-                        TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+                        TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
+                        ForeColor = ThemeColors.TextPrimary
                     };
 
                     var comboBox = new ComboBox
@@ -54,11 +57,14 @@ namespace Presentation
                         DisplayMember = "Pregunta",
                         ValueMember = "IdPregunta",
                         Width = 300,
-                        DropDownStyle = ComboBoxStyle.DropDownList
+                        DropDownStyle = ComboBoxStyle.DropDownList,
+                        BackColor = ThemeColors.Surface,
+                        ForeColor = ThemeColors.TextPrimary,
+                        FlatStyle = FlatStyle.Flat
                     };
                     _comboBoxes.Add(comboBox);
 
-                    var textBox = new TextBox
+                    var textBox = new RoundedTextBox
                     {
                         Width = 300,
                         Margin = new Padding(10, 0, 0, 0)
@@ -71,7 +77,8 @@ namespace Presentation
                         Width = 80,
                         Anchor = AnchorStyles.Left,
                         TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                        Margin = new Padding(20, 0, 0, 0)
+                        Margin = new Padding(20, 0, 0, 0),
+                        ForeColor = ThemeColors.TextPrimary
                     };
 
                     panel.Controls.Add(label);

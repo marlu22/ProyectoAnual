@@ -1,3 +1,6 @@
+using Presentation.Controles;
+using Presentation.Theme;
+
 namespace Presentation
 {
     partial class AdminForm
@@ -11,17 +14,17 @@ namespace Presentation
         // Controles para "Añadir Persona"
         private System.Windows.Forms.TableLayoutPanel personaLayout;
         private System.Windows.Forms.Label lblLegajo, lblNombre, lblApellido, lblTipoDoc, lblNumDoc, lblCuil, lblCalle, lblAltura, lblLocalidad, lblGenero, lblCorreo, lblFechaIngreso;
-        private System.Windows.Forms.TextBox txtLegajo, txtNombre, txtApellido, txtNumDoc, txtCuil, txtCalle, txtAltura, txtCorreo;
+        private RoundedTextBox txtLegajo, txtNombre, txtApellido, txtNumDoc, txtCuil, txtCalle, txtAltura, txtCorreo;
         private System.Windows.Forms.ComboBox cbxTipoDoc, cbxLocalidad, cbxGenero;
         private System.Windows.Forms.DateTimePicker dtpFechaIngreso;
-        private System.Windows.Forms.Button btnGuardarPersona;
+        private RoundedButton btnGuardarPersona;
 
         // Controles para "Crear Usuario"
         private System.Windows.Forms.TableLayoutPanel usuarioLayout;
         private System.Windows.Forms.Label lblPersona, lblUsuario, lblPassword, lblRolUsuario;
         private System.Windows.Forms.ComboBox cbxPersona, cbxRolUsuario;
-        private System.Windows.Forms.TextBox txtUsuario, txtPassword;
-        private System.Windows.Forms.Button btnCrearUsuario;
+        private RoundedTextBox txtUsuario, txtPassword;
+        private RoundedButton btnCrearUsuario;
 
         // Controles para "Configuracion"
         private System.Windows.Forms.TabPage tabConfiguracion;
@@ -33,16 +36,16 @@ namespace Presentation
         private System.Windows.Forms.CheckBox chkDobleFactor;
         private System.Windows.Forms.CheckBox chkNoRepetirContrasenas;
         private System.Windows.Forms.CheckBox chkVerificarDatosPersonales;
-        private System.Windows.Forms.TextBox txtMinCaracteres;
-        private System.Windows.Forms.TextBox txtCantPreguntas;
-        private System.Windows.Forms.Button btnGuardarConfig;
+        private RoundedTextBox txtMinCaracteres;
+        private RoundedTextBox txtCantPreguntas;
+        private RoundedButton btnGuardarConfig;
 
         // Controles para "Gestion de Usuarios"
         private System.Windows.Forms.TableLayoutPanel gestionUsuariosLayout;
         private System.Windows.Forms.DataGridView dgvUsuarios;
         private System.Windows.Forms.Label lblFechaExpiracionGestion;
         private System.Windows.Forms.DateTimePicker dtpFechaExpiracionGestion;
-        private System.Windows.Forms.Button btnRefrescarUsuarios, btnGuardarCambios, btnEliminarUsuario;
+        private RoundedButton btnRefrescarUsuarios, btnGuardarCambios, btnEliminarUsuario;
 
         protected override void Dispose(bool disposing)
         {
@@ -57,50 +60,50 @@ namespace Presentation
             tabPersonas = new System.Windows.Forms.TabPage();
             personaLayout = new System.Windows.Forms.TableLayoutPanel();
             lblLegajo = new System.Windows.Forms.Label();
-            txtLegajo = new System.Windows.Forms.TextBox();
+            txtLegajo = new RoundedTextBox();
             lblNombre = new System.Windows.Forms.Label();
-            txtNombre = new System.Windows.Forms.TextBox();
+            txtNombre = new RoundedTextBox();
             lblApellido = new System.Windows.Forms.Label();
-            txtApellido = new System.Windows.Forms.TextBox();
+            txtApellido = new RoundedTextBox();
             lblTipoDoc = new System.Windows.Forms.Label();
             cbxTipoDoc = new System.Windows.Forms.ComboBox();
             lblNumDoc = new System.Windows.Forms.Label();
-            txtNumDoc = new System.Windows.Forms.TextBox();
+            txtNumDoc = new RoundedTextBox();
             lblCuil = new System.Windows.Forms.Label();
-            txtCuil = new System.Windows.Forms.TextBox();
+            txtCuil = new RoundedTextBox();
             lblCalle = new System.Windows.Forms.Label();
-            txtCalle = new System.Windows.Forms.TextBox();
+            txtCalle = new RoundedTextBox();
             lblAltura = new System.Windows.Forms.Label();
-            txtAltura = new System.Windows.Forms.TextBox();
+            txtAltura = new RoundedTextBox();
             lblLocalidad = new System.Windows.Forms.Label();
             cbxLocalidad = new System.Windows.Forms.ComboBox();
             lblGenero = new System.Windows.Forms.Label();
             cbxGenero = new System.Windows.Forms.ComboBox();
             lblCorreo = new System.Windows.Forms.Label();
-            txtCorreo = new System.Windows.Forms.TextBox();
+            txtCorreo = new RoundedTextBox();
             lblFechaIngreso = new System.Windows.Forms.Label();
             dtpFechaIngreso = new System.Windows.Forms.DateTimePicker();
-            btnGuardarPersona = new System.Windows.Forms.Button();
+            btnGuardarPersona = new RoundedButton();
             tabUsuarios = new System.Windows.Forms.TabPage();
             usuarioLayout = new System.Windows.Forms.TableLayoutPanel();
             lblPersona = new System.Windows.Forms.Label();
             cbxPersona = new System.Windows.Forms.ComboBox();
             lblUsuario = new System.Windows.Forms.Label();
-            txtUsuario = new System.Windows.Forms.TextBox();
+            txtUsuario = new RoundedTextBox();
             lblPassword = new System.Windows.Forms.Label();
-            txtPassword = new System.Windows.Forms.TextBox();
+            txtPassword = new RoundedTextBox();
             lblRolUsuario = new System.Windows.Forms.Label();
             cbxRolUsuario = new System.Windows.Forms.ComboBox();
-            btnCrearUsuario = new System.Windows.Forms.Button();
+            btnCrearUsuario = new RoundedButton();
             tabGestionUsuarios = new System.Windows.Forms.TabPage();
             gestionUsuariosLayout = new System.Windows.Forms.TableLayoutPanel();
             lblFechaExpiracionGestion = new System.Windows.Forms.Label();
             dtpFechaExpiracionGestion = new System.Windows.Forms.DateTimePicker();
             dgvUsuarios = new System.Windows.Forms.DataGridView();
             buttonPanel = new System.Windows.Forms.FlowLayoutPanel();
-            btnEliminarUsuario = new System.Windows.Forms.Button();
-            btnGuardarCambios = new System.Windows.Forms.Button();
-            btnRefrescarUsuarios = new System.Windows.Forms.Button();
+            btnEliminarUsuario = new RoundedButton();
+            btnGuardarCambios = new RoundedButton();
+            btnRefrescarUsuarios = new RoundedButton();
             tabConfiguracion = new System.Windows.Forms.TabPage();
             configuracionLayout = new System.Windows.Forms.TableLayoutPanel();
             chkMayusculasMinusculas = new System.Windows.Forms.CheckBox();
@@ -110,10 +113,10 @@ namespace Presentation
             chkNoRepetirContrasenas = new System.Windows.Forms.CheckBox();
             chkVerificarDatosPersonales = new System.Windows.Forms.CheckBox();
             lblMinCaracteres = new System.Windows.Forms.Label();
-            txtMinCaracteres = new System.Windows.Forms.TextBox();
+            txtMinCaracteres = new RoundedTextBox();
             lblCantPreguntas = new System.Windows.Forms.Label();
-            txtCantPreguntas = new System.Windows.Forms.TextBox();
-            btnGuardarConfig = new System.Windows.Forms.Button();
+            txtCantPreguntas = new RoundedTextBox();
+            btnGuardarConfig = new RoundedButton();
             tabControl.SuspendLayout();
             tabPersonas.SuspendLayout();
             personaLayout.SuspendLayout();
@@ -148,6 +151,7 @@ namespace Presentation
             tabPersonas.Size = new System.Drawing.Size(492, 370);
             tabPersonas.TabIndex = 0;
             tabPersonas.Text = "Añadir Persona";
+            tabPersonas.BackColor = ThemeColors.FormBackground;
             // 
             // personaLayout
             // 
@@ -198,6 +202,7 @@ namespace Presentation
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             personaLayout.Size = new System.Drawing.Size(492, 370);
             personaLayout.TabIndex = 0;
+            personaLayout.BackColor = System.Drawing.Color.Transparent;
             // 
             // lblLegajo
             // 
@@ -208,6 +213,7 @@ namespace Presentation
             lblLegajo.Size = new System.Drawing.Size(52, 19);
             lblLegajo.TabIndex = 0;
             lblLegajo.Text = "Legajo:";
+            lblLegajo.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtLegajo
             // 
@@ -225,6 +231,7 @@ namespace Presentation
             lblNombre.Size = new System.Drawing.Size(62, 19);
             lblNombre.TabIndex = 2;
             lblNombre.Text = "Nombre:";
+            lblNombre.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtNombre
             // 
@@ -242,6 +249,7 @@ namespace Presentation
             lblApellido.Size = new System.Drawing.Size(61, 19);
             lblApellido.TabIndex = 4;
             lblApellido.Text = "Apellido:";
+            lblApellido.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtApellido
             // 
@@ -259,6 +267,7 @@ namespace Presentation
             lblTipoDoc.Size = new System.Drawing.Size(114, 19);
             lblTipoDoc.TabIndex = 6;
             lblTipoDoc.Text = "Tipo Documento:";
+            lblTipoDoc.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxTipoDoc
             // 
@@ -266,6 +275,9 @@ namespace Presentation
             cbxTipoDoc.Name = "cbxTipoDoc";
             cbxTipoDoc.Size = new System.Drawing.Size(121, 25);
             cbxTipoDoc.TabIndex = 7;
+            cbxTipoDoc.BackColor = ThemeColors.Surface;
+            cbxTipoDoc.ForeColor = ThemeColors.TextPrimary;
+            cbxTipoDoc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             // 
             // lblNumDoc
             // 
@@ -276,6 +288,7 @@ namespace Presentation
             lblNumDoc.Size = new System.Drawing.Size(114, 19);
             lblNumDoc.TabIndex = 8;
             lblNumDoc.Text = "Nro. Documento:";
+            lblNumDoc.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtNumDoc
             // 
@@ -293,6 +306,7 @@ namespace Presentation
             lblCuil.Size = new System.Drawing.Size(42, 19);
             lblCuil.TabIndex = 10;
             lblCuil.Text = "CUIL:";
+            lblCuil.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtCuil
             // 
@@ -310,6 +324,7 @@ namespace Presentation
             lblCalle.Size = new System.Drawing.Size(41, 19);
             lblCalle.TabIndex = 12;
             lblCalle.Text = "Calle:";
+            lblCalle.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtCalle
             // 
@@ -327,6 +342,7 @@ namespace Presentation
             lblAltura.Size = new System.Drawing.Size(49, 19);
             lblAltura.TabIndex = 14;
             lblAltura.Text = "Altura:";
+            lblAltura.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtAltura
             // 
@@ -344,6 +360,7 @@ namespace Presentation
             lblLocalidad.Size = new System.Drawing.Size(69, 19);
             lblLocalidad.TabIndex = 16;
             lblLocalidad.Text = "Localidad:";
+            lblLocalidad.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxLocalidad
             // 
@@ -351,6 +368,9 @@ namespace Presentation
             cbxLocalidad.Name = "cbxLocalidad";
             cbxLocalidad.Size = new System.Drawing.Size(121, 25);
             cbxLocalidad.TabIndex = 17;
+            cbxLocalidad.BackColor = ThemeColors.Surface;
+            cbxLocalidad.ForeColor = ThemeColors.TextPrimary;
+            cbxLocalidad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             // 
             // lblGenero
             // 
@@ -361,6 +381,7 @@ namespace Presentation
             lblGenero.Size = new System.Drawing.Size(57, 19);
             lblGenero.TabIndex = 18;
             lblGenero.Text = "Género:";
+            lblGenero.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxGenero
             // 
@@ -368,6 +389,9 @@ namespace Presentation
             cbxGenero.Name = "cbxGenero";
             cbxGenero.Size = new System.Drawing.Size(121, 25);
             cbxGenero.TabIndex = 19;
+            cbxGenero.BackColor = ThemeColors.Surface;
+            cbxGenero.ForeColor = ThemeColors.TextPrimary;
+            cbxGenero.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             // 
             // lblCorreo
             // 
@@ -378,6 +402,7 @@ namespace Presentation
             lblCorreo.Size = new System.Drawing.Size(124, 19);
             lblCorreo.TabIndex = 20;
             lblCorreo.Text = "Correo Electrónico:";
+            lblCorreo.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtCorreo
             // 
@@ -395,6 +420,7 @@ namespace Presentation
             lblFechaIngreso.Size = new System.Drawing.Size(124, 19);
             lblFechaIngreso.TabIndex = 22;
             lblFechaIngreso.Text = "Fecha de Ingreso:";
+            lblFechaIngreso.ForeColor = ThemeColors.TextPrimary;
             //
             // dtpFechaIngreso
             //
@@ -402,12 +428,17 @@ namespace Presentation
             dtpFechaIngreso.Name = "dtpFechaIngreso";
             dtpFechaIngreso.Size = new System.Drawing.Size(200, 25);
             dtpFechaIngreso.TabIndex = 23;
+            dtpFechaIngreso.CalendarForeColor = ThemeColors.TextPrimary;
+            dtpFechaIngreso.CalendarMonthBackground = ThemeColors.Surface;
+            dtpFechaIngreso.CalendarTitleBackColor = ThemeColors.Primary;
+            dtpFechaIngreso.CalendarTitleForeColor = ThemeColors.TextPrimary;
+            dtpFechaIngreso.CalendarTrailingForeColor = ThemeColors.TextSecondary;
             // 
             // btnGuardarPersona
             // 
             btnGuardarPersona.Location = new System.Drawing.Point(175, 363);
             btnGuardarPersona.Name = "btnGuardarPersona";
-            btnGuardarPersona.Size = new System.Drawing.Size(75, 23);
+            btnGuardarPersona.Size = new System.Drawing.Size(150, 35);
             btnGuardarPersona.TabIndex = 22;
             btnGuardarPersona.Text = "Guardar Persona";
             // 
@@ -419,6 +450,7 @@ namespace Presentation
             tabUsuarios.Size = new System.Drawing.Size(492, 372);
             tabUsuarios.TabIndex = 1;
             tabUsuarios.Text = "Crear Usuario";
+            tabUsuarios.BackColor = ThemeColors.FormBackground;
             // 
             // usuarioLayout
             // 
@@ -446,6 +478,7 @@ namespace Presentation
             usuarioLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             usuarioLayout.Size = new System.Drawing.Size(492, 372);
             usuarioLayout.TabIndex = 0;
+            usuarioLayout.BackColor = System.Drawing.Color.Transparent;
             // 
             // lblPersona
             // 
@@ -456,6 +489,7 @@ namespace Presentation
             lblPersona.Size = new System.Drawing.Size(60, 19);
             lblPersona.TabIndex = 0;
             lblPersona.Text = "Persona:";
+            lblPersona.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxPersona
             // 
@@ -463,6 +497,9 @@ namespace Presentation
             cbxPersona.Name = "cbxPersona";
             cbxPersona.Size = new System.Drawing.Size(121, 25);
             cbxPersona.TabIndex = 1;
+            cbxPersona.BackColor = ThemeColors.Surface;
+            cbxPersona.ForeColor = ThemeColors.TextPrimary;
+            cbxPersona.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             // 
             // lblUsuario
             // 
@@ -473,6 +510,7 @@ namespace Presentation
             lblUsuario.Size = new System.Drawing.Size(59, 19);
             lblUsuario.TabIndex = 2;
             lblUsuario.Text = "Usuario:";
+            lblUsuario.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtUsuario
             // 
@@ -490,6 +528,7 @@ namespace Presentation
             lblPassword.Size = new System.Drawing.Size(82, 19);
             lblPassword.TabIndex = 4;
             lblPassword.Text = "Contraseña:";
+            lblPassword.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtPassword
             // 
@@ -507,6 +546,7 @@ namespace Presentation
             lblRolUsuario.Size = new System.Drawing.Size(31, 19);
             lblRolUsuario.TabIndex = 6;
             lblRolUsuario.Text = "Rol:";
+            lblRolUsuario.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxRolUsuario
             // 
@@ -514,12 +554,15 @@ namespace Presentation
             cbxRolUsuario.Name = "cbxRolUsuario";
             cbxRolUsuario.Size = new System.Drawing.Size(121, 25);
             cbxRolUsuario.TabIndex = 7;
+            cbxRolUsuario.BackColor = ThemeColors.Surface;
+            cbxRolUsuario.ForeColor = ThemeColors.TextPrimary;
+            cbxRolUsuario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             // 
             // btnCrearUsuario
             // 
             btnCrearUsuario.Location = new System.Drawing.Point(175, 123);
             btnCrearUsuario.Name = "btnCrearUsuario";
-            btnCrearUsuario.Size = new System.Drawing.Size(75, 23);
+            btnCrearUsuario.Size = new System.Drawing.Size(150, 35);
             btnCrearUsuario.TabIndex = 8;
             btnCrearUsuario.Text = "Crear Usuario";
             // 
@@ -531,6 +574,7 @@ namespace Presentation
             tabGestionUsuarios.Size = new System.Drawing.Size(492, 372);
             tabGestionUsuarios.TabIndex = 2;
             tabGestionUsuarios.Text = "Gestion de Usuarios";
+            tabGestionUsuarios.BackColor = ThemeColors.FormBackground;
             // 
             // gestionUsuariosLayout
             // 
@@ -551,6 +595,7 @@ namespace Presentation
             gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             gestionUsuariosLayout.Size = new System.Drawing.Size(492, 372);
             gestionUsuariosLayout.TabIndex = 0;
+            gestionUsuariosLayout.BackColor = System.Drawing.Color.Transparent;
             // 
             // dgvUsuarios
             // 
@@ -560,6 +605,19 @@ namespace Presentation
             dgvUsuarios.Name = "dgvUsuarios";
             dgvUsuarios.Size = new System.Drawing.Size(486, 250);
             dgvUsuarios.TabIndex = 0;
+            dgvUsuarios.BackgroundColor = ThemeColors.Surface;
+            dgvUsuarios.GridColor = ThemeColors.Border;
+            dgvUsuarios.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dgvUsuarios.EnableHeadersVisualStyles = false;
+            dgvUsuarios.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = ThemeColors.Primary;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = ThemeColors.TextPrimary;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dgvUsuarios.DefaultCellStyle.BackColor = ThemeColors.Surface;
+            dgvUsuarios.DefaultCellStyle.ForeColor = ThemeColors.TextSecondary;
+            dgvUsuarios.DefaultCellStyle.SelectionBackColor = ThemeColors.PrimaryHover;
+            dgvUsuarios.DefaultCellStyle.SelectionForeColor = ThemeColors.TextPrimary;
+            dgvUsuarios.AlternatingRowsDefaultCellStyle.BackColor = ThemeColors.FormBackground;
             //
             // lblFechaExpiracionGestion
             //
@@ -570,6 +628,7 @@ namespace Presentation
             lblFechaExpiracionGestion.Size = new System.Drawing.Size(110, 19);
             lblFechaExpiracionGestion.TabIndex = 2;
             lblFechaExpiracionGestion.Text = "Fecha Expiración:";
+            lblFechaExpiracionGestion.ForeColor = ThemeColors.TextPrimary;
             //
             // dtpFechaExpiracionGestion
             //
@@ -578,6 +637,11 @@ namespace Presentation
             dtpFechaExpiracionGestion.Name = "dtpFechaExpiracionGestion";
             dtpFechaExpiracionGestion.Size = new System.Drawing.Size(200, 25);
             dtpFechaExpiracionGestion.TabIndex = 3;
+            dtpFechaExpiracionGestion.CalendarForeColor = ThemeColors.TextPrimary;
+            dtpFechaExpiracionGestion.CalendarMonthBackground = ThemeColors.Surface;
+            dtpFechaExpiracionGestion.CalendarTitleBackColor = ThemeColors.Primary;
+            dtpFechaExpiracionGestion.CalendarTitleForeColor = ThemeColors.TextPrimary;
+            dtpFechaExpiracionGestion.CalendarTrailingForeColor = ThemeColors.TextSecondary;
             // 
             // buttonPanel
             // 
@@ -590,28 +654,30 @@ namespace Presentation
             buttonPanel.Name = "buttonPanel";
             buttonPanel.Size = new System.Drawing.Size(200, 50);
             buttonPanel.TabIndex = 1;
+            buttonPanel.BackColor = System.Drawing.Color.Transparent;
             // 
             // btnEliminarUsuario
             // 
             btnEliminarUsuario.Location = new System.Drawing.Point(3, 3);
             btnEliminarUsuario.Name = "btnEliminarUsuario";
-            btnEliminarUsuario.Size = new System.Drawing.Size(75, 23);
+            btnEliminarUsuario.Size = new System.Drawing.Size(120, 35);
             btnEliminarUsuario.TabIndex = 0;
             btnEliminarUsuario.Text = "Eliminar Usuario";
+            ((RoundedButton)btnEliminarUsuario).BaseColor = ThemeColors.Danger;
             // 
             // btnGuardarCambios
             // 
-            btnGuardarCambios.Location = new System.Drawing.Point(84, 3);
+            btnGuardarCambios.Location = new System.Drawing.Point(129, 3);
             btnGuardarCambios.Name = "btnGuardarCambios";
-            btnGuardarCambios.Size = new System.Drawing.Size(75, 23);
+            btnGuardarCambios.Size = new System.Drawing.Size(120, 35);
             btnGuardarCambios.TabIndex = 1;
             btnGuardarCambios.Text = "Guardar Cambios";
             // 
             // btnRefrescarUsuarios
             // 
-            btnRefrescarUsuarios.Location = new System.Drawing.Point(3, 32);
+            btnRefrescarUsuarios.Location = new System.Drawing.Point(255, 3);
             btnRefrescarUsuarios.Name = "btnRefrescarUsuarios";
-            btnRefrescarUsuarios.Size = new System.Drawing.Size(75, 23);
+            btnRefrescarUsuarios.Size = new System.Drawing.Size(120, 35);
             btnRefrescarUsuarios.TabIndex = 2;
             btnRefrescarUsuarios.Text = "Refrescar";
             // 
@@ -623,6 +689,7 @@ namespace Presentation
             tabConfiguracion.Size = new System.Drawing.Size(492, 372);
             tabConfiguracion.TabIndex = 3;
             tabConfiguracion.Text = "Configuración";
+            tabConfiguracion.BackColor = ThemeColors.FormBackground;
             // 
             // configuracionLayout
             // 
@@ -655,6 +722,7 @@ namespace Presentation
             configuracionLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             configuracionLayout.Size = new System.Drawing.Size(492, 372);
             configuracionLayout.TabIndex = 0;
+            configuracionLayout.BackColor = System.Drawing.Color.Transparent;
             // 
             // chkMayusculasMinusculas
             // 
@@ -663,6 +731,7 @@ namespace Presentation
             chkMayusculasMinusculas.Size = new System.Drawing.Size(271, 24);
             chkMayusculasMinusculas.TabIndex = 0;
             chkMayusculasMinusculas.Text = "Combinar mayúsculas y minúsculas";
+            chkMayusculasMinusculas.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkNumeros
             // 
@@ -671,6 +740,7 @@ namespace Presentation
             chkNumeros.Size = new System.Drawing.Size(271, 24);
             chkNumeros.TabIndex = 1;
             chkNumeros.Text = "Requerir números";
+            chkNumeros.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkCaracteresEspeciales
             // 
@@ -679,6 +749,7 @@ namespace Presentation
             chkCaracteresEspeciales.Size = new System.Drawing.Size(271, 24);
             chkCaracteresEspeciales.TabIndex = 2;
             chkCaracteresEspeciales.Text = "Requerir caracteres especiales";
+            chkCaracteresEspeciales.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkDobleFactor
             // 
@@ -687,6 +758,7 @@ namespace Presentation
             chkDobleFactor.Size = new System.Drawing.Size(271, 24);
             chkDobleFactor.TabIndex = 3;
             chkDobleFactor.Text = "Usar doble factor";
+            chkDobleFactor.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkNoRepetirContrasenas
             // 
@@ -695,6 +767,7 @@ namespace Presentation
             chkNoRepetirContrasenas.Size = new System.Drawing.Size(271, 24);
             chkNoRepetirContrasenas.TabIndex = 4;
             chkNoRepetirContrasenas.Text = "No repetir contraseñas anteriores";
+            chkNoRepetirContrasenas.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkVerificarDatosPersonales
             // 
@@ -703,6 +776,7 @@ namespace Presentation
             chkVerificarDatosPersonales.Size = new System.Drawing.Size(271, 24);
             chkVerificarDatosPersonales.TabIndex = 5;
             chkVerificarDatosPersonales.Text = "Verificar datos personales";
+            chkVerificarDatosPersonales.ForeColor = ThemeColors.TextSecondary;
             // 
             // lblMinCaracteres
             // 
@@ -713,6 +787,7 @@ namespace Presentation
             lblMinCaracteres.Size = new System.Drawing.Size(143, 19);
             lblMinCaracteres.TabIndex = 6;
             lblMinCaracteres.Text = "Mínimo de caracteres:";
+            lblMinCaracteres.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtMinCaracteres
             // 
@@ -730,6 +805,7 @@ namespace Presentation
             lblCantPreguntas.Size = new System.Drawing.Size(235, 19);
             lblCantPreguntas.TabIndex = 8;
             lblCantPreguntas.Text = "Cantidad de preguntas de seguridad:";
+            lblCantPreguntas.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtCantPreguntas
             // 
@@ -742,7 +818,7 @@ namespace Presentation
             // 
             btnGuardarConfig.Location = new System.Drawing.Point(347, 243);
             btnGuardarConfig.Name = "btnGuardarConfig";
-            btnGuardarConfig.Size = new System.Drawing.Size(75, 23);
+            btnGuardarConfig.Size = new System.Drawing.Size(120, 35);
             btnGuardarConfig.TabIndex = 10;
             btnGuardarConfig.Text = "Guardar";
             // 
@@ -757,6 +833,7 @@ namespace Presentation
             Name = "AdminForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Panel de Administración";
+            this.BackColor = ThemeColors.FormBackground;
             tabControl.ResumeLayout(false);
             tabPersonas.ResumeLayout(false);
             personaLayout.ResumeLayout(false);

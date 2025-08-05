@@ -78,7 +78,7 @@ namespace Presentation
 
             // TwoFactorAuthForm
             this.AcceptButton = this.btnVerificar;
-            this.ClientSize = new System.Drawing.Size(340, 180);
+            this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(this.tableLayoutPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;

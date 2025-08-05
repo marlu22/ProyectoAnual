@@ -294,7 +294,7 @@ namespace BusinessLogic.Services
             var oldPasswordHash = HashUsuarioContrasena(username, oldPassword);
             if (!oldPasswordHash.SequenceEqual(usuario.ContrasenaScript))
             {
-                throw new ValidationException("La contraseña actual es incorrecta.");
+                throw new ValidationException("La contraseña actual es incorrecta. Por favor, intente de nuevo.");
             }
 
             var persona = _userRepository.GetPersonaById(usuario.IdPersona)

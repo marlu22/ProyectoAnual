@@ -153,7 +153,7 @@ namespace Presentation
             // LoginForm
             // 
             AcceptButton = btnLogin;
-            ClientSize = new System.Drawing.Size(350, 250);
+            ClientSize = new System.Drawing.Size(800, 600);
             Controls.Add(tableLayoutPanel);
             Font = new System.Drawing.Font("Segoe UI", 10F);
             BackColor = ThemeColors.FormBackground;

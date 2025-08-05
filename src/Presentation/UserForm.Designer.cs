@@ -80,7 +80,7 @@ namespace Presentation
             // UserForm
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(382, 203);
+            this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(this.iconPictureBox2);
             this.Controls.Add(this.iconPictureBox1);
             this.Controls.Add(this.btnCambiarPreguntas);

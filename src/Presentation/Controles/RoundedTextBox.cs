@@ -79,21 +79,27 @@ namespace Presentation.Controles
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
-
-            // We need to clear the region to ensure the background is correct
-            e.Graphics.Clear(this.BackColor);
-
+            e.Graphics.Clear(Parent.BackColor);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             var rect = new Rectangle(0, 0, Width - 1, Height - 1);
             using (var path = GetRoundedPath(rect, _borderRadius))
-            using (var pen = new Pen(_currentBorderColor, 2))
             {
+                // Fill the background
+                using (var brush = new SolidBrush(this.BackColor))
+                {
+                    e.Graphics.FillPath(brush, path);
+                }
+
                 // Draw the border
-                e.Graphics.DrawPath(pen, path);
+                using (var pen = new Pen(_currentBorderColor, 2))
+                {
+                    e.Graphics.DrawPath(pen, path);
+                }
             }
-            // The text is drawn by the base TextBox control, so we don't need to render it manually.
+
+            // Draw the text
+            TextRenderer.DrawText(e.Graphics, Text, Font, ClientRectangle, ForeColor, TextFormatFlags.TextBoxControl);
         }
 
         protected override void WndProc(ref Message m)

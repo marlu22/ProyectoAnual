@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using BusinessLogic.Models;
+using Microsoft.Extensions.Logging;
 
 public class MockEmailService : IEmailService
 {
@@ -158,7 +159,7 @@ public class UserServiceTests
     {
         _userRepository = new MockUserRepository();
         _emailService = new MockEmailService();
-        _userService = new UserService(_userRepository, _emailService);
+        _userService = new UserService(_userRepository, _emailService, new Microsoft.Extensions.Logging.Abstractions.NullLogger<UserService>());
     }
 
     [Fact]

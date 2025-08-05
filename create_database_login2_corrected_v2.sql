@@ -317,16 +317,17 @@ CREATE PROCEDURE sp_insert_persona
     @id_localidad INT,
     @id_genero INT,
     @correo VARCHAR(100),
-    @celular VARCHAR(30)
+    @celular VARCHAR(30),
+    @fecha_ingreso DATETIME
 AS
 BEGIN
     INSERT INTO personas (
         legajo, nombre, apellido, id_tipo_doc, num_doc, fecha_nacimiento,
-        cuil, calle, altura, id_localidad, id_genero, correo, celular
+        cuil, calle, altura, id_localidad, id_genero, correo, celular, fecha_ingreso
     )
     VALUES (
         @legajo, @nombre, @apellido, @id_tipo_doc, @num_doc, @fecha_nacimiento,
-        @cuil, @calle, @altura, @id_localidad, @id_genero, @correo, @celular
+        @cuil, @calle, @altura, @id_localidad, @id_genero, @correo, @celular, @fecha_ingreso
     )
 END
 GO

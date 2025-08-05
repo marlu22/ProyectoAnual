@@ -35,6 +35,9 @@ namespace DataAccess.Entities
         [StringLength(20)]
         public string NumDoc { get; set; } = null!;
 
+        [Column("fecha_nacimiento")]
+        public DateTime? FechaNacimiento { get; set; }
+
         [Column("cuil")]
         [StringLength(15)]
         public string? Cuil { get; set; }
@@ -56,6 +59,10 @@ namespace DataAccess.Entities
         [Column("correo")]
         [StringLength(100)]
         public string? Correo { get; set; }
+
+        [Column("celular")]
+        [StringLength(30)]
+        public string? Celular { get; set; }
 
         [Column("fecha_ingreso")]
         public DateTime FechaIngreso { get; set; }

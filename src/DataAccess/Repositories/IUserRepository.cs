@@ -17,7 +17,9 @@ namespace DataAccess.Repositories
         void Set2faCode(string username, string? code, System.DateTime? expiry);
         List<RespuestaSeguridad>? GetRespuestasSeguridadByUsuarioId(int idUsuario);
         List<TipoDoc> GetAllTiposDoc();
-        List<Localidad> GetAllLocalidades();
+        List<Provincia> GetAllProvincias();
+        List<Partido> GetPartidosByProvinciaId(int provinciaId);
+        List<Localidad> GetLocalidadesByPartidoId(int partidoId);
         List<Genero> GetAllGeneros();
         List<Persona> GetAllPersonas();
         Persona? GetPersonaById(int id);

@@ -103,6 +103,9 @@ namespace BusinessLogic.Services
             if (string.IsNullOrWhiteSpace(request.Correo) || !IsValidEmail(request.Correo))
                 throw new ValidationException("El formato del correo electrónico no es válido.");
 
+            if (!int.TryParse(request.Localidad, out int localidadId))
+                throw new ValidationException("El ID de localidad no es válido.");
+
             var persona = new Persona
             {
                 Legajo = legajo,
@@ -110,12 +113,14 @@ namespace BusinessLogic.Services
                 Apellido = request.Apellido,
                 IdTipoDoc = _userRepository.GetTipoDocByNombre(request.TipoDoc)?.IdTipoDoc ?? throw new ValidationException("Tipo de documento no encontrado"),
                 NumDoc = request.NumDoc,
+                FechaNacimiento = request.FechaNacimiento,
                 Cuil = request.Cuil,
                 Calle = request.Calle,
                 Altura = request.Altura,
-                IdLocalidad = _userRepository.GetLocalidadByNombre(request.Localidad)?.IdLocalidad ?? throw new ValidationException("Localidad no encontrada"),
+                IdLocalidad = localidadId,
                 IdGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero ?? throw new ValidationException("Género no encontrado"),
                 Correo = request.Correo,
+                Celular = request.Celular,
                 FechaIngreso = request.FechaIngreso
             };
             _userRepository.AddPersona(persona);
@@ -131,7 +136,7 @@ namespace BusinessLogic.Services
                 throw new ValidationException("La persona seleccionada no tiene un correo electrónico para enviar la contraseña.");
             }
 
-            string passwordToUse = GenerateRandomPassword(request.Username, persona.Nombre, persona.Apellido);
+            string passwordToUse = GenerateRandomPassword(request.Username, persona);
 
             var usuario = new Usuario
             {
@@ -268,7 +273,7 @@ namespace BusinessLogic.Services
                 }
             }
 
-            var newPassword = GenerateRandomPassword(username, persona.Nombre, persona.Apellido);
+            var newPassword = GenerateRandomPassword(username, persona);
             usuario.ContrasenaScript = HashUsuarioContrasena(username, newPassword);
             usuario.FechaUltimoCambio = DateTime.Now;
             usuario.CambioContrasenaObligatorio = true;
@@ -300,7 +305,7 @@ namespace BusinessLogic.Services
             var persona = _userRepository.GetPersonaById(usuario.IdPersona)
                 ?? throw new ValidationException("Persona no encontrada");
 
-            ValidatePasswordPolicy(newPassword, username, persona.Nombre, persona.Apellido);
+            ValidatePasswordPolicy(newPassword, username, persona);
 
             var newPasswordHash = HashUsuarioContrasena(username, newPassword);
 
@@ -335,7 +340,11 @@ namespace BusinessLogic.Services
 
         public List<TipoDoc> GetTiposDoc() => ExecuteServiceOperation(() => _userRepository.GetAllTiposDoc(), "getting all document types");
 
-        public List<Localidad> GetLocalidades() => ExecuteServiceOperation(() => _userRepository.GetAllLocalidades(), "getting all locations");
+        public List<Provincia> GetProvincias() => ExecuteServiceOperation(() => _userRepository.GetAllProvincias(), "getting all provinces");
+
+        public List<Partido> GetPartidosByProvinciaId(int provinciaId) => ExecuteServiceOperation(() => _userRepository.GetPartidosByProvinciaId(provinciaId), "getting partidos by provincia");
+
+        public List<Localidad> GetLocalidadesByPartidoId(int partidoId) => ExecuteServiceOperation(() => _userRepository.GetLocalidadesByPartidoId(partidoId), "getting localidades by partido");
 
         public List<Genero> GetGeneros() => ExecuteServiceOperation(() => _userRepository.GetAllGeneros(), "getting all genders");
 
@@ -399,12 +408,13 @@ namespace BusinessLogic.Services
         {
             using (var sha256 = SHA256.Create())
             {
-                // Concatenate username and password as per security requirements
-                return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                // Concatenate password and username (as salt) as per security requirements
+                var saltedPassword = password + username;
+                return sha256.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
             }
         }
 
-        private string GenerateRandomPassword(string? username = null, string? nombre = null, string? apellido = null)
+        private string GenerateRandomPassword(string? username = null, Persona? persona = null)
         {
             var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad();
             var random = new Random();
@@ -443,13 +453,16 @@ namespace BusinessLogic.Services
 
                 var password = new string(passwordChars.OrderBy(c => random.Next()).ToArray());
 
-                if (politica.SinDatosPersonales && username != null && nombre != null && apellido != null)
+                if (politica.SinDatosPersonales && username != null && persona != null)
                 {
-                    if (password.Contains(username, StringComparison.OrdinalIgnoreCase) ||
-                        password.Contains(nombre, StringComparison.OrdinalIgnoreCase) ||
-                        password.Contains(apellido, StringComparison.OrdinalIgnoreCase))
+                    try
                     {
-                        continue; // Regenerate password
+                        // Use the existing validation logic to check the generated password
+                        ValidatePasswordPolicy(password, username, persona);
+                    }
+                    catch (ValidationException)
+                    {
+                        continue; // Regenerate password if it fails validation
                     }
                 }
 
@@ -457,7 +470,7 @@ namespace BusinessLogic.Services
             }
         }
 
-        private void ValidatePasswordPolicy(string password, string username, string nombre, string apellido)
+        private void ValidatePasswordPolicy(string password, string username, Persona persona)
         {
             var politica = _userRepository.GetPoliticaSeguridad();
             if (politica == null) return;
@@ -477,10 +490,22 @@ namespace BusinessLogic.Services
             if (politica.SinDatosPersonales)
             {
                 if (password.Contains(username, StringComparison.OrdinalIgnoreCase) ||
-                    password.Contains(nombre, StringComparison.OrdinalIgnoreCase) ||
-                    password.Contains(apellido, StringComparison.OrdinalIgnoreCase))
+                    password.Contains(persona.Nombre, StringComparison.OrdinalIgnoreCase) ||
+                    password.Contains(persona.Apellido, StringComparison.OrdinalIgnoreCase))
                 {
                     throw new ValidationException("La contraseña no debe contener datos personales (nombre de usuario, nombre o apellido).");
+                }
+
+                if (persona.FechaNacimiento.HasValue)
+                {
+                    string[] dateFormats = { "ddMMyyyy", "yyyyMMdd", "ddMM", "MMdd" };
+                    foreach (var format in dateFormats)
+                    {
+                        if (password.Contains(persona.FechaNacimiento.Value.ToString(format)))
+                        {
+                            throw new ValidationException("La contraseña no debe contener su fecha de nacimiento.");
+                        }
+                    }
                 }
             }
         }

@@ -83,7 +83,27 @@ namespace DataAccess.Repositories
             return list;
         });
 
-        public List<Localidad> GetAllLocalidades() => ExecuteReader("SELECT id_localidad, localidad, id_partido FROM localidades;", reader =>
+        public List<Provincia> GetAllProvincias() => ExecuteReader("SELECT id_provincia, provincia FROM provincias;", reader =>
+        {
+            var list = new List<Provincia>();
+            while (reader.Read())
+            {
+                list.Add(new Provincia { IdProvincia = (int)reader["id_provincia"], Nombre = (string)reader["provincia"] });
+            }
+            return list;
+        });
+
+        public List<Partido> GetPartidosByProvinciaId(int provinciaId) => ExecuteReader("SELECT id_partido, partido, id_provincia FROM partidos WHERE id_provincia = @id_provincia;", reader =>
+        {
+            var list = new List<Partido>();
+            while (reader.Read())
+            {
+                list.Add(new Partido { IdPartido = (int)reader["id_partido"], Nombre = (string)reader["partido"], IdProvincia = (int)reader["id_provincia"] });
+            }
+            return list;
+        }, p => p.AddWithValue("@id_provincia", provinciaId));
+
+        public List<Localidad> GetLocalidadesByPartidoId(int partidoId) => ExecuteReader("SELECT id_localidad, localidad, id_partido FROM localidades WHERE id_partido = @id_partido;", reader =>
         {
             var list = new List<Localidad>();
             while (reader.Read())
@@ -91,7 +111,7 @@ namespace DataAccess.Repositories
                 list.Add(new Localidad { IdLocalidad = (int)reader["id_localidad"], Nombre = (string)reader["localidad"], IdPartido = (int)reader["id_partido"] });
             }
             return list;
-        });
+        }, p => p.AddWithValue("@id_partido", partidoId));
 
         public PoliticaSeguridad? GetPoliticaSeguridad() => ExecuteReader("SELECT TOP 1 * FROM politicas_seguridad;", reader =>
         {

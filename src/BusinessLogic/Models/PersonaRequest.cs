@@ -8,6 +8,8 @@ namespace BusinessLogic.Models
         public string Apellido { get; set; } = null!;
         public string TipoDoc { get; set; } = null!;
         public string NumDoc { get; set; } = null!;
+        public DateTime FechaNacimiento { get; set; }
+        public string Celular { get; set; } = null!;
         public string Cuil { get; set; } = null!;
         public string Calle { get; set; } = null!;
         public string Altura { get; set; } = null!;

@@ -113,7 +113,9 @@ public class MockUserRepository : IUserRepository
     public void AddUsuario(Usuario usuario) => throw new NotImplementedException();
     public void DeleteUsuario(int usuarioId) => throw new NotImplementedException();
     public List<Genero> GetAllGeneros() => throw new NotImplementedException();
-    public List<Localidad> GetAllLocalidades() => throw new NotImplementedException();
+    public List<Provincia> GetAllProvincias() => new List<Provincia>();
+    public List<Partido> GetPartidosByProvinciaId(int provinciaId) => new List<Partido>();
+    public List<Localidad> GetLocalidadesByPartidoId(int partidoId) => new List<Localidad>();
     public List<Persona> GetAllPersonas() => throw new NotImplementedException();
     public List<Rol> GetAllRoles() => throw new NotImplementedException();
     public List<TipoDoc> GetAllTiposDoc() => throw new NotImplementedException();
@@ -134,7 +136,8 @@ public class MockUserRepository : IUserRepository
     {
         using (var sha256 = SHA256.Create())
         {
-            return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var saltedPassword = password + username;
+            return sha256.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
         }
     }
 }

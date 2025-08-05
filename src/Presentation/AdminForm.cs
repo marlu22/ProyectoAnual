@@ -34,10 +34,17 @@ namespace Presentation
 
             // Cargar combos al iniciar
             LoadTipoDoc();
-            LoadLocalidades();
+            LoadProvincias();
             LoadGeneros();
             LoadPersonas();
             LoadRoles();
+
+            // Setup cascading dropdowns
+            cbxProvincia.SelectedIndexChanged += CbxProvincia_SelectedIndexChanged;
+            cbxPartido.SelectedIndexChanged += CbxPartido_SelectedIndexChanged;
+
+            cbxPartido.Enabled = false;
+            cbxLocalidad.Enabled = false;
 
             LoadPoliticaSeguridad();
 
@@ -256,18 +263,62 @@ namespace Presentation
             cbxTipoDoc.ValueMember = "IdTipoDoc"; // Changed to match TipoDoc
         }
 
-        private void LoadLocalidades()
+        private void LoadProvincias()
         {
-            var localidades = _userService.GetLocalidades();
-            if (localidades == null || !localidades.Any())
+            var provincias = _userService.GetProvincias();
+            if (provincias != null && provincias.Any())
             {
-                MessageBox.Show("No se encontraron localidades.", "Advertencia");
-                cbxLocalidad.DataSource = null;
-                return;
+                cbxProvincia.DataSource = provincias;
+                cbxProvincia.DisplayMember = "Nombre";
+                cbxProvincia.ValueMember = "IdProvincia";
             }
-            cbxLocalidad.DataSource = localidades;
-            cbxLocalidad.DisplayMember = "Nombre";
-            cbxLocalidad.ValueMember = "IdLocalidad"; // Changed to match Localidad
+        }
+
+        private void CbxProvincia_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (cbxProvincia.SelectedValue is int provinciaId)
+            {
+                var partidos = _userService.GetPartidosByProvinciaId(provinciaId);
+                if (partidos != null && partidos.Any())
+                {
+                    cbxPartido.DataSource = partidos;
+                    cbxPartido.DisplayMember = "Nombre";
+                    cbxPartido.ValueMember = "IdPartido";
+                    cbxPartido.Enabled = true;
+                }
+                else
+                {
+                    cbxPartido.DataSource = null;
+                    cbxPartido.Enabled = false;
+                }
+            }
+            cbxLocalidad.DataSource = null;
+            cbxLocalidad.Enabled = false;
+        }
+
+        private void CbxPartido_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (cbxPartido.SelectedValue is int partidoId)
+            {
+                LoadLocalidadesByPartido(partidoId);
+            }
+        }
+
+        private void LoadLocalidadesByPartido(int partidoId)
+        {
+            var localidades = _userService.GetLocalidadesByPartidoId(partidoId);
+            if (localidades != null && localidades.Any())
+            {
+                cbxLocalidad.DataSource = localidades;
+                cbxLocalidad.DisplayMember = "Nombre";
+                cbxLocalidad.ValueMember = "IdLocalidad";
+                cbxLocalidad.Enabled = true;
+            }
+            else
+            {
+                cbxLocalidad.DataSource = null;
+                cbxLocalidad.Enabled = false;
+            }
         }
 
         private void LoadGeneros()
@@ -319,7 +370,7 @@ namespace Presentation
             cbxRolUsuario.ValueMember = "IdRol"; // Changed to match Rol
         }
 
-        private void BtnGuardarPersona_Click(object? sender, EventArgs e) // Fixed nullable annotations
+        private void BtnGuardarPersona_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -333,7 +384,8 @@ namespace Presentation
                     string.IsNullOrWhiteSpace(txtAltura.Text) ||
                     cbxLocalidad.SelectedItem == null ||
                     cbxGenero.SelectedItem == null ||
-                    string.IsNullOrWhiteSpace(txtCorreo.Text))
+                    string.IsNullOrWhiteSpace(txtCorreo.Text) ||
+                    string.IsNullOrWhiteSpace(txtCelular.Text))
                 {
                     MessageBox.Show("Por favor, complete todos los campos obligatorios.", "Error");
                     return;
@@ -341,17 +393,19 @@ namespace Presentation
 
                 var persona = new PersonaRequest
                 {
-                    Legajo = txtLegajo.Text, // Changed to string to match Persona.Legajo
+                    Legajo = txtLegajo.Text,
                     Nombre = txtNombre.Text,
                     Apellido = txtApellido.Text,
-                    TipoDoc = cbxTipoDoc.Text, // Use .Text to get the string value
+                    TipoDoc = cbxTipoDoc.Text,
                     NumDoc = txtNumDoc.Text,
+                    FechaNacimiento = dtpFechaNacimiento.Value,
                     Cuil = txtCuil.Text,
                     Calle = txtCalle.Text,
                     Altura = txtAltura.Text,
-                    Localidad = cbxLocalidad.Text, // Use .Text to get the string value
-                    Genero = cbxGenero.Text, // Use .Text to get the string value
+                    Localidad = cbxLocalidad.SelectedValue.ToString(),
+                    Genero = cbxGenero.Text,
                     Correo = txtCorreo.Text,
+                    Celular = txtCelular.Text,
                     FechaIngreso = dtpFechaIngreso.Value
                 };
                 _userService.CrearPersona(persona);

@@ -15,7 +15,9 @@ namespace BusinessLogic.Services
         Task RecuperarContrasena(string username, Dictionary<int, string> respuestas);
         void CambiarContrasena(string username, string newPassword, string oldPassword);
         List<TipoDoc> GetTiposDoc();
-        List<Localidad> GetLocalidades();
+        List<Provincia> GetProvincias();
+        List<Partido> GetPartidosByProvinciaId(int provinciaId);
+        List<Localidad> GetLocalidadesByPartidoId(int partidoId);
         List<Genero> GetGeneros();
         List<Persona> GetPersonas();
         List<Rol> GetRoles();

@@ -61,12 +61,13 @@ namespace Presentation
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             navigationPanel = new System.Windows.Forms.Panel();
-            contentPanel = new System.Windows.Forms.Panel();
             btnNavigatePersonas = new RoundedButton();
             btnNavigateUsuarios = new RoundedButton();
             btnNavigateGestion = new RoundedButton();
             btnNavigateConfiguracion = new RoundedButton();
+            contentPanel = new System.Windows.Forms.Panel();
             panelPersonas = new System.Windows.Forms.Panel();
             personaLayout = new System.Windows.Forms.TableLayoutPanel();
             lblLegajo = new System.Windows.Forms.Label();
@@ -115,9 +116,9 @@ namespace Presentation
             btnCrearUsuario = new RoundedButton();
             panelGestionUsuarios = new System.Windows.Forms.Panel();
             gestionUsuariosLayout = new System.Windows.Forms.TableLayoutPanel();
+            dgvUsuarios = new System.Windows.Forms.DataGridView();
             lblFechaExpiracionGestion = new System.Windows.Forms.Label();
             dtpFechaExpiracionGestion = new System.Windows.Forms.DateTimePicker();
-            dgvUsuarios = new System.Windows.Forms.DataGridView();
             buttonPanel = new System.Windows.Forms.FlowLayoutPanel();
             btnEliminarUsuario = new RoundedButton();
             btnGuardarCambios = new RoundedButton();
@@ -151,88 +152,96 @@ namespace Presentation
             // 
             // navigationPanel
             // 
-            navigationPanel.Dock = System.Windows.Forms.DockStyle.Left;
-            navigationPanel.BackColor = ThemeColors.Primary;
             navigationPanel.Controls.Add(btnNavigatePersonas);
             navigationPanel.Controls.Add(btnNavigateUsuarios);
             navigationPanel.Controls.Add(btnNavigateGestion);
             navigationPanel.Controls.Add(btnNavigateConfiguracion);
+            navigationPanel.Dock = System.Windows.Forms.DockStyle.Left;
             navigationPanel.Location = new System.Drawing.Point(0, 0);
             navigationPanel.Name = "navigationPanel";
             navigationPanel.Size = new System.Drawing.Size(200, 600);
+            navigationPanel.TabIndex = 1;
             // 
-            // contentPanel
-            // 
-            contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            contentPanel.Location = new System.Drawing.Point(200, 0);
-            contentPanel.Name = "contentPanel";
-            contentPanel.Size = new System.Drawing.Size(600, 600);
-            contentPanel.Controls.Add(panelPersonas);
-            contentPanel.Controls.Add(panelUsuarios);
-            contentPanel.Controls.Add(panelGestionUsuarios);
-            contentPanel.Controls.Add(panelConfiguracion);
-            //
             // btnNavigatePersonas
-            //
+            // 
             btnNavigatePersonas.Dock = System.Windows.Forms.DockStyle.Top;
             btnNavigatePersonas.FlatAppearance.BorderSize = 0;
             btnNavigatePersonas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnNavigatePersonas.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            btnNavigatePersonas.ForeColor = ThemeColors.TextPrimary;
-            btnNavigatePersonas.Location = new System.Drawing.Point(0, 0);
+            btnNavigatePersonas.ForeColor = System.Drawing.Color.White;
+            btnNavigatePersonas.Location = new System.Drawing.Point(0, 150);
             btnNavigatePersonas.Name = "btnNavigatePersonas";
             btnNavigatePersonas.Size = new System.Drawing.Size(200, 50);
+            btnNavigatePersonas.TabIndex = 0;
             btnNavigatePersonas.Text = "Añadir Persona";
             btnNavigatePersonas.UseVisualStyleBackColor = true;
-            //
+            // 
             // btnNavigateUsuarios
-            //
+            // 
             btnNavigateUsuarios.Dock = System.Windows.Forms.DockStyle.Top;
             btnNavigateUsuarios.FlatAppearance.BorderSize = 0;
             btnNavigateUsuarios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnNavigateUsuarios.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            btnNavigateUsuarios.ForeColor = ThemeColors.TextPrimary;
-            btnNavigateUsuarios.Location = new System.Drawing.Point(0, 50);
+            btnNavigateUsuarios.ForeColor = System.Drawing.Color.White;
+            btnNavigateUsuarios.Location = new System.Drawing.Point(0, 100);
             btnNavigateUsuarios.Name = "btnNavigateUsuarios";
             btnNavigateUsuarios.Size = new System.Drawing.Size(200, 50);
+            btnNavigateUsuarios.TabIndex = 1;
             btnNavigateUsuarios.Text = "Crear Usuario";
             btnNavigateUsuarios.UseVisualStyleBackColor = true;
-            //
+            // 
             // btnNavigateGestion
-            //
+            // 
             btnNavigateGestion.Dock = System.Windows.Forms.DockStyle.Top;
             btnNavigateGestion.FlatAppearance.BorderSize = 0;
             btnNavigateGestion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnNavigateGestion.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            btnNavigateGestion.ForeColor = ThemeColors.TextPrimary;
-            btnNavigateGestion.Location = new System.Drawing.Point(0, 100);
+            btnNavigateGestion.ForeColor = System.Drawing.Color.White;
+            btnNavigateGestion.Location = new System.Drawing.Point(0, 50);
             btnNavigateGestion.Name = "btnNavigateGestion";
             btnNavigateGestion.Size = new System.Drawing.Size(200, 50);
+            btnNavigateGestion.TabIndex = 2;
             btnNavigateGestion.Text = "Gestión de Usuarios";
             btnNavigateGestion.UseVisualStyleBackColor = true;
-            //
+            // 
             // btnNavigateConfiguracion
-            //
+            // 
             btnNavigateConfiguracion.Dock = System.Windows.Forms.DockStyle.Top;
             btnNavigateConfiguracion.FlatAppearance.BorderSize = 0;
             btnNavigateConfiguracion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnNavigateConfiguracion.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            btnNavigateConfiguracion.ForeColor = ThemeColors.TextPrimary;
-            btnNavigateConfiguracion.Location = new System.Drawing.Point(0, 150);
+            btnNavigateConfiguracion.ForeColor = System.Drawing.Color.White;
+            btnNavigateConfiguracion.Location = new System.Drawing.Point(0, 0);
             btnNavigateConfiguracion.Name = "btnNavigateConfiguracion";
             btnNavigateConfiguracion.Size = new System.Drawing.Size(200, 50);
+            btnNavigateConfiguracion.TabIndex = 3;
             btnNavigateConfiguracion.Text = "Configuración";
             btnNavigateConfiguracion.UseVisualStyleBackColor = true;
-            //
+            // 
+            // contentPanel
+            // 
+            contentPanel.Controls.Add(panelPersonas);
+            contentPanel.Controls.Add(panelUsuarios);
+            contentPanel.Controls.Add(panelGestionUsuarios);
+            contentPanel.Controls.Add(panelConfiguracion);
+            contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            contentPanel.Location = new System.Drawing.Point(200, 0);
+            contentPanel.Name = "contentPanel";
+            contentPanel.Size = new System.Drawing.Size(623, 600);
+            contentPanel.TabIndex = 0;
+            // 
             // panelPersonas
-            //
+            // 
             panelPersonas.Controls.Add(personaLayout);
             panelPersonas.Dock = System.Windows.Forms.DockStyle.Fill;
             panelPersonas.Location = new System.Drawing.Point(0, 0);
             panelPersonas.Name = "panelPersonas";
+            panelPersonas.Size = new System.Drawing.Size(623, 600);
+            panelPersonas.TabIndex = 0;
             // 
             // personaLayout
             // 
+            personaLayout.BackColor = System.Drawing.Color.Transparent;
             personaLayout.ColumnCount = 2;
             personaLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             personaLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
@@ -269,7 +278,6 @@ namespace Presentation
             personaLayout.Controls.Add(lblFechaIngreso, 0, 15);
             personaLayout.Controls.Add(dtpFechaIngreso, 1, 15);
             personaLayout.Controls.Add(btnGuardarPersona, 1, 16);
-            personaLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             personaLayout.Location = new System.Drawing.Point(0, 0);
             personaLayout.Name = "personaLayout";
             personaLayout.RowCount = 17;
@@ -292,315 +300,326 @@ namespace Presentation
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             personaLayout.Size = new System.Drawing.Size(492, 370);
             personaLayout.TabIndex = 0;
-            personaLayout.BackColor = System.Drawing.Color.Transparent;
             // 
             // lblLegajo
             // 
             lblLegajo.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblLegajo.AutoSize = true;
-            lblLegajo.Location = new System.Drawing.Point(117, 5);
+            lblLegajo.Location = new System.Drawing.Point(105, 3);
             lblLegajo.Name = "lblLegajo";
-            lblLegajo.Size = new System.Drawing.Size(52, 19);
+            lblLegajo.Size = new System.Drawing.Size(64, 23);
             lblLegajo.TabIndex = 0;
             lblLegajo.Text = "Legajo:";
-            lblLegajo.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtLegajo
             // 
+            txtLegajo.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtLegajo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtLegajo.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtLegajo.ForeColor = System.Drawing.Color.White;
             txtLegajo.Location = new System.Drawing.Point(175, 3);
             txtLegajo.Name = "txtLegajo";
-            txtLegajo.Size = new System.Drawing.Size(100, 25);
+            txtLegajo.Size = new System.Drawing.Size(100, 23);
             txtLegajo.TabIndex = 1;
             // 
             // lblNombre
             // 
             lblNombre.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblNombre.AutoSize = true;
-            lblNombre.Location = new System.Drawing.Point(107, 35);
+            lblNombre.Location = new System.Drawing.Point(92, 33);
             lblNombre.Name = "lblNombre";
-            lblNombre.Size = new System.Drawing.Size(62, 19);
+            lblNombre.Size = new System.Drawing.Size(77, 23);
             lblNombre.TabIndex = 2;
             lblNombre.Text = "Nombre:";
-            lblNombre.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtNombre
             // 
+            txtNombre.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtNombre.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtNombre.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtNombre.ForeColor = System.Drawing.Color.White;
             txtNombre.Location = new System.Drawing.Point(175, 33);
             txtNombre.Name = "txtNombre";
-            txtNombre.Size = new System.Drawing.Size(100, 25);
+            txtNombre.Size = new System.Drawing.Size(100, 23);
             txtNombre.TabIndex = 3;
             // 
             // lblApellido
             // 
             lblApellido.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblApellido.AutoSize = true;
-            lblApellido.Location = new System.Drawing.Point(108, 65);
+            lblApellido.Location = new System.Drawing.Point(93, 63);
             lblApellido.Name = "lblApellido";
-            lblApellido.Size = new System.Drawing.Size(61, 19);
+            lblApellido.Size = new System.Drawing.Size(76, 23);
             lblApellido.TabIndex = 4;
             lblApellido.Text = "Apellido:";
-            lblApellido.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtApellido
             // 
+            txtApellido.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtApellido.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtApellido.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtApellido.ForeColor = System.Drawing.Color.White;
             txtApellido.Location = new System.Drawing.Point(175, 63);
             txtApellido.Name = "txtApellido";
-            txtApellido.Size = new System.Drawing.Size(100, 25);
+            txtApellido.Size = new System.Drawing.Size(100, 23);
             txtApellido.TabIndex = 5;
             // 
             // lblTipoDoc
             // 
             lblTipoDoc.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblTipoDoc.AutoSize = true;
-            lblTipoDoc.Location = new System.Drawing.Point(55, 95);
+            lblTipoDoc.Location = new System.Drawing.Point(27, 93);
             lblTipoDoc.Name = "lblTipoDoc";
-            lblTipoDoc.Size = new System.Drawing.Size(114, 19);
+            lblTipoDoc.Size = new System.Drawing.Size(142, 23);
             lblTipoDoc.TabIndex = 6;
             lblTipoDoc.Text = "Tipo Documento:";
-            lblTipoDoc.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxTipoDoc
             // 
+            cbxTipoDoc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             cbxTipoDoc.Location = new System.Drawing.Point(175, 93);
             cbxTipoDoc.Name = "cbxTipoDoc";
-            cbxTipoDoc.Size = new System.Drawing.Size(121, 25);
+            cbxTipoDoc.Size = new System.Drawing.Size(121, 31);
             cbxTipoDoc.TabIndex = 7;
-            cbxTipoDoc.BackColor = ThemeColors.Surface;
-            cbxTipoDoc.ForeColor = ThemeColors.TextPrimary;
-            cbxTipoDoc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             // 
             // lblNumDoc
             // 
             lblNumDoc.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblNumDoc.AutoSize = true;
-            lblNumDoc.Location = new System.Drawing.Point(55, 125);
+            lblNumDoc.Location = new System.Drawing.Point(27, 123);
             lblNumDoc.Name = "lblNumDoc";
-            lblNumDoc.Size = new System.Drawing.Size(114, 19);
+            lblNumDoc.Size = new System.Drawing.Size(142, 23);
             lblNumDoc.TabIndex = 8;
             lblNumDoc.Text = "Nro. Documento:";
-            lblNumDoc.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtNumDoc
             // 
+            txtNumDoc.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtNumDoc.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtNumDoc.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtNumDoc.ForeColor = System.Drawing.Color.White;
             txtNumDoc.Location = new System.Drawing.Point(175, 123);
             txtNumDoc.Name = "txtNumDoc";
-            txtNumDoc.Size = new System.Drawing.Size(100, 25);
+            txtNumDoc.Size = new System.Drawing.Size(100, 23);
             txtNumDoc.TabIndex = 9;
+            // 
+            // lblFechaNacimiento
+            // 
+            lblFechaNacimiento.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFechaNacimiento.AutoSize = true;
+            lblFechaNacimiento.Location = new System.Drawing.Point(67, 150);
+            lblFechaNacimiento.Name = "lblFechaNacimiento";
+            lblFechaNacimiento.Size = new System.Drawing.Size(102, 30);
+            lblFechaNacimiento.TabIndex = 10;
+            lblFechaNacimiento.Text = "Fecha de Nacimiento:";
+            // 
+            // dtpFechaNacimiento
+            // 
+            dtpFechaNacimiento.Location = new System.Drawing.Point(175, 153);
+            dtpFechaNacimiento.Name = "dtpFechaNacimiento";
+            dtpFechaNacimiento.Size = new System.Drawing.Size(200, 30);
+            dtpFechaNacimiento.TabIndex = 11;
             // 
             // lblCuil
             // 
             lblCuil.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblCuil.AutoSize = true;
-            lblCuil.Location = new System.Drawing.Point(127, 155);
+            lblCuil.Location = new System.Drawing.Point(119, 183);
             lblCuil.Name = "lblCuil";
-            lblCuil.Size = new System.Drawing.Size(42, 19);
+            lblCuil.Size = new System.Drawing.Size(50, 23);
             lblCuil.TabIndex = 10;
             lblCuil.Text = "CUIL:";
-            lblCuil.ForeColor = ThemeColors.TextPrimary;
-            //
-            // lblFechaNacimiento
-            //
-            lblFechaNacimiento.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblFechaNacimiento.AutoSize = true;
-            lblFechaNacimiento.Location = new System.Drawing.Point(45, 155);
-            lblFechaNacimiento.Name = "lblFechaNacimiento";
-            lblFechaNacimiento.Size = new System.Drawing.Size(124, 19);
-            lblFechaNacimiento.TabIndex = 10;
-            lblFechaNacimiento.Text = "Fecha de Nacimiento:";
-            lblFechaNacimiento.ForeColor = ThemeColors.TextPrimary;
-            //
-            // dtpFechaNacimiento
-            //
-            dtpFechaNacimiento.Location = new System.Drawing.Point(175, 153);
-            dtpFechaNacimiento.Name = "dtpFechaNacimiento";
-            dtpFechaNacimiento.Size = new System.Drawing.Size(200, 25);
-            dtpFechaNacimiento.TabIndex = 11;
             // 
             // txtCuil
             // 
+            txtCuil.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtCuil.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtCuil.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtCuil.ForeColor = System.Drawing.Color.White;
             txtCuil.Location = new System.Drawing.Point(175, 183);
             txtCuil.Name = "txtCuil";
-            txtCuil.Size = new System.Drawing.Size(100, 25);
+            txtCuil.Size = new System.Drawing.Size(100, 23);
             txtCuil.TabIndex = 11;
             // 
-            // lblCalle
-            // 
-            lblCalle.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblCalle.AutoSize = true;
-            lblCalle.Location = new System.Drawing.Point(128, 185);
-            lblCalle.Name = "lblCalle";
-            lblCalle.Size = new System.Drawing.Size(41, 19);
-            lblCalle.TabIndex = 12;
-            lblCalle.Text = "Calle:";
-            lblCalle.ForeColor = ThemeColors.TextPrimary;
-            // 
-            // txtCalle
-            // 
-            txtCalle.Location = new System.Drawing.Point(175, 183);
-            txtCalle.Name = "txtCalle";
-            txtCalle.Size = new System.Drawing.Size(100, 25);
-            txtCalle.TabIndex = 13;
-            // 
-            // lblAltura
-            // 
-            lblAltura.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblAltura.AutoSize = true;
-            lblAltura.Location = new System.Drawing.Point(120, 215);
-            lblAltura.Name = "lblAltura";
-            lblAltura.Size = new System.Drawing.Size(49, 19);
-            lblAltura.TabIndex = 14;
-            lblAltura.Text = "Altura:";
-            lblAltura.ForeColor = ThemeColors.TextPrimary;
-            // 
-            // txtAltura
-            // 
-            txtAltura.Location = new System.Drawing.Point(175, 303);
-            txtAltura.Name = "txtAltura";
-            txtAltura.Size = new System.Drawing.Size(100, 25);
-            txtAltura.TabIndex = 15;
-            //
             // lblProvincia
-            //
+            // 
             lblProvincia.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblProvincia.AutoSize = true;
-            lblProvincia.Location = new System.Drawing.Point(100, 215);
+            lblProvincia.Location = new System.Drawing.Point(86, 213);
             lblProvincia.Name = "lblProvincia";
-            lblProvincia.Size = new System.Drawing.Size(69, 19);
+            lblProvincia.Size = new System.Drawing.Size(83, 23);
             lblProvincia.TabIndex = 16;
             lblProvincia.Text = "Provincia:";
-            lblProvincia.ForeColor = ThemeColors.TextPrimary;
-            //
+            // 
             // cbxProvincia
-            //
+            // 
             cbxProvincia.Location = new System.Drawing.Point(175, 213);
             cbxProvincia.Name = "cbxProvincia";
-            cbxProvincia.Size = new System.Drawing.Size(121, 25);
+            cbxProvincia.Size = new System.Drawing.Size(121, 31);
             cbxProvincia.TabIndex = 17;
-            //
+            // 
             // lblPartido
-            //
+            // 
             lblPartido.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblPartido.AutoSize = true;
-            lblPartido.Location = new System.Drawing.Point(100, 245);
+            lblPartido.Location = new System.Drawing.Point(101, 243);
             lblPartido.Name = "lblPartido";
-            lblPartido.Size = new System.Drawing.Size(69, 19);
+            lblPartido.Size = new System.Drawing.Size(68, 23);
             lblPartido.TabIndex = 16;
             lblPartido.Text = "Partido:";
-            lblPartido.ForeColor = ThemeColors.TextPrimary;
-            //
+            // 
             // cbxPartido
-            //
+            // 
             cbxPartido.Location = new System.Drawing.Point(175, 243);
             cbxPartido.Name = "cbxPartido";
-            cbxPartido.Size = new System.Drawing.Size(121, 25);
+            cbxPartido.Size = new System.Drawing.Size(121, 31);
             cbxPartido.TabIndex = 17;
             // 
             // lblLocalidad
             // 
             lblLocalidad.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblLocalidad.AutoSize = true;
-            lblLocalidad.Location = new System.Drawing.Point(100, 275);
+            lblLocalidad.Location = new System.Drawing.Point(83, 273);
             lblLocalidad.Name = "lblLocalidad";
-            lblLocalidad.Size = new System.Drawing.Size(69, 19);
+            lblLocalidad.Size = new System.Drawing.Size(86, 23);
             lblLocalidad.TabIndex = 16;
             lblLocalidad.Text = "Localidad:";
-            lblLocalidad.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxLocalidad
             // 
-            cbxLocalidad.Location = new System.Drawing.Point(175, 243);
-            cbxLocalidad.Name = "cbxLocalidad";
-            cbxLocalidad.Size = new System.Drawing.Size(121, 25);
-            cbxLocalidad.TabIndex = 17;
-            cbxLocalidad.BackColor = ThemeColors.Surface;
-            cbxLocalidad.ForeColor = ThemeColors.TextPrimary;
             cbxLocalidad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            cbxLocalidad.Location = new System.Drawing.Point(175, 273);
+            cbxLocalidad.Name = "cbxLocalidad";
+            cbxLocalidad.Size = new System.Drawing.Size(121, 31);
+            cbxLocalidad.TabIndex = 17;
+            // 
+            // lblCalle
+            // 
+            lblCalle.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblCalle.AutoSize = true;
+            lblCalle.Location = new System.Drawing.Point(118, 303);
+            lblCalle.Name = "lblCalle";
+            lblCalle.Size = new System.Drawing.Size(51, 23);
+            lblCalle.TabIndex = 12;
+            lblCalle.Text = "Calle:";
+            // 
+            // txtCalle
+            // 
+            txtCalle.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtCalle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtCalle.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtCalle.ForeColor = System.Drawing.Color.White;
+            txtCalle.Location = new System.Drawing.Point(175, 303);
+            txtCalle.Name = "txtCalle";
+            txtCalle.Size = new System.Drawing.Size(100, 23);
+            txtCalle.TabIndex = 13;
+            // 
+            // lblAltura
+            // 
+            lblAltura.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblAltura.AutoSize = true;
+            lblAltura.Location = new System.Drawing.Point(109, 333);
+            lblAltura.Name = "lblAltura";
+            lblAltura.Size = new System.Drawing.Size(60, 23);
+            lblAltura.TabIndex = 14;
+            lblAltura.Text = "Altura:";
+            // 
+            // txtAltura
+            // 
+            txtAltura.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtAltura.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtAltura.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtAltura.ForeColor = System.Drawing.Color.White;
+            txtAltura.Location = new System.Drawing.Point(175, 333);
+            txtAltura.Name = "txtAltura";
+            txtAltura.Size = new System.Drawing.Size(100, 23);
+            txtAltura.TabIndex = 15;
             // 
             // lblGenero
             // 
             lblGenero.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblGenero.AutoSize = true;
-            lblGenero.Location = new System.Drawing.Point(112, 275);
+            lblGenero.Location = new System.Drawing.Point(99, 363);
             lblGenero.Name = "lblGenero";
-            lblGenero.Size = new System.Drawing.Size(57, 19);
+            lblGenero.Size = new System.Drawing.Size(70, 23);
             lblGenero.TabIndex = 18;
             lblGenero.Text = "Género:";
-            lblGenero.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxGenero
             // 
-            cbxGenero.Location = new System.Drawing.Point(175, 273);
-            cbxGenero.Name = "cbxGenero";
-            cbxGenero.Size = new System.Drawing.Size(121, 25);
-            cbxGenero.TabIndex = 19;
-            cbxGenero.BackColor = ThemeColors.Surface;
-            cbxGenero.ForeColor = ThemeColors.TextPrimary;
             cbxGenero.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            cbxGenero.Location = new System.Drawing.Point(175, 363);
+            cbxGenero.Name = "cbxGenero";
+            cbxGenero.Size = new System.Drawing.Size(121, 31);
+            cbxGenero.TabIndex = 19;
             // 
             // lblCorreo
             // 
             lblCorreo.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblCorreo.AutoSize = true;
-            lblCorreo.Location = new System.Drawing.Point(45, 305);
+            lblCorreo.Location = new System.Drawing.Point(14, 393);
             lblCorreo.Name = "lblCorreo";
-            lblCorreo.Size = new System.Drawing.Size(124, 19);
+            lblCorreo.Size = new System.Drawing.Size(155, 23);
             lblCorreo.TabIndex = 20;
             lblCorreo.Text = "Correo Electrónico:";
-            lblCorreo.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtCorreo
             // 
+            txtCorreo.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtCorreo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtCorreo.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtCorreo.ForeColor = System.Drawing.Color.White;
             txtCorreo.Location = new System.Drawing.Point(175, 393);
             txtCorreo.Name = "txtCorreo";
-            txtCorreo.Size = new System.Drawing.Size(100, 25);
+            txtCorreo.Size = new System.Drawing.Size(100, 23);
             txtCorreo.TabIndex = 21;
-            //
+            // 
             // lblCelular
-            //
+            // 
             lblCelular.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblCelular.AutoSize = true;
-            lblCelular.Location = new System.Drawing.Point(100, 425);
+            lblCelular.Location = new System.Drawing.Point(102, 423);
             lblCelular.Name = "lblCelular";
-            lblCelular.Size = new System.Drawing.Size(69, 19);
+            lblCelular.Size = new System.Drawing.Size(67, 23);
             lblCelular.TabIndex = 16;
             lblCelular.Text = "Celular:";
-            lblCelular.ForeColor = ThemeColors.TextPrimary;
-            //
+            // 
             // txtCelular
-            //
+            // 
+            txtCelular.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtCelular.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtCelular.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtCelular.ForeColor = System.Drawing.Color.White;
             txtCelular.Location = new System.Drawing.Point(175, 423);
             txtCelular.Name = "txtCelular";
-            txtCelular.Size = new System.Drawing.Size(121, 25);
+            txtCelular.Size = new System.Drawing.Size(121, 23);
             txtCelular.TabIndex = 17;
-            //
+            // 
             // lblFechaIngreso
-            //
+            // 
             lblFechaIngreso.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblFechaIngreso.AutoSize = true;
-            lblFechaIngreso.Location = new System.Drawing.Point(45, 335);
+            lblFechaIngreso.Location = new System.Drawing.Point(25, 453);
             lblFechaIngreso.Name = "lblFechaIngreso";
-            lblFechaIngreso.Size = new System.Drawing.Size(124, 19);
+            lblFechaIngreso.Size = new System.Drawing.Size(144, 23);
             lblFechaIngreso.TabIndex = 22;
             lblFechaIngreso.Text = "Fecha de Ingreso:";
-            lblFechaIngreso.ForeColor = ThemeColors.TextPrimary;
-            //
+            // 
             // dtpFechaIngreso
-            //
-            dtpFechaIngreso.Location = new System.Drawing.Point(175, 333);
+            // 
+            dtpFechaIngreso.Location = new System.Drawing.Point(175, 453);
             dtpFechaIngreso.Name = "dtpFechaIngreso";
-            dtpFechaIngreso.Size = new System.Drawing.Size(200, 25);
+            dtpFechaIngreso.Size = new System.Drawing.Size(200, 30);
             dtpFechaIngreso.TabIndex = 23;
-            dtpFechaIngreso.CalendarForeColor = ThemeColors.TextPrimary;
-            dtpFechaIngreso.CalendarMonthBackground = ThemeColors.Surface;
-            dtpFechaIngreso.CalendarTitleBackColor = ThemeColors.Primary;
-            dtpFechaIngreso.CalendarTitleForeColor = ThemeColors.TextPrimary;
-            dtpFechaIngreso.CalendarTrailingForeColor = ThemeColors.TextSecondary;
             // 
             // btnGuardarPersona
             // 
-            btnGuardarPersona.Location = new System.Drawing.Point(175, 363);
+            btnGuardarPersona.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnGuardarPersona.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnGuardarPersona.ForeColor = System.Drawing.Color.White;
+            btnGuardarPersona.Location = new System.Drawing.Point(175, 483);
             btnGuardarPersona.Name = "btnGuardarPersona";
-            btnGuardarPersona.Size = new System.Drawing.Size(150, 35);
+            btnGuardarPersona.Size = new System.Drawing.Size(150, 14);
             btnGuardarPersona.TabIndex = 22;
             btnGuardarPersona.Text = "Guardar Persona";
             // 
@@ -610,10 +629,13 @@ namespace Presentation
             panelUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
             panelUsuarios.Location = new System.Drawing.Point(0, 0);
             panelUsuarios.Name = "panelUsuarios";
+            panelUsuarios.Size = new System.Drawing.Size(623, 600);
+            panelUsuarios.TabIndex = 1;
             panelUsuarios.Visible = false;
             // 
             // usuarioLayout
             // 
+            usuarioLayout.BackColor = System.Drawing.Color.Transparent;
             usuarioLayout.ColumnCount = 2;
             usuarioLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             usuarioLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
@@ -636,93 +658,95 @@ namespace Presentation
             usuarioLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             usuarioLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             usuarioLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            usuarioLayout.Size = new System.Drawing.Size(492, 372);
+            usuarioLayout.Size = new System.Drawing.Size(623, 600);
             usuarioLayout.TabIndex = 0;
-            usuarioLayout.BackColor = System.Drawing.Color.Transparent;
             // 
             // lblPersona
             // 
             lblPersona.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblPersona.AutoSize = true;
-            lblPersona.Location = new System.Drawing.Point(109, 5);
+            lblPersona.Location = new System.Drawing.Point(141, 3);
             lblPersona.Name = "lblPersona";
-            lblPersona.Size = new System.Drawing.Size(60, 19);
+            lblPersona.Size = new System.Drawing.Size(74, 23);
             lblPersona.TabIndex = 0;
             lblPersona.Text = "Persona:";
-            lblPersona.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxPersona
             // 
-            cbxPersona.Location = new System.Drawing.Point(175, 3);
-            cbxPersona.Name = "cbxPersona";
-            cbxPersona.Size = new System.Drawing.Size(121, 25);
-            cbxPersona.TabIndex = 1;
-            cbxPersona.BackColor = ThemeColors.Surface;
-            cbxPersona.ForeColor = ThemeColors.TextPrimary;
             cbxPersona.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            cbxPersona.Location = new System.Drawing.Point(221, 3);
+            cbxPersona.Name = "cbxPersona";
+            cbxPersona.Size = new System.Drawing.Size(121, 31);
+            cbxPersona.TabIndex = 1;
             // 
             // lblUsuario
             // 
             lblUsuario.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblUsuario.AutoSize = true;
-            lblUsuario.Location = new System.Drawing.Point(110, 35);
+            lblUsuario.Location = new System.Drawing.Point(143, 33);
             lblUsuario.Name = "lblUsuario";
-            lblUsuario.Size = new System.Drawing.Size(59, 19);
+            lblUsuario.Size = new System.Drawing.Size(72, 23);
             lblUsuario.TabIndex = 2;
             lblUsuario.Text = "Usuario:";
-            lblUsuario.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtUsuario
             // 
-            txtUsuario.Location = new System.Drawing.Point(175, 33);
+            txtUsuario.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtUsuario.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtUsuario.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtUsuario.ForeColor = System.Drawing.Color.White;
+            txtUsuario.Location = new System.Drawing.Point(221, 33);
             txtUsuario.Name = "txtUsuario";
-            txtUsuario.Size = new System.Drawing.Size(100, 25);
+            txtUsuario.Size = new System.Drawing.Size(100, 23);
             txtUsuario.TabIndex = 3;
             // 
             // lblPassword
             // 
             lblPassword.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblPassword.AutoSize = true;
-            lblPassword.Location = new System.Drawing.Point(87, 65);
+            lblPassword.Location = new System.Drawing.Point(114, 63);
             lblPassword.Name = "lblPassword";
-            lblPassword.Size = new System.Drawing.Size(82, 19);
+            lblPassword.Size = new System.Drawing.Size(101, 23);
             lblPassword.TabIndex = 4;
             lblPassword.Text = "Contraseña:";
-            lblPassword.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtPassword
             // 
-            txtPassword.Location = new System.Drawing.Point(175, 63);
+            txtPassword.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtPassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtPassword.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtPassword.ForeColor = System.Drawing.Color.White;
+            txtPassword.Location = new System.Drawing.Point(221, 63);
             txtPassword.Name = "txtPassword";
-            txtPassword.Size = new System.Drawing.Size(100, 25);
+            txtPassword.Size = new System.Drawing.Size(100, 23);
             txtPassword.TabIndex = 5;
             // 
             // lblRolUsuario
             // 
             lblRolUsuario.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblRolUsuario.AutoSize = true;
-            lblRolUsuario.Location = new System.Drawing.Point(138, 95);
+            lblRolUsuario.Location = new System.Drawing.Point(177, 93);
             lblRolUsuario.Name = "lblRolUsuario";
-            lblRolUsuario.Size = new System.Drawing.Size(31, 19);
+            lblRolUsuario.Size = new System.Drawing.Size(38, 23);
             lblRolUsuario.TabIndex = 6;
             lblRolUsuario.Text = "Rol:";
-            lblRolUsuario.ForeColor = ThemeColors.TextPrimary;
             // 
             // cbxRolUsuario
             // 
-            cbxRolUsuario.Location = new System.Drawing.Point(175, 93);
-            cbxRolUsuario.Name = "cbxRolUsuario";
-            cbxRolUsuario.Size = new System.Drawing.Size(121, 25);
-            cbxRolUsuario.TabIndex = 7;
-            cbxRolUsuario.BackColor = ThemeColors.Surface;
-            cbxRolUsuario.ForeColor = ThemeColors.TextPrimary;
             cbxRolUsuario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            cbxRolUsuario.Location = new System.Drawing.Point(221, 93);
+            cbxRolUsuario.Name = "cbxRolUsuario";
+            cbxRolUsuario.Size = new System.Drawing.Size(121, 31);
+            cbxRolUsuario.TabIndex = 7;
             // 
             // btnCrearUsuario
             // 
-            btnCrearUsuario.Location = new System.Drawing.Point(175, 123);
+            btnCrearUsuario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnCrearUsuario.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnCrearUsuario.ForeColor = System.Drawing.Color.White;
+            btnCrearUsuario.Location = new System.Drawing.Point(221, 123);
             btnCrearUsuario.Name = "btnCrearUsuario";
-            btnCrearUsuario.Size = new System.Drawing.Size(150, 35);
+            btnCrearUsuario.Size = new System.Drawing.Size(150, 24);
             btnCrearUsuario.TabIndex = 8;
             btnCrearUsuario.Text = "Crear Usuario";
             // 
@@ -732,10 +756,13 @@ namespace Presentation
             panelGestionUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
             panelGestionUsuarios.Location = new System.Drawing.Point(0, 0);
             panelGestionUsuarios.Name = "panelGestionUsuarios";
+            panelGestionUsuarios.Size = new System.Drawing.Size(623, 600);
+            panelGestionUsuarios.TabIndex = 2;
             panelGestionUsuarios.Visible = false;
             // 
             // gestionUsuariosLayout
             // 
+            gestionUsuariosLayout.BackColor = System.Drawing.Color.Transparent;
             gestionUsuariosLayout.ColumnCount = 3;
             gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
             gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
@@ -751,80 +778,78 @@ namespace Presentation
             gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 75F));
             gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            gestionUsuariosLayout.Size = new System.Drawing.Size(492, 372);
+            gestionUsuariosLayout.Size = new System.Drawing.Size(623, 600);
             gestionUsuariosLayout.TabIndex = 0;
-            gestionUsuariosLayout.BackColor = System.Drawing.Color.Transparent;
             // 
             // dgvUsuarios
             // 
+            dgvUsuarios.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dgvUsuarios.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dgvUsuarios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvUsuarios.ColumnHeadersHeight = 29;
             gestionUsuariosLayout.SetColumnSpan(dgvUsuarios, 3);
             dgvUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvUsuarios.EnableHeadersVisualStyles = false;
             dgvUsuarios.Location = new System.Drawing.Point(3, 3);
             dgvUsuarios.Name = "dgvUsuarios";
-            dgvUsuarios.Size = new System.Drawing.Size(486, 250);
+            dgvUsuarios.RowHeadersWidth = 51;
+            dgvUsuarios.Size = new System.Drawing.Size(617, 421);
             dgvUsuarios.TabIndex = 0;
-            dgvUsuarios.BackgroundColor = ThemeColors.Surface;
-            dgvUsuarios.GridColor = ThemeColors.Border;
-            dgvUsuarios.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dgvUsuarios.EnableHeadersVisualStyles = false;
-            dgvUsuarios.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.BackColor = ThemeColors.Primary;
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.ForeColor = ThemeColors.TextPrimary;
-            dgvUsuarios.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            dgvUsuarios.DefaultCellStyle.BackColor = ThemeColors.Surface;
-            dgvUsuarios.DefaultCellStyle.ForeColor = ThemeColors.TextSecondary;
-            dgvUsuarios.DefaultCellStyle.SelectionBackColor = ThemeColors.PrimaryHover;
-            dgvUsuarios.DefaultCellStyle.SelectionForeColor = ThemeColors.TextPrimary;
-            dgvUsuarios.AlternatingRowsDefaultCellStyle.BackColor = ThemeColors.FormBackground;
-            //
+            // 
             // lblFechaExpiracionGestion
-            //
+            // 
             lblFechaExpiracionGestion.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblFechaExpiracionGestion.AutoSize = true;
-            lblFechaExpiracionGestion.Location = new System.Drawing.Point(50, 261);
+            lblFechaExpiracionGestion.Location = new System.Drawing.Point(63, 430);
             lblFechaExpiracionGestion.Name = "lblFechaExpiracionGestion";
-            lblFechaExpiracionGestion.Size = new System.Drawing.Size(110, 19);
+            lblFechaExpiracionGestion.Size = new System.Drawing.Size(141, 23);
             lblFechaExpiracionGestion.TabIndex = 2;
             lblFechaExpiracionGestion.Text = "Fecha Expiración:";
-            lblFechaExpiracionGestion.ForeColor = ThemeColors.TextPrimary;
-            //
+            // 
             // dtpFechaExpiracionGestion
-            //
+            // 
             dtpFechaExpiracionGestion.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            dtpFechaExpiracionGestion.Location = new System.Drawing.Point(167, 259);
+            dtpFechaExpiracionGestion.Location = new System.Drawing.Point(210, 430);
             dtpFechaExpiracionGestion.Name = "dtpFechaExpiracionGestion";
-            dtpFechaExpiracionGestion.Size = new System.Drawing.Size(200, 25);
+            dtpFechaExpiracionGestion.Size = new System.Drawing.Size(200, 30);
             dtpFechaExpiracionGestion.TabIndex = 3;
-            dtpFechaExpiracionGestion.CalendarForeColor = ThemeColors.TextPrimary;
-            dtpFechaExpiracionGestion.CalendarMonthBackground = ThemeColors.Surface;
-            dtpFechaExpiracionGestion.CalendarTitleBackColor = ThemeColors.Primary;
-            dtpFechaExpiracionGestion.CalendarTitleForeColor = ThemeColors.TextPrimary;
-            dtpFechaExpiracionGestion.CalendarTrailingForeColor = ThemeColors.TextSecondary;
             // 
             // buttonPanel
             // 
+            buttonPanel.BackColor = System.Drawing.Color.Transparent;
             gestionUsuariosLayout.SetColumnSpan(buttonPanel, 3);
             buttonPanel.Controls.Add(btnEliminarUsuario);
             buttonPanel.Controls.Add(btnGuardarCambios);
             buttonPanel.Controls.Add(btnRefrescarUsuarios);
             buttonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            buttonPanel.Location = new System.Drawing.Point(3, 289);
+            buttonPanel.Location = new System.Drawing.Point(3, 460);
             buttonPanel.Name = "buttonPanel";
-            buttonPanel.Size = new System.Drawing.Size(200, 50);
+            buttonPanel.Size = new System.Drawing.Size(617, 137);
             buttonPanel.TabIndex = 1;
-            buttonPanel.BackColor = System.Drawing.Color.Transparent;
             // 
             // btnEliminarUsuario
             // 
+            btnEliminarUsuario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnEliminarUsuario.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnEliminarUsuario.ForeColor = System.Drawing.Color.White;
             btnEliminarUsuario.Location = new System.Drawing.Point(3, 3);
             btnEliminarUsuario.Name = "btnEliminarUsuario";
             btnEliminarUsuario.Size = new System.Drawing.Size(120, 35);
             btnEliminarUsuario.TabIndex = 0;
             btnEliminarUsuario.Text = "Eliminar Usuario";
-            ((RoundedButton)btnEliminarUsuario).BaseColor = ThemeColors.Danger;
             // 
             // btnGuardarCambios
             // 
+            btnGuardarCambios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnGuardarCambios.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnGuardarCambios.ForeColor = System.Drawing.Color.White;
             btnGuardarCambios.Location = new System.Drawing.Point(129, 3);
             btnGuardarCambios.Name = "btnGuardarCambios";
             btnGuardarCambios.Size = new System.Drawing.Size(120, 35);
@@ -833,6 +858,9 @@ namespace Presentation
             // 
             // btnRefrescarUsuarios
             // 
+            btnRefrescarUsuarios.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnRefrescarUsuarios.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnRefrescarUsuarios.ForeColor = System.Drawing.Color.White;
             btnRefrescarUsuarios.Location = new System.Drawing.Point(255, 3);
             btnRefrescarUsuarios.Name = "btnRefrescarUsuarios";
             btnRefrescarUsuarios.Size = new System.Drawing.Size(120, 35);
@@ -845,10 +873,13 @@ namespace Presentation
             panelConfiguracion.Dock = System.Windows.Forms.DockStyle.Fill;
             panelConfiguracion.Location = new System.Drawing.Point(0, 0);
             panelConfiguracion.Name = "panelConfiguracion";
+            panelConfiguracion.Size = new System.Drawing.Size(623, 600);
+            panelConfiguracion.TabIndex = 3;
             panelConfiguracion.Visible = false;
             // 
             // configuracionLayout
             // 
+            configuracionLayout.BackColor = System.Drawing.Color.Transparent;
             configuracionLayout.ColumnCount = 2;
             configuracionLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
             configuracionLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
@@ -876,9 +907,8 @@ namespace Presentation
             configuracionLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             configuracionLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             configuracionLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            configuracionLayout.Size = new System.Drawing.Size(492, 372);
+            configuracionLayout.Size = new System.Drawing.Size(623, 600);
             configuracionLayout.TabIndex = 0;
-            configuracionLayout.BackColor = System.Drawing.Color.Transparent;
             // 
             // chkMayusculasMinusculas
             // 
@@ -887,7 +917,6 @@ namespace Presentation
             chkMayusculasMinusculas.Size = new System.Drawing.Size(271, 24);
             chkMayusculasMinusculas.TabIndex = 0;
             chkMayusculasMinusculas.Text = "Combinar mayúsculas y minúsculas";
-            chkMayusculasMinusculas.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkNumeros
             // 
@@ -896,7 +925,6 @@ namespace Presentation
             chkNumeros.Size = new System.Drawing.Size(271, 24);
             chkNumeros.TabIndex = 1;
             chkNumeros.Text = "Requerir números";
-            chkNumeros.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkCaracteresEspeciales
             // 
@@ -905,7 +933,6 @@ namespace Presentation
             chkCaracteresEspeciales.Size = new System.Drawing.Size(271, 24);
             chkCaracteresEspeciales.TabIndex = 2;
             chkCaracteresEspeciales.Text = "Requerir caracteres especiales";
-            chkCaracteresEspeciales.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkDobleFactor
             // 
@@ -914,7 +941,6 @@ namespace Presentation
             chkDobleFactor.Size = new System.Drawing.Size(271, 24);
             chkDobleFactor.TabIndex = 3;
             chkDobleFactor.Text = "Usar doble factor";
-            chkDobleFactor.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkNoRepetirContrasenas
             // 
@@ -923,7 +949,6 @@ namespace Presentation
             chkNoRepetirContrasenas.Size = new System.Drawing.Size(271, 24);
             chkNoRepetirContrasenas.TabIndex = 4;
             chkNoRepetirContrasenas.Text = "No repetir contraseñas anteriores";
-            chkNoRepetirContrasenas.ForeColor = ThemeColors.TextSecondary;
             // 
             // chkVerificarDatosPersonales
             // 
@@ -932,47 +957,55 @@ namespace Presentation
             chkVerificarDatosPersonales.Size = new System.Drawing.Size(271, 24);
             chkVerificarDatosPersonales.TabIndex = 5;
             chkVerificarDatosPersonales.Text = "Verificar datos personales";
-            chkVerificarDatosPersonales.ForeColor = ThemeColors.TextSecondary;
             // 
             // lblMinCaracteres
             // 
             lblMinCaracteres.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblMinCaracteres.AutoSize = true;
-            lblMinCaracteres.Location = new System.Drawing.Point(198, 185);
+            lblMinCaracteres.Location = new System.Drawing.Point(255, 183);
             lblMinCaracteres.Name = "lblMinCaracteres";
-            lblMinCaracteres.Size = new System.Drawing.Size(143, 19);
+            lblMinCaracteres.Size = new System.Drawing.Size(178, 23);
             lblMinCaracteres.TabIndex = 6;
             lblMinCaracteres.Text = "Mínimo de caracteres:";
-            lblMinCaracteres.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtMinCaracteres
             // 
-            txtMinCaracteres.Location = new System.Drawing.Point(347, 183);
+            txtMinCaracteres.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtMinCaracteres.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtMinCaracteres.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtMinCaracteres.ForeColor = System.Drawing.Color.White;
+            txtMinCaracteres.Location = new System.Drawing.Point(439, 183);
             txtMinCaracteres.Name = "txtMinCaracteres";
-            txtMinCaracteres.Size = new System.Drawing.Size(100, 25);
+            txtMinCaracteres.Size = new System.Drawing.Size(100, 23);
             txtMinCaracteres.TabIndex = 7;
             // 
             // lblCantPreguntas
             // 
             lblCantPreguntas.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblCantPreguntas.AutoSize = true;
-            lblCantPreguntas.Location = new System.Drawing.Point(106, 215);
+            lblCantPreguntas.Location = new System.Drawing.Point(140, 213);
             lblCantPreguntas.Name = "lblCantPreguntas";
-            lblCantPreguntas.Size = new System.Drawing.Size(235, 19);
+            lblCantPreguntas.Size = new System.Drawing.Size(293, 23);
             lblCantPreguntas.TabIndex = 8;
             lblCantPreguntas.Text = "Cantidad de preguntas de seguridad:";
-            lblCantPreguntas.ForeColor = ThemeColors.TextPrimary;
             // 
             // txtCantPreguntas
             // 
-            txtCantPreguntas.Location = new System.Drawing.Point(347, 213);
+            txtCantPreguntas.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtCantPreguntas.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtCantPreguntas.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtCantPreguntas.ForeColor = System.Drawing.Color.White;
+            txtCantPreguntas.Location = new System.Drawing.Point(439, 213);
             txtCantPreguntas.Name = "txtCantPreguntas";
-            txtCantPreguntas.Size = new System.Drawing.Size(100, 25);
+            txtCantPreguntas.Size = new System.Drawing.Size(100, 23);
             txtCantPreguntas.TabIndex = 9;
             // 
             // btnGuardarConfig
             // 
-            btnGuardarConfig.Location = new System.Drawing.Point(347, 243);
+            btnGuardarConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnGuardarConfig.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnGuardarConfig.ForeColor = System.Drawing.Color.White;
+            btnGuardarConfig.Location = new System.Drawing.Point(439, 243);
             btnGuardarConfig.Name = "btnGuardarConfig";
             btnGuardarConfig.Size = new System.Drawing.Size(120, 35);
             btnGuardarConfig.TabIndex = 10;
@@ -980,7 +1013,7 @@ namespace Presentation
             // 
             // AdminForm
             // 
-            ClientSize = new System.Drawing.Size(800, 600);
+            ClientSize = new System.Drawing.Size(823, 600);
             Controls.Add(contentPanel);
             Controls.Add(navigationPanel);
             Font = new System.Drawing.Font("Segoe UI", 10F);
@@ -990,7 +1023,6 @@ namespace Presentation
             Name = "AdminForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Panel de Administración";
-            this.BackColor = ThemeColors.FormBackground;
             navigationPanel.ResumeLayout(false);
             contentPanel.ResumeLayout(false);
             panelPersonas.ResumeLayout(false);
@@ -1001,6 +1033,7 @@ namespace Presentation
             usuarioLayout.PerformLayout();
             panelGestionUsuarios.ResumeLayout(false);
             gestionUsuariosLayout.ResumeLayout(false);
+            gestionUsuariosLayout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();
             buttonPanel.ResumeLayout(false);
             panelConfiguracion.ResumeLayout(false);

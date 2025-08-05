@@ -32,8 +32,6 @@ namespace Presentation
             txtExceptionType = new RoundedTextBox();
             lblStackTrace = new System.Windows.Forms.Label();
             txtStackTrace = new RoundedTextBox();
-            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
-            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
             SuspendLayout();
             // 
             // lblMessage
@@ -106,7 +104,7 @@ namespace Presentation
             txtStackTrace.BorderStyle = System.Windows.Forms.BorderStyle.None;
             txtStackTrace.Font = new System.Drawing.Font("Segoe UI", 10F);
             txtStackTrace.ForeColor = System.Drawing.Color.White;
-            txtStackTrace.Location = new System.Drawing.Point(0, 185);
+            txtStackTrace.Location = new System.Drawing.Point(13, 202);
             txtStackTrace.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             txtStackTrace.Multiline = true;
             txtStackTrace.Name = "txtStackTrace";
@@ -115,28 +113,12 @@ namespace Presentation
             txtStackTrace.Size = new System.Drawing.Size(556, 178);
             txtStackTrace.TabIndex = 5;
             // 
-            // iconPictureBox1
-            // 
-            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
-            iconPictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
-            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.MailForward;
-            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
-            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconPictureBox1.IconSize = 41;
-            iconPictureBox1.Location = new System.Drawing.Point(579, 349);
-            iconPictureBox1.Name = "iconPictureBox1";
-            iconPictureBox1.Size = new System.Drawing.Size(51, 41);
-            iconPictureBox1.TabIndex = 6;
-            iconPictureBox1.TabStop = false;
-            // 
             // frmError
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
-            ClientSize = new System.Drawing.Size(645, 402);
-            Controls.Add(iconPictureBox1);
+            ClientSize = new System.Drawing.Size(645, 394);
             Controls.Add(txtStackTrace);
             Controls.Add(lblStackTrace);
             Controls.Add(txtExceptionType);
@@ -149,14 +131,11 @@ namespace Presentation
             Name = "frmError";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Error Details";
-            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
 
         }
 
         #endregion
-
-        private FontAwesome.Sharp.IconPictureBox iconPictureBox1;
     }
 }

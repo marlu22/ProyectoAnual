@@ -22,73 +22,152 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.lblInfo = new System.Windows.Forms.Label();
-            this.txtCodigo = new RoundedTextBox();
-            this.btnVerificar = new RoundedButton();
-            this.tableLayoutPanel.SuspendLayout();
-            this.SuspendLayout();
-
-            // Form
-            this.BackColor = ThemeColors.FormBackground;
-            this.ForeColor = ThemeColors.TextPrimary;
-
+            tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            lblInfo = new System.Windows.Forms.Label();
+            txtCodigo = new RoundedTextBox();
+            btnVerificar = new RoundedButton();
+            panel1 = new System.Windows.Forms.Panel();
+            iconPictureBox5 = new FontAwesome.Sharp.IconPictureBox();
+            iconPictureBox3 = new FontAwesome.Sharp.IconPictureBox();
+            label1 = new System.Windows.Forms.Label();
+            tableLayoutPanel.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox3).BeginInit();
+            SuspendLayout();
+            // 
             // tableLayoutPanel
-            this.tableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
-            this.tableLayoutPanel.ColumnCount = 1;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel.Controls.Add(this.lblInfo, 0, 0);
-            this.tableLayoutPanel.Controls.Add(this.txtCodigo, 0, 1);
-            this.tableLayoutPanel.Controls.Add(this.btnVerificar, 0, 2);
-            this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel.Name = "tableLayoutPanel";
-            this.tableLayoutPanel.Padding = new System.Windows.Forms.Padding(20);
-            this.tableLayoutPanel.RowCount = 3;
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(340, 180);
-            this.tableLayoutPanel.TabIndex = 0;
-
+            // 
+            tableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
+            tableLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            tableLayoutPanel.ColumnCount = 1;
+            tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel.Controls.Add(lblInfo, 0, 0);
+            tableLayoutPanel.Controls.Add(btnVerificar, 0, 2);
+            tableLayoutPanel.Controls.Add(txtCodigo, 0, 1);
+            tableLayoutPanel.Location = new System.Drawing.Point(201, 116);
+            tableLayoutPanel.Name = "tableLayoutPanel";
+            tableLayoutPanel.Padding = new System.Windows.Forms.Padding(20);
+            tableLayoutPanel.RowCount = 3;
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel.Size = new System.Drawing.Size(421, 182);
+            tableLayoutPanel.TabIndex = 0;
+            // 
             // lblInfo
-            this.lblInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblInfo.Location = new System.Drawing.Point(23, 20);
-            this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(294, 50);
-            this.lblInfo.TabIndex = 0;
-            this.lblInfo.Text = "Se ha enviado un código a su correo. Por favor, ingréselo a continuación.";
-            this.lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblInfo.ForeColor = ThemeColors.TextPrimary;
-
+            // 
+            lblInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            lblInfo.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            lblInfo.Location = new System.Drawing.Point(24, 21);
+            lblInfo.Name = "lblInfo";
+            lblInfo.Size = new System.Drawing.Size(373, 50);
+            lblInfo.TabIndex = 0;
+            lblInfo.Text = "Se ha enviado un código a su correo. Por favor, ingréselo a continuación.";
+            lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // txtCodigo
-            this.txtCodigo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCodigo.Location = new System.Drawing.Point(23, 75);
-            this.txtCodigo.Name = "txtCodigo";
-            this.txtCodigo.Size = new System.Drawing.Size(294, 28);
-            this.txtCodigo.TabIndex = 1;
-
+            // 
+            txtCodigo.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtCodigo.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtCodigo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtCodigo.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtCodigo.ForeColor = System.Drawing.Color.White;
+            txtCodigo.Location = new System.Drawing.Point(24, 80);
+            txtCodigo.Name = "txtCodigo";
+            txtCodigo.Size = new System.Drawing.Size(373, 23);
+            txtCodigo.TabIndex = 1;
+            // 
             // btnVerificar
-            this.btnVerificar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnVerificar.Location = new System.Drawing.Point(217, 113);
-            this.btnVerificar.Name = "btnVerificar";
-            this.btnVerificar.Size = new System.Drawing.Size(100, 35);
-            this.btnVerificar.TabIndex = 2;
-            this.btnVerificar.Text = "Verificar";
-
+            // 
+            btnVerificar.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnVerificar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnVerificar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnVerificar.ForeColor = System.Drawing.Color.White;
+            btnVerificar.Location = new System.Drawing.Point(297, 116);
+            btnVerificar.Name = "btnVerificar";
+            btnVerificar.Size = new System.Drawing.Size(100, 35);
+            btnVerificar.TabIndex = 2;
+            btnVerificar.Text = "Verificar";
+            // 
+            // panel1
+            // 
+            panel1.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            panel1.Controls.Add(iconPictureBox5);
+            panel1.Controls.Add(iconPictureBox3);
+            panel1.Controls.Add(label1);
+            panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            panel1.Location = new System.Drawing.Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(800, 63);
+            panel1.TabIndex = 4;
+            // 
+            // iconPictureBox5
+            // 
+            iconPictureBox5.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            iconPictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox5.IconChar = FontAwesome.Sharp.IconChar.X;
+            iconPictureBox5.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox5.IconFont = FontAwesome.Sharp.IconFont.Regular;
+            iconPictureBox5.IconSize = 55;
+            iconPictureBox5.Location = new System.Drawing.Point(744, -1);
+            iconPictureBox5.Name = "iconPictureBox5";
+            iconPictureBox5.Size = new System.Drawing.Size(55, 63);
+            iconPictureBox5.TabIndex = 2;
+            iconPictureBox5.TabStop = false;
+            // 
+            // iconPictureBox3
+            // 
+            iconPictureBox3.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            iconPictureBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox3.IconChar = FontAwesome.Sharp.IconChar.Paw;
+            iconPictureBox3.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox3.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconPictureBox3.IconSize = 62;
+            iconPictureBox3.Location = new System.Drawing.Point(-1, -1);
+            iconPictureBox3.Name = "iconPictureBox3";
+            iconPictureBox3.Size = new System.Drawing.Size(62, 63);
+            iconPictureBox3.TabIndex = 1;
+            iconPictureBox3.TabStop = false;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            label1.Location = new System.Drawing.Point(256, 18);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(306, 31);
+            label1.TabIndex = 0;
+            label1.Text = "Autenticación de dos pasos";
+            // 
             // TwoFactorAuthForm
-            this.AcceptButton = this.btnVerificar;
-            this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Controls.Add(this.tableLayoutPanel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "TwoFactorAuthForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Verificación de Dos Factores";
-            this.tableLayoutPanel.ResumeLayout(false);
-            this.PerformLayout();
-            this.ResumeLayout(false);
+            // 
+            AcceptButton = btnVerificar;
+            BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            ClientSize = new System.Drawing.Size(800, 356);
+            Controls.Add(panel1);
+            Controls.Add(tableLayoutPanel);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "TwoFactorAuthForm";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Verificación de Dos Factores";
+            tableLayoutPanel.ResumeLayout(false);
+            tableLayoutPanel.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox3).EndInit();
+            ResumeLayout(false);
         }
+        private System.Windows.Forms.Panel panel1;
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox5;
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox3;
+        private System.Windows.Forms.Label label1;
     }
 }

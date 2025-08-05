@@ -141,5 +141,11 @@ namespace Presentation
                 MessageBox.Show($"Error al guardar las respuestas: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void flowLayoutPanel_Paint(object sender, PaintEventArgs e)
+        {
+            // This method can be used for custom drawing if needed
+            // Currently, it does not perform any custom drawing
+        }
     }
 }

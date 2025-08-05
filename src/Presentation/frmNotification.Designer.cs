@@ -18,47 +18,50 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            this.lblMessage = new System.Windows.Forms.Label();
-            this.btnOk = new System.Windows.Forms.Button();
-            this.SuspendLayout();
-            //
+            lblMessage = new System.Windows.Forms.Label();
+            btnOk = new System.Windows.Forms.Button();
+            SuspendLayout();
+            // 
             // lblMessage
-            //
-            this.lblMessage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblMessage.ForeColor = System.Drawing.Color.White;
-            this.lblMessage.Location = new System.Drawing.Point(0, 0);
-            this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Padding = new System.Windows.Forms.Padding(20);
-            this.lblMessage.Size = new System.Drawing.Size(400, 150);
-            this.lblMessage.TabIndex = 0;
-            this.lblMessage.Text = "Message";
-            this.lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            //
+            // 
+            lblMessage.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            lblMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            lblMessage.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            lblMessage.Location = new System.Drawing.Point(0, 0);
+            lblMessage.Name = "lblMessage";
+            lblMessage.Padding = new System.Windows.Forms.Padding(20);
+            lblMessage.Size = new System.Drawing.Size(579, 307);
+            lblMessage.TabIndex = 0;
+            lblMessage.Text = "Message";
+            lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // btnOk
-            //
-            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOk.ForeColor = System.Drawing.Color.White;
-            this.btnOk.Location = new System.Drawing.Point(150, 100);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(100, 30);
-            this.btnOk.TabIndex = 1;
-            this.btnOk.Text = "OK";
-            this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-            //
+            // 
+            btnOk.BackColor = System.Drawing.Color.FromArgb(43, 47, 50);
+            btnOk.Cursor = System.Windows.Forms.Cursors.Hand;
+            btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnOk.ForeColor = System.Drawing.Color.White;
+            btnOk.Location = new System.Drawing.Point(239, 218);
+            btnOk.Name = "btnOk";
+            btnOk.Size = new System.Drawing.Size(100, 30);
+            btnOk.TabIndex = 1;
+            btnOk.Text = "OK";
+            btnOk.UseVisualStyleBackColor = false;
+            btnOk.Click += btnOk_Click;
+            // 
             // frmNotification
-            //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(400, 150);
-            this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.lblMessage);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "frmNotification";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "frmNotification";
-            this.ResumeLayout(false);
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(579, 307);
+            Controls.Add(btnOk);
+            Controls.Add(lblMessage);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            Name = "frmNotification";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "frmNotification";
+            ResumeLayout(false);
         }
     }
 }

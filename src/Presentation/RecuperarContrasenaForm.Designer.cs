@@ -13,7 +13,6 @@ namespace Presentation
         private System.Windows.Forms.GroupBox grpPreguntas;
         private System.Windows.Forms.FlowLayoutPanel pnlPreguntas;
         private RoundedButton btnRecuperar;
-        private System.Windows.Forms.Label lblInfo;
 
         protected override void Dispose(bool disposing)
         {
@@ -26,115 +25,207 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            this.grpUsuario = new System.Windows.Forms.GroupBox();
-            this.lblUsuario = new System.Windows.Forms.Label();
-            this.txtUsuario = new RoundedTextBox();
-            this.btnContinuar = new RoundedButton();
-            this.grpPreguntas = new System.Windows.Forms.GroupBox();
-            this.pnlPreguntas = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnRecuperar = new RoundedButton();
-            this.lblInfo = new System.Windows.Forms.Label();
-            this.grpUsuario.SuspendLayout();
-            this.grpPreguntas.SuspendLayout();
-            this.SuspendLayout();
-
-            // Form
-            this.BackColor = ThemeColors.FormBackground;
-            this.ForeColor = ThemeColors.TextPrimary;
-
+            grpUsuario = new System.Windows.Forms.GroupBox();
+            lblUsuario = new System.Windows.Forms.Label();
+            txtUsuario = new RoundedTextBox();
+            btnContinuar = new RoundedButton();
+            grpPreguntas = new System.Windows.Forms.GroupBox();
+            pnlPreguntas = new System.Windows.Forms.FlowLayoutPanel();
+            btnRecuperar = new RoundedButton();
+            panel1 = new System.Windows.Forms.Panel();
+            iconPictureBox5 = new FontAwesome.Sharp.IconPictureBox();
+            iconPictureBox3 = new FontAwesome.Sharp.IconPictureBox();
+            label1 = new System.Windows.Forms.Label();
+            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
+            grpUsuario.SuspendLayout();
+            grpPreguntas.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
+            SuspendLayout();
+            // 
             // grpUsuario
-            this.grpUsuario.Controls.Add(this.lblUsuario);
-            this.grpUsuario.Controls.Add(this.txtUsuario);
-            this.grpUsuario.Controls.Add(this.btnContinuar);
-            this.grpUsuario.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpUsuario.Location = new System.Drawing.Point(12, 55);
-            this.grpUsuario.Name = "grpUsuario";
-            this.grpUsuario.Padding = new System.Windows.Forms.Padding(10);
-            this.grpUsuario.Size = new System.Drawing.Size(460, 80);
-            this.grpUsuario.TabIndex = 0;
-            this.grpUsuario.TabStop = false;
-            this.grpUsuario.Text = "Paso 1: Ingrese su usuario";
-            this.grpUsuario.ForeColor = ThemeColors.TextPrimary;
-
+            // 
+            grpUsuario.Controls.Add(lblUsuario);
+            grpUsuario.Controls.Add(txtUsuario);
+            grpUsuario.Controls.Add(btnContinuar);
+            grpUsuario.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            grpUsuario.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            grpUsuario.Location = new System.Drawing.Point(12, 117);
+            grpUsuario.Name = "grpUsuario";
+            grpUsuario.Padding = new System.Windows.Forms.Padding(10);
+            grpUsuario.Size = new System.Drawing.Size(460, 80);
+            grpUsuario.TabIndex = 0;
+            grpUsuario.TabStop = false;
+            grpUsuario.Text = "Paso 1: Ingrese su usuario";
+            // 
             // lblUsuario
-            this.lblUsuario.AutoSize = true;
-            this.lblUsuario.Location = new System.Drawing.Point(13, 38);
-            this.lblUsuario.Name = "lblUsuario";
-            this.lblUsuario.Size = new System.Drawing.Size(50, 15);
-            this.lblUsuario.TabIndex = 0;
-            this.lblUsuario.Text = "Usuario:";
-
+            // 
+            lblUsuario.AutoSize = true;
+            lblUsuario.Location = new System.Drawing.Point(13, 38);
+            lblUsuario.Name = "lblUsuario";
+            lblUsuario.Size = new System.Drawing.Size(62, 20);
+            lblUsuario.TabIndex = 0;
+            lblUsuario.Text = "Usuario:";
+            // 
             // txtUsuario
-            this.txtUsuario.Location = new System.Drawing.Point(69, 35);
-            this.txtUsuario.Name = "txtUsuario";
-            this.txtUsuario.Size = new System.Drawing.Size(250, 28);
-            this.txtUsuario.TabIndex = 1;
-
+            // 
+            txtUsuario.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtUsuario.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtUsuario.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtUsuario.ForeColor = System.Drawing.Color.White;
+            txtUsuario.Location = new System.Drawing.Point(79, 33);
+            txtUsuario.Name = "txtUsuario";
+            txtUsuario.Size = new System.Drawing.Size(250, 23);
+            txtUsuario.TabIndex = 1;
+            // 
             // btnContinuar
-            this.btnContinuar.Location = new System.Drawing.Point(335, 33);
-            this.btnContinuar.Name = "btnContinuar";
-            this.btnContinuar.Size = new System.Drawing.Size(110, 30);
-            this.btnContinuar.TabIndex = 2;
-            this.btnContinuar.Text = "Continuar";
-
+            // 
+            btnContinuar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnContinuar.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnContinuar.ForeColor = System.Drawing.Color.White;
+            btnContinuar.Location = new System.Drawing.Point(335, 33);
+            btnContinuar.Name = "btnContinuar";
+            btnContinuar.Size = new System.Drawing.Size(110, 30);
+            btnContinuar.TabIndex = 2;
+            btnContinuar.Text = "Continuar";
+            // 
             // grpPreguntas
-            this.grpPreguntas.Controls.Add(this.pnlPreguntas);
-            this.grpPreguntas.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpPreguntas.Location = new System.Drawing.Point(12, 141);
-            this.grpPreguntas.Name = "grpPreguntas";
-            this.grpPreguntas.Padding = new System.Windows.Forms.Padding(10);
-            this.grpPreguntas.Size = new System.Drawing.Size(460, 170);
-            this.grpPreguntas.TabIndex = 1;
-            this.grpPreguntas.TabStop = false;
-            this.grpPreguntas.Text = "Paso 2: Responda sus preguntas de seguridad";
-            this.grpPreguntas.Visible = false;
-            this.grpPreguntas.ForeColor = ThemeColors.TextPrimary;
-
+            // 
+            grpPreguntas.Controls.Add(pnlPreguntas);
+            grpPreguntas.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            grpPreguntas.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            grpPreguntas.Location = new System.Drawing.Point(12, 227);
+            grpPreguntas.Name = "grpPreguntas";
+            grpPreguntas.Padding = new System.Windows.Forms.Padding(10);
+            grpPreguntas.Size = new System.Drawing.Size(460, 170);
+            grpPreguntas.TabIndex = 1;
+            grpPreguntas.TabStop = false;
+            grpPreguntas.Text = "Paso 2: Responda sus preguntas de seguridad";
+            grpPreguntas.Visible = false;
+            // 
             // pnlPreguntas
-            this.pnlPreguntas.AutoScroll = true;
-            this.pnlPreguntas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlPreguntas.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.pnlPreguntas.Location = new System.Drawing.Point(10, 26);
-            this.pnlPreguntas.Name = "pnlPreguntas";
-            this.pnlPreguntas.Size = new System.Drawing.Size(440, 134);
-            this.pnlPreguntas.TabIndex = 0;
-            this.pnlPreguntas.WrapContents = false;
-
+            // 
+            pnlPreguntas.AutoScroll = true;
+            pnlPreguntas.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlPreguntas.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            pnlPreguntas.Location = new System.Drawing.Point(10, 30);
+            pnlPreguntas.Name = "pnlPreguntas";
+            pnlPreguntas.Size = new System.Drawing.Size(440, 130);
+            pnlPreguntas.TabIndex = 0;
+            pnlPreguntas.WrapContents = false;
+            // 
             // btnRecuperar
-            this.btnRecuperar.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRecuperar.Location = new System.Drawing.Point(282, 317);
-            this.btnRecuperar.Name = "btnRecuperar";
-            this.btnRecuperar.Size = new System.Drawing.Size(190, 35);
-            this.btnRecuperar.TabIndex = 2;
-            this.btnRecuperar.Text = "Recuperar Contraseña";
-            this.btnRecuperar.Visible = false;
-
-            // lblInfo
-            this.lblInfo.AutoSize = true;
-            this.lblInfo.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblInfo.Location = new System.Drawing.Point(12, 9);
-            this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(220, 25);
-            this.lblInfo.TabIndex = 3;
-            this.lblInfo.Text = "Recuperar Contraseña";
-
+            // 
+            btnRecuperar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnRecuperar.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            btnRecuperar.ForeColor = System.Drawing.Color.White;
+            btnRecuperar.Location = new System.Drawing.Point(282, 429);
+            btnRecuperar.Name = "btnRecuperar";
+            btnRecuperar.Size = new System.Drawing.Size(190, 35);
+            btnRecuperar.TabIndex = 2;
+            btnRecuperar.Text = "Recuperar Contraseña";
+            btnRecuperar.Visible = false;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            panel1.Controls.Add(iconPictureBox5);
+            panel1.Controls.Add(iconPictureBox3);
+            panel1.Controls.Add(label1);
+            panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            panel1.Location = new System.Drawing.Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(800, 63);
+            panel1.TabIndex = 3;
+            // 
+            // iconPictureBox5
+            // 
+            iconPictureBox5.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            iconPictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox5.IconChar = FontAwesome.Sharp.IconChar.X;
+            iconPictureBox5.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox5.IconFont = FontAwesome.Sharp.IconFont.Regular;
+            iconPictureBox5.IconSize = 55;
+            iconPictureBox5.Location = new System.Drawing.Point(744, -1);
+            iconPictureBox5.Name = "iconPictureBox5";
+            iconPictureBox5.Size = new System.Drawing.Size(55, 63);
+            iconPictureBox5.TabIndex = 2;
+            iconPictureBox5.TabStop = false;
+            // 
+            // iconPictureBox3
+            // 
+            iconPictureBox3.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            iconPictureBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox3.IconChar = FontAwesome.Sharp.IconChar.Paw;
+            iconPictureBox3.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox3.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconPictureBox3.IconSize = 62;
+            iconPictureBox3.Location = new System.Drawing.Point(-1, -1);
+            iconPictureBox3.Name = "iconPictureBox3";
+            iconPictureBox3.Size = new System.Drawing.Size(62, 63);
+            iconPictureBox3.TabIndex = 1;
+            iconPictureBox3.TabStop = false;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            label1.Location = new System.Drawing.Point(256, 18);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(308, 31);
+            label1.TabIndex = 0;
+            label1.Text = "Inicia sesión para continuar";
+            // 
+            // iconPictureBox1
+            // 
+            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            iconPictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.ShieldCat;
+            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconPictureBox1.IconSize = 184;
+            iconPictureBox1.Location = new System.Drawing.Point(612, 117);
+            iconPictureBox1.Name = "iconPictureBox1";
+            iconPictureBox1.Size = new System.Drawing.Size(188, 184);
+            iconPictureBox1.TabIndex = 4;
+            iconPictureBox1.TabStop = false;
+            // 
             // RecuperarContrasenaForm
-            this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Controls.Add(this.lblInfo);
-            this.Controls.Add(this.btnRecuperar);
-            this.Controls.Add(this.grpPreguntas);
-            this.Controls.Add(this.grpUsuario);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "RecuperarContrasenaForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Recuperar Contraseña";
-            this.grpUsuario.ResumeLayout(false);
-            this.grpUsuario.PerformLayout();
-            this.grpPreguntas.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // 
+            BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            ClientSize = new System.Drawing.Size(800, 491);
+            Controls.Add(iconPictureBox1);
+            Controls.Add(panel1);
+            Controls.Add(btnRecuperar);
+            Controls.Add(grpPreguntas);
+            Controls.Add(grpUsuario);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "RecuperarContrasenaForm";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Recuperar Contraseña";
+            grpUsuario.ResumeLayout(false);
+            grpUsuario.PerformLayout();
+            grpPreguntas.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
+            ResumeLayout(false);
         }
+        private System.Windows.Forms.Panel panel1;
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox5;
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox3;
+        private System.Windows.Forms.Label label1;
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox1;
     }
 }

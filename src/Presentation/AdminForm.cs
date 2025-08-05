@@ -383,6 +383,7 @@ namespace Presentation
                     string.IsNullOrWhiteSpace(txtCalle.Text) ||
                     string.IsNullOrWhiteSpace(txtAltura.Text) ||
                     cbxLocalidad.SelectedItem == null ||
+                    cbxLocalidad.SelectedValue == null ||
                     cbxGenero.SelectedItem == null ||
                     string.IsNullOrWhiteSpace(txtCorreo.Text) ||
                     string.IsNullOrWhiteSpace(txtCelular.Text))

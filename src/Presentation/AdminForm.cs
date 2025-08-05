@@ -64,9 +64,6 @@ namespace Presentation
         private void ShowPanel(Panel panelToShow)
         {
             panelPersonas.Visible = false;
-            panelUsuarios.Visible = false;
-            panelGestionUsuarios.Visible = false;
-            panelConfiguracion.Visible = false;
 
             panelToShow.Visible = true;
         }

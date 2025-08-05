@@ -23,6 +23,7 @@ namespace Presentation
         private RoundedButton btnGuardarPersona;
 
         // Controles para "Crear Usuario"
+        private System.Windows.Forms.Panel panelUsuarios;
         private System.Windows.Forms.TableLayoutPanel usuarioLayout;
         private System.Windows.Forms.Label lblPersona, lblUsuario, lblPassword, lblRolUsuario;
         private System.Windows.Forms.ComboBox cbxPersona, cbxRolUsuario;
@@ -30,7 +31,7 @@ namespace Presentation
         private RoundedButton btnCrearUsuario;
 
         // Controles para "Configuracion"
-        private System.Windows.Forms.TabPage tabConfiguracion;
+        private System.Windows.Forms.Panel panelConfiguracion;
         private System.Windows.Forms.TableLayoutPanel configuracionLayout;
         private System.Windows.Forms.Label lblMinCaracteres, lblCantPreguntas;
         private System.Windows.Forms.CheckBox chkMayusculasMinusculas;
@@ -44,6 +45,7 @@ namespace Presentation
         private RoundedButton btnGuardarConfig;
 
         // Controles para "Gestion de Usuarios"
+        private System.Windows.Forms.Panel panelGestionUsuarios;
         private System.Windows.Forms.TableLayoutPanel gestionUsuariosLayout;
         private System.Windows.Forms.DataGridView dgvUsuarios;
         private System.Windows.Forms.Label lblFechaExpiracionGestion;
@@ -92,7 +94,7 @@ namespace Presentation
             lblFechaIngreso = new System.Windows.Forms.Label();
             dtpFechaIngreso = new System.Windows.Forms.DateTimePicker();
             btnGuardarPersona = new RoundedButton();
-            tabUsuarios = new System.Windows.Forms.TabPage();
+            panelUsuarios = new System.Windows.Forms.Panel();
             usuarioLayout = new System.Windows.Forms.TableLayoutPanel();
             lblPersona = new System.Windows.Forms.Label();
             cbxPersona = new System.Windows.Forms.ComboBox();
@@ -103,7 +105,7 @@ namespace Presentation
             lblRolUsuario = new System.Windows.Forms.Label();
             cbxRolUsuario = new System.Windows.Forms.ComboBox();
             btnCrearUsuario = new RoundedButton();
-            tabGestionUsuarios = new System.Windows.Forms.TabPage();
+            panelGestionUsuarios = new System.Windows.Forms.Panel();
             gestionUsuariosLayout = new System.Windows.Forms.TableLayoutPanel();
             lblFechaExpiracionGestion = new System.Windows.Forms.Label();
             dtpFechaExpiracionGestion = new System.Windows.Forms.DateTimePicker();
@@ -112,7 +114,7 @@ namespace Presentation
             btnEliminarUsuario = new RoundedButton();
             btnGuardarCambios = new RoundedButton();
             btnRefrescarUsuarios = new RoundedButton();
-            tabConfiguracion = new System.Windows.Forms.TabPage();
+            panelConfiguracion = new System.Windows.Forms.Panel();
             configuracionLayout = new System.Windows.Forms.TableLayoutPanel();
             chkMayusculasMinusculas = new System.Windows.Forms.CheckBox();
             chkNumeros = new System.Windows.Forms.CheckBox();
@@ -129,10 +131,13 @@ namespace Presentation
             contentPanel.SuspendLayout();
             panelPersonas.SuspendLayout();
             personaLayout.SuspendLayout();
+            panelUsuarios.SuspendLayout();
             usuarioLayout.SuspendLayout();
+            panelGestionUsuarios.SuspendLayout();
             gestionUsuariosLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             buttonPanel.SuspendLayout();
+            panelConfiguracion.SuspendLayout();
             configuracionLayout.SuspendLayout();
             SuspendLayout();
             // 
@@ -894,18 +899,19 @@ namespace Presentation
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Panel de Administración";
             this.BackColor = ThemeColors.FormBackground;
-            tabControl.ResumeLayout(false);
-            tabPersonas.ResumeLayout(false);
+            navigationPanel.ResumeLayout(false);
+            contentPanel.ResumeLayout(false);
+            panelPersonas.ResumeLayout(false);
             personaLayout.ResumeLayout(false);
             personaLayout.PerformLayout();
-            tabUsuarios.ResumeLayout(false);
+            panelUsuarios.ResumeLayout(false);
             usuarioLayout.ResumeLayout(false);
             usuarioLayout.PerformLayout();
-            tabGestionUsuarios.ResumeLayout(false);
+            panelGestionUsuarios.ResumeLayout(false);
             gestionUsuariosLayout.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();
             buttonPanel.ResumeLayout(false);
-            tabConfiguracion.ResumeLayout(false);
+            panelConfiguracion.ResumeLayout(false);
             configuracionLayout.ResumeLayout(false);
             configuracionLayout.PerformLayout();
             ResumeLayout(false);

@@ -31,9 +31,10 @@ namespace BusinessLogic.Services
             {
                 return operation();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
-                throw new DataAccessLayerException($"A data access error occurred during {operationName}.", ex);
+                // Log the exception ex here
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
 
@@ -43,9 +44,10 @@ namespace BusinessLogic.Services
             {
                 await operation();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
-                throw new DataAccessLayerException($"A data access error occurred during {operationName}.", ex);
+                // Log the exception ex here
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
 
@@ -55,9 +57,10 @@ namespace BusinessLogic.Services
             {
                 return await operation();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
-                throw new DataAccessLayerException($"A data access error occurred during {operationName}.", ex);
+                // Log the exception ex here
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
 
@@ -67,9 +70,10 @@ namespace BusinessLogic.Services
             {
                 operation();
             }
-            catch (InfrastructureException ex)
+            catch (Exception ex)
             {
-                throw new DataAccessLayerException($"A data access error occurred during {operationName}.", ex);
+                // Log the exception ex here
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
 
@@ -464,8 +468,8 @@ namespace BusinessLogic.Services
             if (politica.MayusYMinus && (!password.Any(char.IsUpper) || !password.Any(char.IsLower)))
                 throw new ValidationException("La contraseña debe contener mayúsculas y minúsculas.");
 
-            if (politica.LetrasYNumeros && !password.Any(char.IsDigit))
-                throw new ValidationException("La contraseña debe contener números.");
+            if (politica.LetrasYNumeros && (!password.Any(char.IsLetter) || !password.Any(char.IsDigit)))
+                throw new ValidationException("La contraseña debe contener letras y números.");
 
             if (politica.CaracterEspecial && !password.Any(c => !char.IsLetterOrDigit(c)))
                 throw new ValidationException("La contraseña debe contener caracteres especiales.");
@@ -490,17 +494,8 @@ namespace BusinessLogic.Services
             if (respuestas.Count != politica.CantPreguntas)
                 throw new ValidationException($"Se requieren exactamente {politica.CantPreguntas} respuestas de seguridad.");
 
-            // Opcional: borrar respuestas anteriores
-            var respuestasAnteriores = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario);
-            if(respuestasAnteriores != null)
-            {
-                foreach(var r in respuestasAnteriores)
-                {
-                    // Asumiendo que hay un método para borrar, si no, habría que agregarlo
-                    // _userRepository.DeleteRespuestaSeguridad(r);
-                }
-            }
-
+            // Borrar respuestas de seguridad anteriores para evitar duplicados
+            _userRepository.DeleteRespuestasSeguridadByUsuarioId(usuario.IdUsuario);
 
             foreach (var par in respuestas)
             {

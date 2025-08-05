@@ -83,6 +83,8 @@ namespace Presentation
             txtUsuario.Size = new System.Drawing.Size(209, 25);
             txtUsuario.TabIndex = 1;
             txtUsuario.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            txtUsuario.BackColor = ThemeColors.Surface;
+            txtUsuario.ForeColor = ThemeColors.TextPrimary;
             // 
             // lblContrasena
             // 
@@ -105,6 +107,8 @@ namespace Presentation
             txtContrasena.Size = new System.Drawing.Size(209, 25);
             txtContrasena.TabIndex = 3;
             txtContrasena.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            txtContrasena.BackColor = ThemeColors.Surface;
+            txtContrasena.ForeColor = ThemeColors.TextPrimary;
             // 
             // chkMostrarContrasena
             // 
@@ -117,6 +121,7 @@ namespace Presentation
             chkMostrarContrasena.UseVisualStyleBackColor = true;
             chkMostrarContrasena.ForeColor = ThemeColors.TextSecondary;
             chkMostrarContrasena.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            chkMostrarContrasena.CheckedChanged += new System.EventHandler(this.ChkMostrarContrasena_CheckedChanged);
             // 
             // btnLogin
             // 

@@ -133,7 +133,7 @@ public class MockUserRepository : IUserRepository
     {
         using (var sha256 = SHA256.Create())
         {
-            return sha256.ComputeHash(Encoding.UTF8.GetBytes(username + password));
+            return sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
     }
 }

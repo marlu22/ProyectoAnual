@@ -12,6 +12,9 @@ namespace Presentation
         private RoundedButton btnNavigateUsuarios;
         private RoundedButton btnNavigateGestion;
         private RoundedButton btnNavigateConfiguracion;
+        private RoundedButton btnNavigateGestionPersonas;
+        private RoundedButton btnMiPerfil;
+        private FontAwesome.Sharp.IconPictureBox iconMiPerfil;
 
         // Controles para "Añadir Persona"
         private System.Windows.Forms.Panel panelPersonas;
@@ -52,6 +55,12 @@ namespace Presentation
         private System.Windows.Forms.DateTimePicker dtpFechaExpiracionGestion;
         private RoundedButton btnRefrescarUsuarios, btnGuardarCambios, btnEliminarUsuario;
 
+        // Controles para "Gestion de Personas"
+        private System.Windows.Forms.Panel panelGestionPersonas;
+        private System.Windows.Forms.TableLayoutPanel gestionPersonasLayout;
+        private System.Windows.Forms.DataGridView dgvPersonas;
+        private RoundedButton btnRefrescarPersonas;
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -66,6 +75,9 @@ namespace Presentation
             btnNavigateUsuarios = new RoundedButton();
             btnNavigateGestion = new RoundedButton();
             btnNavigateConfiguracion = new RoundedButton();
+            btnNavigateGestionPersonas = new RoundedButton();
+            btnMiPerfil = new RoundedButton();
+            iconMiPerfil = new FontAwesome.Sharp.IconPictureBox();
             contentPanel = new System.Windows.Forms.Panel();
             panelPersonas = new System.Windows.Forms.Panel();
             personaLayout = new System.Windows.Forms.TableLayoutPanel();
@@ -146,6 +158,14 @@ namespace Presentation
             gestionUsuariosLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             buttonPanel.SuspendLayout();
+            panelGestionPersonas = new System.Windows.Forms.Panel();
+            gestionPersonasLayout = new System.Windows.Forms.TableLayoutPanel();
+            dgvPersonas = new System.Windows.Forms.DataGridView();
+            btnRefrescarPersonas = new RoundedButton();
+            panelGestionPersonas.SuspendLayout();
+            gestionPersonasLayout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvPersonas).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconMiPerfil).BeginInit();
             panelConfiguracion.SuspendLayout();
             configuracionLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
@@ -157,7 +177,10 @@ namespace Presentation
             navigationPanel.Controls.Add(btnNavigatePersonas);
             navigationPanel.Controls.Add(btnNavigateUsuarios);
             navigationPanel.Controls.Add(btnNavigateGestion);
+            navigationPanel.Controls.Add(btnNavigateGestionPersonas);
             navigationPanel.Controls.Add(btnNavigateConfiguracion);
+            navigationPanel.Controls.Add(btnMiPerfil);
+            navigationPanel.Controls.Add(iconMiPerfil);
             navigationPanel.Dock = System.Windows.Forms.DockStyle.Left;
             navigationPanel.Location = new System.Drawing.Point(0, 0);
             navigationPanel.Name = "navigationPanel";
@@ -206,6 +229,20 @@ namespace Presentation
             btnNavigateGestion.Text = "Gestión de Usuarios";
             btnNavigateGestion.UseVisualStyleBackColor = true;
             // 
+            // btnNavigateGestionPersonas
+            //
+            btnNavigateGestionPersonas.Dock = System.Windows.Forms.DockStyle.Top;
+            btnNavigateGestionPersonas.FlatAppearance.BorderSize = 0;
+            btnNavigateGestionPersonas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnNavigateGestionPersonas.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            btnNavigateGestionPersonas.ForeColor = System.Drawing.Color.White;
+            btnNavigateGestionPersonas.Location = new System.Drawing.Point(0, 200);
+            btnNavigateGestionPersonas.Name = "btnNavigateGestionPersonas";
+            btnNavigateGestionPersonas.Size = new System.Drawing.Size(200, 50);
+            btnNavigateGestionPersonas.TabIndex = 4;
+            btnNavigateGestionPersonas.Text = "Gestión de Personas";
+            btnNavigateGestionPersonas.UseVisualStyleBackColor = true;
+            //
             // btnNavigateConfiguracion
             // 
             btnNavigateConfiguracion.Dock = System.Windows.Forms.DockStyle.Top;
@@ -220,11 +257,40 @@ namespace Presentation
             btnNavigateConfiguracion.Text = "Configuración";
             btnNavigateConfiguracion.UseVisualStyleBackColor = true;
             // 
+            // btnMiPerfil
+            //
+            btnMiPerfil.Dock = System.Windows.Forms.DockStyle.Bottom;
+            btnMiPerfil.FlatAppearance.BorderSize = 0;
+            btnMiPerfil.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnMiPerfil.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            btnMiPerfil.ForeColor = System.Drawing.Color.White;
+            btnMiPerfil.Location = new System.Drawing.Point(0, 550);
+            btnMiPerfil.Name = "btnMiPerfil";
+            btnMiPerfil.Size = new System.Drawing.Size(200, 50);
+            btnMiPerfil.TabIndex = 5;
+            btnMiPerfil.Text = "Mi Perfil";
+            btnMiPerfil.UseVisualStyleBackColor = true;
+            //
+            // iconMiPerfil
+            //
+            iconMiPerfil.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            iconMiPerfil.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconMiPerfil.IconChar = FontAwesome.Sharp.IconChar.UserCircle;
+            iconMiPerfil.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconMiPerfil.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconMiPerfil.IconSize = 35;
+            iconMiPerfil.Location = new System.Drawing.Point(160, 560);
+            iconMiPerfil.Name = "iconMiPerfil";
+            iconMiPerfil.Size = new System.Drawing.Size(35, 35);
+            iconMiPerfil.TabIndex = 6;
+            iconMiPerfil.TabStop = false;
+            //
             // contentPanel
             // 
             contentPanel.Controls.Add(panelPersonas);
             contentPanel.Controls.Add(panelUsuarios);
             contentPanel.Controls.Add(panelGestionUsuarios);
+            contentPanel.Controls.Add(panelGestionPersonas);
             contentPanel.Controls.Add(panelConfiguracion);
             contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             contentPanel.Location = new System.Drawing.Point(200, 0);
@@ -867,6 +933,56 @@ namespace Presentation
             btnRefrescarUsuarios.TabIndex = 2;
             btnRefrescarUsuarios.Text = "Refrescar";
             // 
+            // panelGestionPersonas
+            //
+            panelGestionPersonas.Controls.Add(gestionPersonasLayout);
+            panelGestionPersonas.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelGestionPersonas.Location = new System.Drawing.Point(0, 0);
+            panelGestionPersonas.Name = "panelGestionPersonas";
+            panelGestionPersonas.Size = new System.Drawing.Size(623, 600);
+            panelGestionPersonas.TabIndex = 4;
+            panelGestionPersonas.Visible = false;
+            //
+            // gestionPersonasLayout
+            //
+            gestionPersonasLayout.BackColor = System.Drawing.Color.Transparent;
+            gestionPersonasLayout.ColumnCount = 1;
+            gestionPersonasLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            gestionPersonasLayout.Controls.Add(dgvPersonas, 0, 0);
+            gestionPersonasLayout.Controls.Add(btnRefrescarPersonas, 0, 1);
+            gestionPersonasLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            gestionPersonasLayout.Location = new System.Drawing.Point(0, 0);
+            gestionPersonasLayout.Name = "gestionPersonasLayout";
+            gestionPersonasLayout.RowCount = 2;
+            gestionPersonasLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
+            gestionPersonasLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            gestionPersonasLayout.Size = new System.Drawing.Size(623, 600);
+            gestionPersonasLayout.TabIndex = 0;
+            //
+            // dgvPersonas
+            //
+            dgvPersonas.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dgvPersonas.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dgvPersonas.ColumnHeadersHeight = 29;
+            dgvPersonas.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvPersonas.EnableHeadersVisualStyles = false;
+            dgvPersonas.Location = new System.Drawing.Point(3, 3);
+            dgvPersonas.Name = "dgvPersonas";
+            dgvPersonas.RowHeadersWidth = 51;
+            dgvPersonas.Size = new System.Drawing.Size(617, 534);
+            dgvPersonas.TabIndex = 0;
+            //
+            // btnRefrescarPersonas
+            //
+            btnRefrescarPersonas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnRefrescarPersonas.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnRefrescarPersonas.ForeColor = System.Drawing.Color.White;
+            btnRefrescarPersonas.Location = new System.Drawing.Point(3, 543);
+            btnRefrescarPersonas.Name = "btnRefrescarPersonas";
+            btnRefrescarPersonas.Size = new System.Drawing.Size(120, 35);
+            btnRefrescarPersonas.TabIndex = 1;
+            btnRefrescarPersonas.Text = "Refrescar";
+            //
             // panelConfiguracion
             // 
             panelConfiguracion.Controls.Add(configuracionLayout);
@@ -1051,10 +1167,14 @@ namespace Presentation
             gestionUsuariosLayout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).EndInit();
             buttonPanel.ResumeLayout(false);
+            panelGestionPersonas.ResumeLayout(false);
+            gestionPersonasLayout.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvPersonas).EndInit();
             panelConfiguracion.ResumeLayout(false);
             configuracionLayout.ResumeLayout(false);
             configuracionLayout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconMiPerfil).EndInit();
             ResumeLayout(false);
         }
         private System.Windows.Forms.FlowLayoutPanel buttonPanel;

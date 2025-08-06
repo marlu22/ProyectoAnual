@@ -23,14 +23,17 @@ namespace Presentation
         {
             btnCambiarPreguntas = new RoundedButton();
             btnCambiarContrasena = new RoundedButton();
+            btnMiPerfil = new RoundedButton();
             iconPictureBox1 = new IconPictureBox();
             iconPictureBox2 = new IconPictureBox();
+            iconPictureBox4 = new IconPictureBox();
             panel1 = new System.Windows.Forms.Panel();
             iconPictureBox5 = new IconPictureBox();
             iconPictureBox3 = new IconPictureBox();
             label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox4).BeginInit();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox3).BeginInit();
@@ -62,6 +65,19 @@ namespace Presentation
             btnCambiarContrasena.Text = "Cambiar Contraseña";
             btnCambiarContrasena.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // btnMiPerfil
+            //
+            btnMiPerfil.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnMiPerfil.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnMiPerfil.ForeColor = System.Drawing.Color.White;
+            btnMiPerfil.Location = new System.Drawing.Point(60, 142);
+            btnMiPerfil.Name = "btnMiPerfil";
+            btnMiPerfil.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            btnMiPerfil.Size = new System.Drawing.Size(220, 45);
+            btnMiPerfil.TabIndex = 5;
+            btnMiPerfil.Text = "Mi Perfil";
+            btnMiPerfil.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            //
             // iconPictureBox1
             // 
             iconPictureBox1.BackColor = System.Drawing.Color.Transparent;
@@ -90,6 +106,20 @@ namespace Presentation
             iconPictureBox2.TabIndex = 3;
             iconPictureBox2.TabStop = false;
             // 
+            // iconPictureBox4
+            //
+            iconPictureBox4.BackColor = System.Drawing.Color.Transparent;
+            iconPictureBox4.ForeColor = System.Drawing.SystemColors.ControlText;
+            iconPictureBox4.IconChar = IconChar.User;
+            iconPictureBox4.IconColor = System.Drawing.SystemColors.ControlText;
+            iconPictureBox4.IconFont = IconFont.Auto;
+            iconPictureBox4.IconSize = 35;
+            iconPictureBox4.Location = new System.Drawing.Point(286, 142);
+            iconPictureBox4.Name = "iconPictureBox4";
+            iconPictureBox4.Size = new System.Drawing.Size(35, 35);
+            iconPictureBox4.TabIndex = 6;
+            iconPictureBox4.TabStop = false;
+            //
             // panel1
             // 
             panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -153,6 +183,8 @@ namespace Presentation
             BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             ClientSize = new System.Drawing.Size(383, 294);
+            Controls.Add(iconPictureBox4);
+            Controls.Add(btnMiPerfil);
             Controls.Add(panel1);
             Controls.Add(iconPictureBox2);
             Controls.Add(iconPictureBox1);
@@ -165,6 +197,7 @@ namespace Presentation
             Text = "Seguridad";
             ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox4).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox5).EndInit();
@@ -176,8 +209,10 @@ namespace Presentation
 
         private RoundedButton btnCambiarPreguntas;
         private RoundedButton btnCambiarContrasena;
+        private RoundedButton btnMiPerfil;
         private IconPictureBox iconPictureBox1;
         private IconPictureBox iconPictureBox2;
+        private IconPictureBox iconPictureBox4;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private IconPictureBox iconPictureBox3;

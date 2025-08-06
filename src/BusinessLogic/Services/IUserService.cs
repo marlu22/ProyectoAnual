@@ -29,5 +29,7 @@ namespace BusinessLogic.Services
         void GuardarRespuestasSeguridad(string username, Dictionary<int, string> respuestas);
         List<PreguntaSeguridad> GetPreguntasSeguridad();
         List<PreguntaSeguridad> GetPreguntasDeUsuario(string username);
+        Usuario? GetUserByUsername(string username);
+        Persona? GetPersonaById(int personaId);
     }
 }

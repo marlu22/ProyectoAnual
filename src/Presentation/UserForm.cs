@@ -26,6 +26,28 @@ namespace Presentation
                 var form = new PreguntasSeguridadForm(_userService, _username);
                 form.ShowDialog();
             };
+
+            btnMiPerfil.Click += (s, e) =>
+            {
+                var user = _userService.GetUserByUsername(_username);
+                if (user != null)
+                {
+                    var persona = _userService.GetPersonaById(user.IdPersona);
+                    if (persona != null)
+                    {
+                        var form = new ProfileForm(user, persona);
+                        form.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se encontraron los datos de la persona.", "Error");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No se encontró el usuario.", "Error");
+                }
+            };
         }
 
         private void iconPictureBox5_Click(object sender, EventArgs e)

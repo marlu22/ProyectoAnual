@@ -139,6 +139,20 @@ public class MockUserRepository : IUserRepository
     }
     public void DeleteRespuestasSeguridadByUsuarioId(int usuarioId) => throw new NotImplementedException();
 
+    public void UpdatePersona(Persona persona)
+    {
+        var index = _personas.FindIndex(p => p.IdPersona == persona.IdPersona);
+        if (index != -1)
+        {
+            _personas[index] = persona;
+        }
+    }
+
+    public void DeletePersona(int personaId)
+    {
+        _personas.RemoveAll(p => p.IdPersona == personaId);
+    }
+
     private static byte[] HashUsuarioContrasena(string username, string password)
     {
         using (var sha256 = SHA256.Create())
@@ -268,5 +282,34 @@ public class UserServiceTests
             _userService.CambiarContrasena(username, newPassword, incorrectOldPassword));
 
         Assert.Equal("La contraseña actual es incorrecta. Por favor, intente de nuevo.", exception.Message);
+    }
+
+    [Fact]
+    public void UpdatePersona_UpdatesPersonaInRepository()
+    {
+        // Arrange
+        var persona = new Persona { IdPersona = 1, Nombre = "Updated Name" };
+
+        // Act
+        _userService.UpdatePersona(persona);
+
+        // Assert
+        var updatedPersona = _userRepository.GetPersonaById(1);
+        Assert.NotNull(updatedPersona);
+        Assert.Equal("Updated Name", updatedPersona.Nombre);
+    }
+
+    [Fact]
+    public void DeletePersona_RemovesPersonaFromRepository()
+    {
+        // Arrange
+        var personaId = 1;
+
+        // Act
+        _userService.DeletePersona(personaId);
+
+        // Assert
+        var deletedPersona = _userRepository.GetPersonaById(1);
+        Assert.Null(deletedPersona);
     }
 }

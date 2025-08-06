@@ -598,5 +598,15 @@ namespace BusinessLogic.Services
 
         public Persona? GetPersonaById(int personaId) => ExecuteServiceOperation(
             () => _userRepository.GetPersonaById(personaId), "getting persona by id");
+
+        public void UpdatePersona(Persona persona) => ExecuteServiceOperation(() =>
+        {
+            _userRepository.UpdatePersona(persona);
+        }, "updating persona");
+
+        public void DeletePersona(int personaId) => ExecuteServiceOperation(() =>
+        {
+            _userRepository.DeletePersona(personaId);
+        }, "deleting persona");
     }
 }

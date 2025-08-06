@@ -66,7 +66,7 @@ namespace Presentation
                     if (user.Rol == "Administrador")
                     {
                         Hide();
-                        var adminForm = new AdminForm(_userService);
+                        var adminForm = new AdminForm(_userService, user.Username);
                         adminForm.ShowDialog();
                         Show();
                     }

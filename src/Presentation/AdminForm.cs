@@ -13,12 +13,14 @@ namespace Presentation
     public partial class AdminForm : Form
     {
         private readonly IUserService _userService;
+        private readonly string _username;
         private PoliticaSeguridad? _politica;
         private readonly List<int> _dirtyUserIds = new List<int>();
 
-        public AdminForm(IUserService userService)
+        public AdminForm(IUserService userService, string username)
         {
             InitializeComponent();
+            _username = username;
 
             // Hide password controls for user creation as it's now automated
             lblPassword.Visible = false;
@@ -30,7 +32,29 @@ namespace Presentation
             btnNavigatePersonas.Click += (s, e) => ShowPanel(panelPersonas);
             btnNavigateUsuarios.Click += (s, e) => ShowPanel(panelUsuarios);
             btnNavigateGestion.Click += (s, e) => ShowPanel(panelGestionUsuarios);
+            btnNavigateGestionPersonas.Click += (s, e) => ShowPanel(panelGestionPersonas);
             btnNavigateConfiguracion.Click += (s, e) => ShowPanel(panelConfiguracion);
+            btnMiPerfil.Click += (s, e) =>
+            {
+                var user = _userService.GetUserByUsername(_username);
+                if (user != null)
+                {
+                    var persona = _userService.GetPersonaById(user.IdPersona);
+                    if (persona != null)
+                    {
+                        var form = new ProfileForm(user, persona);
+                        form.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se encontraron los datos de la persona.", "Error");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No se encontró el usuario.", "Error");
+                }
+            };
 
             // Cargar combos al iniciar
             LoadTipoDoc();
@@ -54,6 +78,7 @@ namespace Presentation
 
             // Gestion de Usuarios
             btnRefrescarUsuarios.Click += (s, e) => LoadUsers();
+            btnRefrescarPersonas.Click += (s, e) => LoadPersonasGrid();
             btnGuardarCambios.Click += BtnGuardarCambios_Click;
             btnEliminarUsuario.Click += BtnEliminarUsuario_Click;
             dgvUsuarios.CellEndEdit += DgvUsuarios_CellEndEdit;
@@ -63,6 +88,7 @@ namespace Presentation
 
 
             LoadUsers();
+            LoadPersonasGrid();
 
             dtpFechaExpiracionGestion.ShowCheckBox = true;
             dtpFechaExpiracionGestion.Checked = false;
@@ -73,6 +99,7 @@ namespace Presentation
             panelPersonas.Visible = false;
             panelUsuarios.Visible = false;
             panelGestionUsuarios.Visible = false;
+            panelGestionPersonas.Visible = false;
             panelConfiguracion.Visible = false;
 
             panelToShow.Visible = true;
@@ -519,6 +546,19 @@ namespace Presentation
         private void btnGuardarPersona_Click_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void LoadPersonasGrid()
+        {
+            try
+            {
+                var personas = _userService.GetPersonas();
+                dgvPersonas.DataSource = personas;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar personas: {ex.Message}", "Error");
+            }
         }
     }
 }

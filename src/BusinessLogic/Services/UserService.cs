@@ -592,5 +592,11 @@ namespace BusinessLogic.Services
             return preguntas.Where(p => idPreguntas.Contains(p.IdPregunta)).ToList();
 
         }, "getting user security questions");
+
+        public Usuario? GetUserByUsername(string username) => ExecuteServiceOperation(
+            () => _userRepository.GetUsuarioByNombreUsuario(username), "getting user by username");
+
+        public Persona? GetPersonaById(int personaId) => ExecuteServiceOperation(
+            () => _userRepository.GetPersonaById(personaId), "getting persona by id");
     }
 }

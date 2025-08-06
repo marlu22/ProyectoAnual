@@ -379,7 +379,6 @@ namespace Presentation
             this.Controls.Add(this.lblTipoDoc);
             this.Controls.Add(this.lblTipoDocTitle);
             this.Controls.Add(this.lblLegajo);
-.
             this.Controls.Add(this.lblLegajoTitle);
             this.Controls.Add(this.lblApellido);
             this.Controls.Add(this.lblApellidoTitle);
@@ -419,7 +418,7 @@ namespace Presentation
         private System.Windows.Forms.Label lblFechaNacimientoTitle;
         private System.Windows.Forms.Label lblFechaNacimiento;
         private System.Windows.Forms.Label lblCuilTitle;
-        private System.Windows..Forms.Label lblCuil;
+        private System.Windows.Forms.Label lblCuil;
         private System.Windows.Forms.Label lblLocalidadTitle;
         private System.Windows.Forms.Label lblLocalidad;
         private System.Windows.Forms.Label lblCalleTitle;

@@ -29,20 +29,20 @@ namespace Presentation
             chkMostrarContrasena = new System.Windows.Forms.CheckBox();
             btnLogin = new RoundedButton();
             btnRecuperarContrasena = new RoundedButton();
-            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
             iconPictureBox2 = new FontAwesome.Sharp.IconPictureBox();
+            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
             panel1 = new System.Windows.Forms.Panel();
-            label1 = new System.Windows.Forms.Label();
-            iconPictureBox3 = new FontAwesome.Sharp.IconPictureBox();
-            iconPictureBox4 = new FontAwesome.Sharp.IconPictureBox();
             iconPictureBox5 = new FontAwesome.Sharp.IconPictureBox();
+            iconPictureBox3 = new FontAwesome.Sharp.IconPictureBox();
+            label1 = new System.Windows.Forms.Label();
+            iconPictureBox4 = new FontAwesome.Sharp.IconPictureBox();
             tableLayoutPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox4).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)iconPictureBox5).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel
@@ -62,7 +62,7 @@ namespace Presentation
             tableLayoutPanel.Controls.Add(iconPictureBox2, 0, 4);
             tableLayoutPanel.Controls.Add(iconPictureBox1, 0, 2);
             tableLayoutPanel.Location = new System.Drawing.Point(257, 85);
-            tableLayoutPanel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            tableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             tableLayoutPanel.Name = "tableLayoutPanel";
             tableLayoutPanel.Padding = new System.Windows.Forms.Padding(10);
             tableLayoutPanel.RowCount = 5;
@@ -174,20 +174,6 @@ namespace Presentation
             btnRecuperarContrasena.Text = "¿Olvidaste tu contraseña?";
             btnRecuperarContrasena.UseVisualStyleBackColor = false;
             // 
-            // iconPictureBox1
-            // 
-            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
-            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.FaceLaughBeam;
-            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
-            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Regular;
-            iconPictureBox1.IconSize = 24;
-            iconPictureBox1.Location = new System.Drawing.Point(14, 86);
-            iconPictureBox1.Name = "iconPictureBox1";
-            iconPictureBox1.Size = new System.Drawing.Size(249, 24);
-            iconPictureBox1.TabIndex = 7;
-            iconPictureBox1.TabStop = false;
-            // 
             // iconPictureBox2
             // 
             iconPictureBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
@@ -203,6 +189,20 @@ namespace Presentation
             iconPictureBox2.TabIndex = 8;
             iconPictureBox2.TabStop = false;
             // 
+            // iconPictureBox1
+            // 
+            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
+            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.FaceLaughBeam;
+            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Regular;
+            iconPictureBox1.IconSize = 24;
+            iconPictureBox1.Location = new System.Drawing.Point(14, 86);
+            iconPictureBox1.Name = "iconPictureBox1";
+            iconPictureBox1.Size = new System.Drawing.Size(249, 24);
+            iconPictureBox1.TabIndex = 7;
+            iconPictureBox1.TabStop = false;
+            // 
             // panel1
             // 
             panel1.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
@@ -216,16 +216,22 @@ namespace Presentation
             panel1.Size = new System.Drawing.Size(800, 63);
             panel1.TabIndex = 1;
             // 
-            // label1
+            // iconPictureBox5
             // 
-            label1.AutoSize = true;
-            label1.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            label1.Location = new System.Drawing.Point(256, 18);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(308, 31);
-            label1.TabIndex = 0;
-            label1.Text = "Inicia sesión para continuar";
+            iconPictureBox5.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            iconPictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
+            iconPictureBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox5.IconChar = FontAwesome.Sharp.IconChar.X;
+            iconPictureBox5.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox5.IconFont = FontAwesome.Sharp.IconFont.Regular;
+            iconPictureBox5.IconSize = 55;
+            iconPictureBox5.Location = new System.Drawing.Point(744, -1);
+            iconPictureBox5.Name = "iconPictureBox5";
+            iconPictureBox5.Size = new System.Drawing.Size(55, 63);
+            iconPictureBox5.TabIndex = 2;
+            iconPictureBox5.TabStop = false;
+            iconPictureBox5.Click += iconPictureBox5_Click;
             // 
             // iconPictureBox3
             // 
@@ -242,6 +248,17 @@ namespace Presentation
             iconPictureBox3.TabIndex = 1;
             iconPictureBox3.TabStop = false;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            label1.Location = new System.Drawing.Point(256, 18);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(308, 31);
+            label1.TabIndex = 0;
+            label1.Text = "Inicia sesión para continuar";
+            // 
             // iconPictureBox4
             // 
             iconPictureBox4.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
@@ -256,21 +273,6 @@ namespace Presentation
             iconPictureBox4.Size = new System.Drawing.Size(185, 324);
             iconPictureBox4.TabIndex = 2;
             iconPictureBox4.TabStop = false;
-            // 
-            // iconPictureBox5
-            // 
-            iconPictureBox5.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
-            iconPictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            iconPictureBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            iconPictureBox5.IconChar = FontAwesome.Sharp.IconChar.X;
-            iconPictureBox5.IconColor = System.Drawing.SystemColors.ControlLightLight;
-            iconPictureBox5.IconFont = FontAwesome.Sharp.IconFont.Regular;
-            iconPictureBox5.IconSize = 55;
-            iconPictureBox5.Location = new System.Drawing.Point(744, -1);
-            iconPictureBox5.Name = "iconPictureBox5";
-            iconPictureBox5.Size = new System.Drawing.Size(55, 63);
-            iconPictureBox5.TabIndex = 2;
-            iconPictureBox5.TabStop = false;
             // 
             // LoginForm
             // 
@@ -289,13 +291,13 @@ namespace Presentation
             Text = "Iniciar Sesión";
             tableLayoutPanel.ResumeLayout(false);
             tableLayoutPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox4).EndInit();
-            ((System.ComponentModel.ISupportInitialize)iconPictureBox5).EndInit();
             ResumeLayout(false);
         }
         private RoundedTextBox txtUsuario;

@@ -130,8 +130,8 @@ namespace Presentation
 
             if (respuestas.Count != _preguntasUsuario.Count)
             {
-                 MessageBox.Show("No se pudieron recolectar todas las respuestas. Intente de nuevo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                 return;
+                MessageBox.Show("No se pudieron recolectar todas las respuestas. Intente de nuevo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
             btnRecuperar.Enabled = false;
@@ -159,6 +159,11 @@ namespace Presentation
                 btnRecuperar.Enabled = true;
                 this.Cursor = Cursors.Default;
             }
+        }
+
+        private void iconPictureBox5_Click(object sender, EventArgs e)
+        {
+            this.Close();   
         }
     }
 }

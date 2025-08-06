@@ -31,16 +31,16 @@ namespace Presentation
             txtRepetir = new RoundedTextBox();
             btnCambiar = new RoundedButton();
             panel1 = new System.Windows.Forms.Panel();
+            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
             panel2 = new System.Windows.Forms.Panel();
             iconPictureBox5 = new FontAwesome.Sharp.IconPictureBox();
             iconPictureBox3 = new FontAwesome.Sharp.IconPictureBox();
             label1 = new System.Windows.Forms.Label();
-            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox3).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
             SuspendLayout();
             // 
             // lblActual
@@ -137,6 +137,21 @@ namespace Presentation
             panel1.Size = new System.Drawing.Size(798, 212);
             panel1.TabIndex = 8;
             // 
+            // iconPictureBox1
+            // 
+            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
+            iconPictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.Question;
+            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconPictureBox1.IconSize = 122;
+            iconPictureBox1.Location = new System.Drawing.Point(0, 0);
+            iconPictureBox1.Name = "iconPictureBox1";
+            iconPictureBox1.Size = new System.Drawing.Size(122, 212);
+            iconPictureBox1.TabIndex = 7;
+            iconPictureBox1.TabStop = false;
+            // 
             // panel2
             // 
             panel2.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
@@ -154,6 +169,7 @@ namespace Presentation
             // 
             iconPictureBox5.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
             iconPictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
             iconPictureBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             iconPictureBox5.IconChar = FontAwesome.Sharp.IconChar.X;
             iconPictureBox5.IconColor = System.Drawing.SystemColors.ControlLightLight;
@@ -164,6 +180,7 @@ namespace Presentation
             iconPictureBox5.Size = new System.Drawing.Size(55, 63);
             iconPictureBox5.TabIndex = 2;
             iconPictureBox5.TabStop = false;
+            iconPictureBox5.Click += iconPictureBox5_Click;
             // 
             // iconPictureBox3
             // 
@@ -191,21 +208,6 @@ namespace Presentation
             label1.TabIndex = 0;
             label1.Text = "Recuperación de contraseña";
             // 
-            // iconPictureBox1
-            // 
-            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
-            iconPictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.Question;
-            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
-            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconPictureBox1.IconSize = 122;
-            iconPictureBox1.Location = new System.Drawing.Point(0, 0);
-            iconPictureBox1.Name = "iconPictureBox1";
-            iconPictureBox1.Size = new System.Drawing.Size(122, 212);
-            iconPictureBox1.TabIndex = 7;
-            iconPictureBox1.TabStop = false;
-            // 
             // CambioContrasenaForm
             // 
             BackColor = System.Drawing.Color.FromArgb(43, 47, 58);
@@ -221,11 +223,11 @@ namespace Presentation
             Text = "Cambiar Contraseña";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)iconPictureBox3).EndInit();
-            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
             ResumeLayout(false);
         }
         private System.Windows.Forms.Panel panel1;

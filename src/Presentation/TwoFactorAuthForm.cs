@@ -40,5 +40,10 @@ namespace Presentation
                 MessageBox.Show("El código de verificación es incorrecto o ha expirado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void iconPictureBox5_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

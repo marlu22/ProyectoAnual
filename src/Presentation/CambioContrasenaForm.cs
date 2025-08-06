@@ -69,6 +69,9 @@ namespace Presentation
             }
         }
 
-        
+        private void iconPictureBox5_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

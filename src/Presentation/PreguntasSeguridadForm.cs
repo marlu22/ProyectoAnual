@@ -147,5 +147,10 @@ namespace Presentation
             // This method can be used for custom drawing if needed
             // Currently, it does not perform any custom drawing
         }
+
+        private void iconPictureBox5_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

@@ -61,7 +61,6 @@ namespace Presentation
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             navigationPanel = new System.Windows.Forms.Panel();
             btnNavigatePersonas = new RoundedButton();
             btnNavigateUsuarios = new RoundedButton();
@@ -136,6 +135,7 @@ namespace Presentation
             lblCantPreguntas = new System.Windows.Forms.Label();
             txtCantPreguntas = new RoundedTextBox();
             btnGuardarConfig = new RoundedButton();
+            iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
             navigationPanel.SuspendLayout();
             contentPanel.SuspendLayout();
             panelPersonas.SuspendLayout();
@@ -148,10 +148,12 @@ namespace Presentation
             buttonPanel.SuspendLayout();
             panelConfiguracion.SuspendLayout();
             configuracionLayout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).BeginInit();
             SuspendLayout();
             // 
             // navigationPanel
             // 
+            navigationPanel.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
             navigationPanel.Controls.Add(btnNavigatePersonas);
             navigationPanel.Controls.Add(btnNavigateUsuarios);
             navigationPanel.Controls.Add(btnNavigateGestion);
@@ -232,6 +234,8 @@ namespace Presentation
             // 
             // panelPersonas
             // 
+            panelPersonas.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            panelPersonas.Controls.Add(iconPictureBox1);
             panelPersonas.Controls.Add(personaLayout);
             panelPersonas.Dock = System.Windows.Forms.DockStyle.Fill;
             panelPersonas.Location = new System.Drawing.Point(0, 0);
@@ -241,6 +245,7 @@ namespace Presentation
             // 
             // personaLayout
             // 
+            personaLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             personaLayout.BackColor = System.Drawing.Color.Transparent;
             personaLayout.ColumnCount = 2;
             personaLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
@@ -278,6 +283,7 @@ namespace Presentation
             personaLayout.Controls.Add(lblFechaIngreso, 0, 15);
             personaLayout.Controls.Add(dtpFechaIngreso, 1, 15);
             personaLayout.Controls.Add(btnGuardarPersona, 1, 16);
+            personaLayout.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             personaLayout.Location = new System.Drawing.Point(0, 0);
             personaLayout.Name = "personaLayout";
             personaLayout.RowCount = 17;
@@ -298,7 +304,7 @@ namespace Presentation
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             personaLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            personaLayout.Size = new System.Drawing.Size(492, 370);
+            personaLayout.Size = new System.Drawing.Size(492, 597);
             personaLayout.TabIndex = 0;
             // 
             // lblLegajo
@@ -377,6 +383,7 @@ namespace Presentation
             // cbxTipoDoc
             // 
             cbxTipoDoc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            cbxTipoDoc.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             cbxTipoDoc.Location = new System.Drawing.Point(175, 93);
             cbxTipoDoc.Name = "cbxTipoDoc";
             cbxTipoDoc.Size = new System.Drawing.Size(121, 31);
@@ -619,9 +626,10 @@ namespace Presentation
             btnGuardarPersona.ForeColor = System.Drawing.Color.White;
             btnGuardarPersona.Location = new System.Drawing.Point(175, 483);
             btnGuardarPersona.Name = "btnGuardarPersona";
-            btnGuardarPersona.Size = new System.Drawing.Size(150, 14);
+            btnGuardarPersona.Size = new System.Drawing.Size(150, 34);
             btnGuardarPersona.TabIndex = 22;
             btnGuardarPersona.Text = "Guardar Persona";
+            btnGuardarPersona.Click += btnGuardarPersona_Click_1;
             // 
             // panelUsuarios
             // 
@@ -785,14 +793,6 @@ namespace Presentation
             // 
             dgvUsuarios.BorderStyle = System.Windows.Forms.BorderStyle.None;
             dgvUsuarios.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dgvUsuarios.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvUsuarios.ColumnHeadersHeight = 29;
             gestionUsuariosLayout.SetColumnSpan(dgvUsuarios, 3);
             dgvUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1011,6 +1011,21 @@ namespace Presentation
             btnGuardarConfig.TabIndex = 10;
             btnGuardarConfig.Text = "Guardar";
             // 
+            // iconPictureBox1
+            // 
+            iconPictureBox1.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            iconPictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconChar = FontAwesome.Sharp.IconChar.ClipboardQuestion;
+            iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconPictureBox1.IconSize = 125;
+            iconPictureBox1.Location = new System.Drawing.Point(498, 3);
+            iconPictureBox1.Name = "iconPictureBox1";
+            iconPictureBox1.Size = new System.Drawing.Size(125, 174);
+            iconPictureBox1.TabIndex = 1;
+            iconPictureBox1.TabStop = false;
+            // 
             // AdminForm
             // 
             ClientSize = new System.Drawing.Size(823, 600);
@@ -1039,8 +1054,10 @@ namespace Presentation
             panelConfiguracion.ResumeLayout(false);
             configuracionLayout.ResumeLayout(false);
             configuracionLayout.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)iconPictureBox1).EndInit();
             ResumeLayout(false);
         }
         private System.Windows.Forms.FlowLayoutPanel buttonPanel;
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox1;
     }
 }

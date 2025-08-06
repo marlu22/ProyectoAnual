@@ -27,5 +27,10 @@ namespace Presentation
                 form.ShowDialog();
             };
         }
+
+        private void iconPictureBox5_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

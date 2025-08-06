@@ -24,8 +24,8 @@ namespace Presentation
         {
             tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             lblInfo = new System.Windows.Forms.Label();
-            txtCodigo = new RoundedTextBox();
             btnVerificar = new RoundedButton();
+            txtCodigo = new RoundedTextBox();
             panel1 = new System.Windows.Forms.Panel();
             iconPictureBox5 = new FontAwesome.Sharp.IconPictureBox();
             iconPictureBox3 = new FontAwesome.Sharp.IconPictureBox();
@@ -66,18 +66,6 @@ namespace Presentation
             lblInfo.Text = "Se ha enviado un código a su correo. Por favor, ingréselo a continuación.";
             lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // txtCodigo
-            // 
-            txtCodigo.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtCodigo.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
-            txtCodigo.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            txtCodigo.Font = new System.Drawing.Font("Segoe UI", 10F);
-            txtCodigo.ForeColor = System.Drawing.Color.White;
-            txtCodigo.Location = new System.Drawing.Point(24, 80);
-            txtCodigo.Name = "txtCodigo";
-            txtCodigo.Size = new System.Drawing.Size(373, 23);
-            txtCodigo.TabIndex = 1;
-            // 
             // btnVerificar
             // 
             btnVerificar.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
@@ -89,6 +77,18 @@ namespace Presentation
             btnVerificar.Size = new System.Drawing.Size(100, 35);
             btnVerificar.TabIndex = 2;
             btnVerificar.Text = "Verificar";
+            // 
+            // txtCodigo
+            // 
+            txtCodigo.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtCodigo.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtCodigo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtCodigo.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtCodigo.ForeColor = System.Drawing.Color.White;
+            txtCodigo.Location = new System.Drawing.Point(24, 80);
+            txtCodigo.Name = "txtCodigo";
+            txtCodigo.Size = new System.Drawing.Size(373, 23);
+            txtCodigo.TabIndex = 1;
             // 
             // panel1
             // 
@@ -107,6 +107,7 @@ namespace Presentation
             // 
             iconPictureBox5.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
             iconPictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
             iconPictureBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             iconPictureBox5.IconChar = FontAwesome.Sharp.IconChar.X;
             iconPictureBox5.IconColor = System.Drawing.SystemColors.ControlLightLight;
@@ -117,6 +118,7 @@ namespace Presentation
             iconPictureBox5.Size = new System.Drawing.Size(55, 63);
             iconPictureBox5.TabIndex = 2;
             iconPictureBox5.TabStop = false;
+            iconPictureBox5.Click += iconPictureBox5_Click;
             // 
             // iconPictureBox3
             // 

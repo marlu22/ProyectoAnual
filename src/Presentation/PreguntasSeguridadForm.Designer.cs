@@ -76,6 +76,7 @@ namespace Presentation
             // 
             iconPictureBox5.BackColor = Color.FromArgb(43, 47, 49);
             iconPictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
             iconPictureBox5.ForeColor = SystemColors.ControlLightLight;
             iconPictureBox5.IconChar = FontAwesome.Sharp.IconChar.X;
             iconPictureBox5.IconColor = SystemColors.ControlLightLight;
@@ -86,6 +87,7 @@ namespace Presentation
             iconPictureBox5.Size = new Size(55, 63);
             iconPictureBox5.TabIndex = 2;
             iconPictureBox5.TabStop = false;
+            iconPictureBox5.Click += iconPictureBox5_Click;
             // 
             // iconPictureBox3
             // 

@@ -145,6 +145,7 @@ namespace Presentation
             // 
             iconPictureBox5.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
             iconPictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            iconPictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
             iconPictureBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             iconPictureBox5.IconChar = FontAwesome.Sharp.IconChar.X;
             iconPictureBox5.IconColor = System.Drawing.SystemColors.ControlLightLight;
@@ -155,6 +156,7 @@ namespace Presentation
             iconPictureBox5.Size = new System.Drawing.Size(55, 63);
             iconPictureBox5.TabIndex = 2;
             iconPictureBox5.TabStop = false;
+            iconPictureBox5.Click += iconPictureBox5_Click;
             // 
             // iconPictureBox3
             // 
@@ -178,9 +180,9 @@ namespace Presentation
             label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             label1.Location = new System.Drawing.Point(256, 18);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(308, 31);
+            label1.Size = new System.Drawing.Size(244, 31);
             label1.TabIndex = 0;
-            label1.Text = "Inicia sesión para continuar";
+            label1.Text = "Recuperar contraseña";
             // 
             // iconPictureBox1
             // 

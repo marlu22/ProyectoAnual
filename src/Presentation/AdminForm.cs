@@ -515,5 +515,10 @@ namespace Presentation
                 }
             }
         }
+
+        private void btnGuardarPersona_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -60,6 +60,9 @@ namespace Presentation
         private System.Windows.Forms.TableLayoutPanel gestionPersonasLayout;
         private System.Windows.Forms.DataGridView dgvPersonas;
         private RoundedButton btnRefrescarPersonas;
+        private System.Windows.Forms.FlowLayoutPanel personasButtonPanel;
+        private RoundedButton btnEliminarPersona;
+        private RoundedButton btnGuardarCambiosPersona;
 
         protected override void Dispose(bool disposing)
         {
@@ -161,10 +164,14 @@ namespace Presentation
             panelGestionPersonas = new System.Windows.Forms.Panel();
             gestionPersonasLayout = new System.Windows.Forms.TableLayoutPanel();
             dgvPersonas = new System.Windows.Forms.DataGridView();
+            personasButtonPanel = new System.Windows.Forms.FlowLayoutPanel();
+            btnEliminarPersona = new RoundedButton();
+            btnGuardarCambiosPersona = new RoundedButton();
             btnRefrescarPersonas = new RoundedButton();
             panelGestionPersonas.SuspendLayout();
             gestionPersonasLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvPersonas).BeginInit();
+            personasButtonPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)iconMiPerfil).BeginInit();
             panelConfiguracion.SuspendLayout();
             configuracionLayout.SuspendLayout();
@@ -949,7 +956,7 @@ namespace Presentation
             gestionPersonasLayout.ColumnCount = 1;
             gestionPersonasLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             gestionPersonasLayout.Controls.Add(dgvPersonas, 0, 0);
-            gestionPersonasLayout.Controls.Add(btnRefrescarPersonas, 0, 1);
+            gestionPersonasLayout.Controls.Add(personasButtonPanel, 0, 1);
             gestionPersonasLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             gestionPersonasLayout.Location = new System.Drawing.Point(0, 0);
             gestionPersonasLayout.Name = "gestionPersonasLayout";
@@ -972,15 +979,49 @@ namespace Presentation
             dgvPersonas.Size = new System.Drawing.Size(617, 534);
             dgvPersonas.TabIndex = 0;
             //
+            // personasButtonPanel
+            //
+            personasButtonPanel.BackColor = System.Drawing.Color.Transparent;
+            personasButtonPanel.Controls.Add(btnEliminarPersona);
+            personasButtonPanel.Controls.Add(btnGuardarCambiosPersona);
+            personasButtonPanel.Controls.Add(btnRefrescarPersonas);
+            personasButtonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            personasButtonPanel.Location = new System.Drawing.Point(3, 543);
+            personasButtonPanel.Name = "personasButtonPanel";
+            personasButtonPanel.Size = new System.Drawing.Size(617, 54);
+            personasButtonPanel.TabIndex = 1;
+            //
+            // btnEliminarPersona
+            //
+            btnEliminarPersona.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnEliminarPersona.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnEliminarPersona.ForeColor = System.Drawing.Color.White;
+            btnEliminarPersona.Location = new System.Drawing.Point(3, 3);
+            btnEliminarPersona.Name = "btnEliminarPersona";
+            btnEliminarPersona.Size = new System.Drawing.Size(140, 35);
+            btnEliminarPersona.TabIndex = 0;
+            btnEliminarPersona.Text = "Eliminar Persona";
+            //
+            // btnGuardarCambiosPersona
+            //
+            btnGuardarCambiosPersona.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnGuardarCambiosPersona.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            btnGuardarCambiosPersona.ForeColor = System.Drawing.Color.White;
+            btnGuardarCambiosPersona.Location = new System.Drawing.Point(149, 3);
+            btnGuardarCambiosPersona.Name = "btnGuardarCambiosPersona";
+            btnGuardarCambiosPersona.Size = new System.Drawing.Size(140, 35);
+            btnGuardarCambiosPersona.TabIndex = 1;
+            btnGuardarCambiosPersona.Text = "Guardar Cambios";
+            //
             // btnRefrescarPersonas
             //
             btnRefrescarPersonas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRefrescarPersonas.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             btnRefrescarPersonas.ForeColor = System.Drawing.Color.White;
-            btnRefrescarPersonas.Location = new System.Drawing.Point(3, 543);
+            btnRefrescarPersonas.Location = new System.Drawing.Point(295, 3);
             btnRefrescarPersonas.Name = "btnRefrescarPersonas";
             btnRefrescarPersonas.Size = new System.Drawing.Size(120, 35);
-            btnRefrescarPersonas.TabIndex = 1;
+            btnRefrescarPersonas.TabIndex = 2;
             btnRefrescarPersonas.Text = "Refrescar";
             //
             // panelConfiguracion
@@ -1169,6 +1210,7 @@ namespace Presentation
             buttonPanel.ResumeLayout(false);
             panelGestionPersonas.ResumeLayout(false);
             gestionPersonasLayout.ResumeLayout(false);
+            personasButtonPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvPersonas).EndInit();
             panelConfiguracion.ResumeLayout(false);
             configuracionLayout.ResumeLayout(false);

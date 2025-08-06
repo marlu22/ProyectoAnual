@@ -16,6 +16,7 @@ namespace Presentation
         private readonly string _username;
         private PoliticaSeguridad? _politica;
         private readonly List<int> _dirtyUserIds = new List<int>();
+        private readonly List<int> _dirtyPersonaIds = new List<int>();
 
         public AdminForm(IUserService userService, string username)
         {
@@ -78,13 +79,18 @@ namespace Presentation
 
             // Gestion de Usuarios
             btnRefrescarUsuarios.Click += (s, e) => LoadUsers();
-            btnRefrescarPersonas.Click += (s, e) => LoadPersonasGrid();
             btnGuardarCambios.Click += BtnGuardarCambios_Click;
             btnEliminarUsuario.Click += BtnEliminarUsuario_Click;
             dgvUsuarios.CellEndEdit += DgvUsuarios_CellEndEdit;
             dgvUsuarios.SelectionChanged += dgvUsuarios_SelectionChanged;
             dtpFechaExpiracionGestion.ValueChanged += dtpFechaExpiracionGestion_ValueChanged;
             dgvUsuarios.CellFormatting += dgvUsuarios_CellFormatting;
+
+            // Gestion de Personas
+            btnRefrescarPersonas.Click += (s, e) => LoadPersonasGrid();
+            btnGuardarCambiosPersona.Click += BtnGuardarCambiosPersona_Click;
+            btnEliminarPersona.Click += BtnEliminarPersona_Click;
+            dgvPersonas.CellEndEdit += DgvPersonas_CellEndEdit;
 
 
             LoadUsers();
@@ -522,6 +528,18 @@ namespace Presentation
             }
         }
 
+        private void DgvPersonas_CellEndEdit(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                var persona = (Persona)dgvPersonas.Rows[e.RowIndex].DataBoundItem;
+                if (!_dirtyPersonaIds.Contains(persona.IdPersona))
+                {
+                    _dirtyPersonaIds.Add(persona.IdPersona);
+                }
+            }
+        }
+
         private void dgvUsuarios_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.RowIndex >= 0 && e.RowIndex < dgvUsuarios.Rows.Count)
@@ -539,6 +557,66 @@ namespace Presentation
                         dgvUsuarios.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.SystemColors.Window;
                         dgvUsuarios.Rows[e.RowIndex].DefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
                     }
+                }
+            }
+        }
+
+        private void BtnGuardarCambiosPersona_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (dgvPersonas.DataSource is List<Persona> personas)
+                {
+                    var personasToUpdate = personas.Where(p => _dirtyPersonaIds.Contains(p.IdPersona)).ToList();
+                    foreach (var persona in personasToUpdate)
+                    {
+                        _userService.UpdatePersona(persona);
+                    }
+
+                    if (personasToUpdate.Any())
+                    {
+                        MessageBox.Show("Cambios guardados exitosamente.", "Éxito");
+                    }
+                    else
+                    {
+                        MessageBox.Show("No hay cambios para guardar.", "Información");
+                    }
+
+                    _dirtyPersonaIds.Clear();
+                    LoadPersonasGrid();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar cambios: {ex.Message}", "Error");
+            }
+        }
+
+        private void BtnEliminarPersona_Click(object? sender, EventArgs e)
+        {
+            if (dgvPersonas.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Por favor, seleccione una persona para eliminar.", "Advertencia");
+                return;
+            }
+
+            var selectedRow = dgvPersonas.SelectedRows[0];
+            var persona = (Persona)selectedRow.DataBoundItem;
+
+            var confirmResult = MessageBox.Show($"¿Está seguro de que desea eliminar a la persona '{persona.Nombre} {persona.Apellido}'?",
+                                                 "Confirmar Eliminación",
+                                                 MessageBoxButtons.YesNo);
+            if (confirmResult == DialogResult.Yes)
+            {
+                try
+                {
+                    _userService.DeletePersona(persona.IdPersona);
+                    MessageBox.Show("Persona eliminada exitosamente.", "Éxito");
+                    LoadPersonasGrid();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al eliminar persona: {ex.Message}", "Error");
                 }
             }
         }

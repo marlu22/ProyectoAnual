@@ -403,5 +403,29 @@ namespace DataAccess.Repositories
             p => p.AddWithValue("@id_usuario", usuarioId),
             CommandType.Text
         );
+
+        public void UpdatePersona(Persona persona) => ExecuteNonQuery("sp_update_persona", p =>
+        {
+            p.AddWithValue("@id_persona", persona.IdPersona);
+            p.AddWithValue("@legajo", persona.Legajo);
+            p.AddWithValue("@nombre", persona.Nombre);
+            p.AddWithValue("@apellido", persona.Apellido);
+            p.AddWithValue("@id_tipo_doc", persona.IdTipoDoc);
+            p.AddWithValue("@num_doc", persona.NumDoc);
+            p.AddWithValue("@fecha_nacimiento", (object?)persona.FechaNacimiento ?? DBNull.Value);
+            p.AddWithValue("@cuil", (object?)persona.Cuil ?? DBNull.Value);
+            p.AddWithValue("@calle", (object?)persona.Calle ?? DBNull.Value);
+            p.AddWithValue("@altura", (object?)persona.Altura ?? DBNull.Value);
+            p.AddWithValue("@id_localidad", persona.IdLocalidad);
+            p.AddWithValue("@id_genero", persona.IdGenero);
+            p.AddWithValue("@correo", (object?)persona.Correo ?? DBNull.Value);
+            p.AddWithValue("@celular", (object?)persona.Celular ?? DBNull.Value);
+            p.AddWithValue("@fecha_ingreso", (object?)persona.FechaIngreso ?? DBNull.Value);
+        });
+
+        public void DeletePersona(int personaId) => ExecuteNonQuery("sp_delete_persona", p =>
+        {
+            p.AddWithValue("@id_persona", personaId);
+        });
     }
 }

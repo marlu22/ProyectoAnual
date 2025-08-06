@@ -26,6 +26,8 @@ namespace BusinessLogic.Services
         List<Usuario> GetAllUsers();
         void UpdateUser(UserDto user);
         void DeleteUser(int userId);
+        void UpdatePersona(Persona persona);
+        void DeletePersona(int personaId);
         void GuardarRespuestasSeguridad(string username, Dictionary<int, string> respuestas);
         List<PreguntaSeguridad> GetPreguntasSeguridad();
         List<PreguntaSeguridad> GetPreguntasDeUsuario(string username);

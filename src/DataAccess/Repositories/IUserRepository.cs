@@ -31,6 +31,7 @@ namespace DataAccess.Repositories
         void AddHistorialContrasena(HistorialContrasena historial);
         void AddRespuestaSeguridad(RespuestaSeguridad respuesta);
         List<PreguntaSeguridad> GetPreguntasSeguridad();
+        List<PreguntaSeguridad> GetPreguntasSeguridadByIds(List<int> ids);
         void DeleteUsuario(int usuarioId);
         void DeleteRespuestasSeguridadByUsuarioId(int usuarioId);
         void UpdatePersona(Persona persona);

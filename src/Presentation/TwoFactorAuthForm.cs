@@ -2,6 +2,7 @@
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
+using BusinessLogic.Models;
 
 namespace Presentation
 {
@@ -10,7 +11,7 @@ namespace Presentation
         private readonly IUserService _userService;
         private readonly string _username;
 
-        public BusinessLogic.Models.UserResponse? User { get; private set; }
+        public AuthenticationResult? AuthResult { get; private set; }
 
         public TwoFactorAuthForm(IUserService userService, string username)
         {
@@ -28,16 +29,16 @@ namespace Presentation
                 return;
             }
 
-            User = await _userService.Validate2faAsync(_username, txtCodigo.Text.Trim());
+            AuthResult = await _userService.Validate2faAsync(_username, txtCodigo.Text.Trim());
 
-            if (User != null)
+            if (AuthResult.Success)
             {
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
             else
             {
-                MessageBox.Show("El código de verificación es incorrecto o ha expirado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(AuthResult.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

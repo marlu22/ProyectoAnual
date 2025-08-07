@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using BusinessLogic.Services;
-using DataAccess.Entities;
+using BusinessLogic.Models;
 using Presentation.Controles;
 using Presentation.Theme;
 using UserManagementSystem.BusinessLogic.Exceptions;
@@ -13,13 +13,13 @@ namespace Presentation
     public partial class RecuperarContrasenaForm : Form
     {
         private readonly IUserService _userService;
-        private List<PreguntaSeguridad> _preguntasUsuario;
+        private List<PreguntaSeguridadDto> _preguntasUsuario;
 
         public RecuperarContrasenaForm(IUserService userService)
         {
             InitializeComponent();
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _preguntasUsuario = new List<PreguntaSeguridad>();
+            _preguntasUsuario = new List<PreguntaSeguridadDto>();
 
             // Wire up events
             btnContinuar.Click += BtnContinuar_Click;
@@ -64,7 +64,7 @@ namespace Presentation
             }
         }
 
-        private void MostrarPreguntas(List<PreguntaSeguridad> preguntas)
+        private void MostrarPreguntas(List<PreguntaSeguridadDto> preguntas)
         {
             pnlPreguntas.Controls.Clear(); // Limpiar el panel
             pnlPreguntas.SuspendLayout(); // Suspender el layout para mejorar el rendimiento

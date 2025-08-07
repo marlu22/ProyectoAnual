@@ -127,6 +127,7 @@ public class MockUserRepository : IUserRepository
     public List<PreguntaSeguridad> GetPreguntasDeUsuario(string username) => throw new NotImplementedException();
     public List<PreguntaSeguridad> GetPreguntasSeguridad() => throw new NotImplementedException();
     public List<RespuestaSeguridad>? GetRespuestasSeguridadByUsuarioId(int idUsuario) => throw new NotImplementedException();
+    public List<PreguntaSeguridad> GetPreguntasSeguridadByIds(List<int> ids) => new List<PreguntaSeguridad>();
     public Rol? GetRolByNombre(string nombre) => throw new NotImplementedException();
     public TipoDoc? GetTipoDocByNombre(string nombre) => throw new NotImplementedException();
     public void UpdatePoliticaSeguridad(PoliticaSeguridad politica) => throw new NotImplementedException();
@@ -288,10 +289,10 @@ public class UserServiceTests
     public void UpdatePersona_UpdatesPersonaInRepository()
     {
         // Arrange
-        var persona = new Persona { IdPersona = 1, Nombre = "Updated Name" };
+        var personaDto = new PersonaDto { IdPersona = 1, Nombre = "Updated Name" };
 
         // Act
-        _userService.UpdatePersona(persona);
+        _userService.UpdatePersona(personaDto);
 
         // Assert
         var updatedPersona = _userRepository.GetPersonaById(1);

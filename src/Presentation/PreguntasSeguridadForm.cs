@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using BusinessLogic.Services;
-using DataAccess.Entities;
+using BusinessLogic.Models;
 using Presentation.Controles;
 using Presentation.Theme;
 
@@ -13,7 +13,7 @@ namespace Presentation
     {
         private readonly IUserService _userService;
         private readonly string _username;
-        private List<PreguntaSeguridad> _preguntas = new List<PreguntaSeguridad>();
+        private List<PreguntaSeguridadDto> _preguntas = new List<PreguntaSeguridadDto>();
         private List<ComboBox> _comboBoxes = new List<ComboBox>();
         private List<RoundedTextBox> _textBoxes = new List<RoundedTextBox>();
 

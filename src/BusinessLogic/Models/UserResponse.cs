@@ -6,5 +6,6 @@ namespace BusinessLogic.Models
         public string Username { get; set; } = null!;
         public string? Rol { get; set; }
         public bool CambioContrasenaObligatorio { get; set; }
+        public int IdPersona { get; set; }
     }
 }

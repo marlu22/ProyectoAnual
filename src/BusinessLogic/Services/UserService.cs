@@ -40,7 +40,7 @@ namespace BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                // Log the exception ex here
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
                 throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
@@ -57,7 +57,7 @@ namespace BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                // Log the exception ex here
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
                 throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
@@ -74,7 +74,7 @@ namespace BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                // Log the exception ex here
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
                 throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
@@ -91,7 +91,7 @@ namespace BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                // Log the exception ex here
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
                 throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
@@ -190,20 +190,18 @@ namespace BusinessLogic.Services
             };
             _userRepository.AddUsuario(usuario);
 
-            // Enviar la contraseña generada por correo
             var task = _emailService.SendPasswordResetEmailAsync(persona.Correo, passwordToUse);
             task.ContinueWith(t => {
-                // Log exception if email sending fails
                 if (t.IsFaulted)
                 {
-                    // Log t.Exception
+                    _logger.LogError(t.Exception, "Failed to send password reset email.");
                 }
             });
         }, "creating a user");
 
         public async Task<AuthenticationResult> AuthenticateAsync(string username, string password)
         {
-            return await ExecuteServiceOperationAsync<AuthenticationResult>(async () =>
+            return await ExecuteServiceOperationAsync(async () =>
             {
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                     return AuthenticationResult.Failed("Usuario o contraseña no pueden estar vacíos.");
@@ -248,25 +246,41 @@ namespace BusinessLogic.Services
                 {
                     Username = usuario.UsuarioNombre,
                     Rol = usuario.Rol?.Nombre,
-                    CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
+                    CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio,
+                    IdPersona = usuario.IdPersona
                 };
-                return AuthenticationResult.Succeeded(userResponse);
+
+                var nextAction = PostLoginAction.None;
+                if (usuario.CambioContrasenaObligatorio)
+                {
+                    nextAction = PostLoginAction.ChangePassword;
+                }
+                else if (userResponse.Rol == "Administrador")
+                {
+                    nextAction = PostLoginAction.ShowAdminDashboard;
+                }
+                else
+                {
+                    nextAction = PostLoginAction.ShowUserDashboard;
+                }
+
+                return AuthenticationResult.Succeeded(userResponse, nextAction);
             }, "authenticating user");
         }
 
-        public Task<UserResponse?> Validate2faAsync(string username, string code)
+        public Task<AuthenticationResult> Validate2faAsync(string username, string code)
         {
-            return ExecuteServiceOperationAsync<UserResponse?>(() =>
+            return ExecuteServiceOperationAsync(() =>
             {
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(code))
                 {
-                    return Task.FromResult<UserResponse?>(null);
+                    return Task.FromResult(AuthenticationResult.Failed("El código 2FA es requerido."));
                 }
 
                 var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
                 if (usuario == null || usuario.Codigo2FA != code || usuario.Codigo2FAExpiracion < DateTime.UtcNow)
                 {
-                    return Task.FromResult<UserResponse?>(null);
+                    return Task.FromResult(AuthenticationResult.Failed("El código 2FA es inválido o ha expirado."));
                 }
 
                 _userRepository.Set2faCode(username, null, null);
@@ -275,9 +289,25 @@ namespace BusinessLogic.Services
                 {
                     Username = usuario.UsuarioNombre,
                     Rol = usuario.Rol?.Nombre,
-                    CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio
+                    CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio,
+                    IdPersona = usuario.IdPersona
                 };
-                return Task.FromResult<UserResponse?>(userResponse);
+
+                var nextAction = PostLoginAction.None;
+                if (usuario.CambioContrasenaObligatorio)
+                {
+                    nextAction = PostLoginAction.ChangePassword;
+                }
+                else if (userResponse.Rol == "Administrador")
+                {
+                    nextAction = PostLoginAction.ShowAdminDashboard;
+                }
+                else
+                {
+                    nextAction = PostLoginAction.ShowUserDashboard;
+                }
+
+                return Task.FromResult(AuthenticationResult.Succeeded(userResponse, nextAction));
             }, "validating 2FA");
         }
 
@@ -302,7 +332,6 @@ namespace BusinessLogic.Services
             if (respuestasGuardadas.Count != politica.CantPreguntas)
                 throw new ValidationException("La cantidad de respuestas guardadas no coincide con la política de seguridad.");
 
-            // Convertir a diccionario para búsqueda fácil
             var respuestasGuardadasDict = respuestasGuardadas.ToDictionary(r => r.IdPregunta, r => r.Respuesta);
 
             foreach (var respuesta in respuestas)
@@ -324,7 +353,6 @@ namespace BusinessLogic.Services
                 throw new ValidationException("El usuario no tiene una dirección de correo electrónico configurada.");
             }
 
-            // Enviar correo con la nueva contraseña usando el servicio de email
             await _emailService.SendPasswordResetEmailAsync(persona.Correo, newPassword);
         }, "recovering password");
 
@@ -362,7 +390,6 @@ namespace BusinessLogic.Services
             var currentPasswordHash = usuario.ContrasenaScript;
             if (currentPasswordHash == null)
             {
-                // This case should ideally not happen if data is consistent
                 throw new InvalidOperationException("User password hash cannot be null.");
             }
             _userRepository.AddHistorialContrasena(new HistorialContrasena
@@ -378,25 +405,57 @@ namespace BusinessLogic.Services
             _userRepository.UpdateUsuario(usuario);
         }, "changing password");
 
-        public List<TipoDoc> GetTiposDoc() => ExecuteServiceOperation(() => _userRepository.GetAllTiposDoc(), "getting all document types");
+        public List<TipoDocDto> GetTiposDoc() => ExecuteServiceOperation(() =>
+            _userRepository.GetAllTiposDoc().Select(t => new TipoDocDto { IdTipoDoc = t.IdTipoDoc, Nombre = t.Nombre }).ToList(),
+            "getting all document types");
 
-        public List<Provincia> GetProvincias() => ExecuteServiceOperation(() => _userRepository.GetAllProvincias(), "getting all provinces");
+        public List<ProvinciaDto> GetProvincias() => ExecuteServiceOperation(() =>
+            _userRepository.GetAllProvincias().Select(p => new ProvinciaDto { IdProvincia = p.IdProvincia, Nombre = p.Nombre }).ToList(),
+            "getting all provinces");
 
-        public List<Partido> GetPartidosByProvinciaId(int provinciaId) => ExecuteServiceOperation(() => _userRepository.GetPartidosByProvinciaId(provinciaId), "getting partidos by provincia");
+        public List<PartidoDto> GetPartidosByProvinciaId(int provinciaId) => ExecuteServiceOperation(() =>
+            _userRepository.GetPartidosByProvinciaId(provinciaId).Select(p => new PartidoDto { IdPartido = p.IdPartido, Nombre = p.Nombre, IdProvincia = p.IdProvincia }).ToList(),
+            "getting partidos by provincia");
 
-        public List<Localidad> GetLocalidadesByPartidoId(int partidoId) => ExecuteServiceOperation(() => _userRepository.GetLocalidadesByPartidoId(partidoId), "getting localidades by partido");
+        public List<LocalidadDto> GetLocalidadesByPartidoId(int partidoId) => ExecuteServiceOperation(() =>
+            _userRepository.GetLocalidadesByPartidoId(partidoId).Select(l => new LocalidadDto { IdLocalidad = l.IdLocalidad, Nombre = l.Nombre, IdPartido = l.IdPartido }).ToList(),
+            "getting localidades by partido");
 
-        public List<Genero> GetGeneros() => ExecuteServiceOperation(() => _userRepository.GetAllGeneros(), "getting all genders");
+        public List<GeneroDto> GetGeneros() => ExecuteServiceOperation(() =>
+            _userRepository.GetAllGeneros().Select(g => new GeneroDto { IdGenero = g.IdGenero, Nombre = g.Nombre }).ToList(),
+            "getting all genders");
 
-        public List<Persona> GetPersonas() => ExecuteServiceOperation(() => _userRepository.GetAllPersonas(), "getting all people");
+        public List<PersonaDto> GetPersonas() => ExecuteServiceOperation(() =>
+            _userRepository.GetAllPersonas().Select(p => MapToPersonaDto(p)!).ToList(),
+            "getting all people");
 
-        public List<Rol> GetRoles() => ExecuteServiceOperation(() => _userRepository.GetAllRoles(), "getting all roles");
+        public List<RolDto> GetRoles() => ExecuteServiceOperation(() =>
+            _userRepository.GetAllRoles().Select(r => new RolDto { IdRol = r.IdRol, Nombre = r.Nombre }).ToList(),
+            "getting all roles");
 
-        public PoliticaSeguridad? GetPoliticaSeguridad() => ExecuteServiceOperation(() => _userRepository.GetPoliticaSeguridad(), "getting security policy");
+        public PoliticaSeguridadDto? GetPoliticaSeguridad() => ExecuteServiceOperation(() =>
+        {
+            var politica = _userRepository.GetPoliticaSeguridad();
+            return MapToPoliticaSeguridadDto(politica);
+        }, "getting security policy");
 
-        public void UpdatePoliticaSeguridad(PoliticaSeguridad politica) => ExecuteServiceOperation(() => _userRepository.UpdatePoliticaSeguridad(politica), "updating security policy");
+        public void UpdatePoliticaSeguridad(PoliticaSeguridadDto politicaDto) => ExecuteServiceOperation(() =>
+        {
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { IdPolitica = politicaDto.IdPolitica };
+            politica.MayusYMinus = politicaDto.MayusYMinus;
+            politica.LetrasYNumeros = politicaDto.LetrasYNumeros;
+            politica.CaracterEspecial = politicaDto.CaracterEspecial;
+            politica.Autenticacion2FA = politicaDto.Autenticacion2FA;
+            politica.NoRepetirAnteriores = politicaDto.NoRepetirAnteriores;
+            politica.SinDatosPersonales = politicaDto.SinDatosPersonales;
+            politica.MinCaracteres = politicaDto.MinCaracteres;
+            politica.CantPreguntas = politicaDto.CantPreguntas;
+            _userRepository.UpdatePoliticaSeguridad(politica);
+        }, "updating security policy");
 
-        public List<Usuario> GetAllUsers() => ExecuteServiceOperation(() => _userRepository.GetAllUsers(), "getting all users");
+        public List<UserDto> GetAllUsers() => ExecuteServiceOperation(() =>
+            _userRepository.GetAllUsers().Select(u => MapToUserDto(u)!).ToList(),
+            "getting all users");
 
         public void UpdateUser(UserDto userDto) => ExecuteServiceOperation(() =>
         {
@@ -406,37 +465,187 @@ namespace BusinessLogic.Services
             usuario.UsuarioNombre = userDto.Username;
             usuario.IdRol = userDto.IdRol;
             usuario.FechaExpiracion = userDto.FechaExpiracion;
+            usuario.CambioContrasenaObligatorio = userDto.CambioContrasenaObligatorio;
 
             if (userDto.Habilitado)
             {
-                usuario.FechaBloqueo = new DateTime(9999, 12, 31);
-                usuario.NombreUsuarioBloqueo = null;
+                if (usuario.FechaBloqueo < DateTime.Now)
+                {
+                    usuario.FechaBloqueo = new DateTime(9999, 12, 31);
+                    usuario.NombreUsuarioBloqueo = null;
+                }
             }
             else
             {
-                usuario.FechaBloqueo = DateTime.Now;
-                usuario.NombreUsuarioBloqueo = "Admin"; // Placeholder for current admin user
+                if (usuario.FechaBloqueo > DateTime.Now)
+                {
+                    usuario.FechaBloqueo = DateTime.Now;
+                    usuario.NombreUsuarioBloqueo = "Admin"; // Placeholder
+                }
             }
 
             _userRepository.UpdateUsuario(usuario);
         }, "updating user");
 
         public void DeleteUser(int userId) => ExecuteServiceOperation(() =>
-        {
-            _userRepository.DeleteUsuario(userId);
-        }, "deleting user");
+            _userRepository.DeleteUsuario(userId),
+            "deleting user");
 
+        public void UpdatePersona(PersonaDto personaDto) => ExecuteServiceOperation(() =>
+        {
+            var persona = _userRepository.GetPersonaById(personaDto.IdPersona)
+                ?? throw new ValidationException($"Persona with id {personaDto.IdPersona} not found");
+
+            persona.Legajo = personaDto.Legajo;
+            persona.Nombre = personaDto.Nombre;
+            persona.Apellido = personaDto.Apellido;
+            persona.IdTipoDoc = personaDto.IdTipoDoc;
+            persona.NumDoc = personaDto.NumDoc;
+            persona.FechaNacimiento = personaDto.FechaNacimiento;
+            persona.Cuil = personaDto.Cuil;
+            persona.Calle = personaDto.Calle;
+            persona.Altura = personaDto.Altura;
+            persona.IdLocalidad = personaDto.IdLocalidad;
+            persona.IdGenero = personaDto.IdGenero;
+            persona.Correo = personaDto.Correo;
+            persona.Celular = personaDto.Celular;
+            persona.FechaIngreso = personaDto.FechaIngreso;
+
+            _userRepository.UpdatePersona(persona);
+        }, "updating persona");
+
+        public void DeletePersona(int personaId) => ExecuteServiceOperation(() =>
+            _userRepository.DeletePersona(personaId),
+            "deleting persona");
+
+        public void GuardarRespuestasSeguridad(string username, Dictionary<int, string> respuestas) => ExecuteServiceOperation(() =>
+        {
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+                ?? throw new ValidationException($"Usuario '{username}' not found");
+
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { CantPreguntas = 3 };
+            if (respuestas.Count != politica.CantPreguntas)
+                throw new ValidationException($"Se requieren exactamente {politica.CantPreguntas} respuestas de seguridad.");
+
+            _userRepository.DeleteRespuestasSeguridadByUsuarioId(usuario.IdUsuario);
+
+            foreach (var par in respuestas)
+            {
+                var respuesta = new RespuestaSeguridad
+                {
+                    IdUsuario = usuario.IdUsuario,
+                    IdPregunta = par.Key,
+                    Respuesta = par.Value
+                };
+                _userRepository.AddRespuestaSeguridad(respuesta);
+            }
+        }, "saving security answers");
+
+        public List<PreguntaSeguridadDto> GetPreguntasSeguridad() => ExecuteServiceOperation(() =>
+            _userRepository.GetPreguntasSeguridad().Select(p => new PreguntaSeguridadDto { IdPregunta = p.IdPregunta, Pregunta = p.Pregunta }).ToList(),
+            "getting security questions");
+
+        public List<PreguntaSeguridadDto> GetPreguntasDeUsuario(string username) => ExecuteServiceOperation(() =>
+        {
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+                ?? throw new ValidationException($"Usuario '{username}' not found");
+
+            var respuestas = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
+                ?? throw new ValidationException("No se han configurado las preguntas de seguridad.");
+
+            var idPreguntas = respuestas.Select(r => r.IdPregunta).ToList();
+            var preguntas = _userRepository.GetPreguntasSeguridadByIds(idPreguntas);
+
+            return preguntas.Select(p => new PreguntaSeguridadDto { IdPregunta = p.IdPregunta, Pregunta = p.Pregunta }).ToList();
+        }, "getting user security questions");
+
+        public UserDto? GetUserByUsername(string username) => ExecuteServiceOperation(() =>
+        {
+            var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
+            return MapToUserDto(usuario);
+        }, "getting user by username");
+
+        public PersonaDto? GetPersonaById(int personaId) => ExecuteServiceOperation(() =>
+        {
+            var persona = _userRepository.GetPersonaById(personaId);
+            return MapToPersonaDto(persona);
+        }, "getting persona by id");
+
+        #region Mappers
+        private UserDto? MapToUserDto(Usuario? u)
+        {
+            if (u == null) return null;
+            return new UserDto
+            {
+                IdUsuario = u.IdUsuario,
+                Username = u.UsuarioNombre,
+                NombreCompleto = u.Persona != null ? $"{u.Persona.Nombre} {u.Persona.Apellido}" : "N/A",
+                Rol = u.Rol?.Nombre,
+                IdRol = u.IdRol,
+                IdPersona = u.IdPersona,
+                CambioContrasenaObligatorio = u.CambioContrasenaObligatorio,
+                FechaExpiracion = u.FechaExpiracion,
+                Habilitado = u.FechaBloqueo > DateTime.Now
+            };
+        }
+
+        private PersonaDto? MapToPersonaDto(Persona? p)
+        {
+            if (p == null) return null;
+            return new PersonaDto
+            {
+                IdPersona = p.IdPersona,
+                Legajo = p.Legajo,
+                Nombre = p.Nombre,
+                Apellido = p.Apellido,
+                NombreCompleto = p.NombreCompleto,
+                IdTipoDoc = p.IdTipoDoc,
+                TipoDocNombre = p.TipoDoc?.Nombre,
+                NumDoc = p.NumDoc,
+                FechaNacimiento = p.FechaNacimiento,
+                Cuil = p.Cuil,
+                Calle = p.Calle,
+                Altura = p.Altura,
+                IdLocalidad = p.IdLocalidad,
+                LocalidadNombre = p.Localidad?.Nombre,
+                IdPartido = p.Localidad?.IdPartido ?? 0,
+                PartidoNombre = p.Localidad?.Partido?.Nombre,
+                IdProvincia = p.Localidad?.Partido?.IdProvincia ?? 0,
+                ProvinciaNombre = p.Localidad?.Partido?.Provincia?.Nombre,
+                IdGenero = p.IdGenero,
+                GeneroNombre = p.Genero?.Nombre,
+                Correo = p.Correo,
+                Celular = p.Celular,
+                FechaIngreso = p.FechaIngreso
+            };
+        }
+
+        private PoliticaSeguridadDto? MapToPoliticaSeguridadDto(PoliticaSeguridad? politica)
+        {
+            if (politica == null) return null;
+            return new PoliticaSeguridadDto
+            {
+                IdPolitica = politica.IdPolitica,
+                MayusYMinus = politica.MayusYMinus,
+                LetrasYNumeros = politica.LetrasYNumeros,
+                CaracterEspecial = politica.CaracterEspecial,
+                Autenticacion2FA = politica.Autenticacion2FA,
+                NoRepetirAnteriores = politica.NoRepetirAnteriores,
+                SinDatosPersonales = politica.SinDatosPersonales,
+                MinCaracteres = politica.MinCaracteres,
+                CantPreguntas = politica.CantPreguntas
+            };
+        }
+        #endregion
+
+        #region Private Helpers
         private bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
                 return false;
-
             try
             {
-                // Use Regex for a more robust validation
-                return Regex.IsMatch(email,
-                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+                return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
             }
             catch (RegexMatchTimeoutException)
             {
@@ -448,7 +657,6 @@ namespace BusinessLogic.Services
         {
             using (var sha256 = SHA256.Create())
             {
-                // Concatenate password and username (as salt) as per security requirements
                 var saltedPassword = password + username;
                 return sha256.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
             }
@@ -462,14 +670,11 @@ namespace BusinessLogic.Services
             while (true)
             {
                 var minLength = politica.MinCaracteres > 0 ? politica.MinCaracteres : 12;
-
                 var passwordChars = new List<char>();
-
                 const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 const string lower = "abcdefghijklmnopqrstuvwxyz";
                 const string digits = "0123456789";
                 const string specials = "!@#$%^&*()";
-
                 var allChars = new StringBuilder(upper).Append(lower).Append(digits).Append(specials).ToString();
 
                 if (politica.MayusYMinus)
@@ -497,15 +702,13 @@ namespace BusinessLogic.Services
                 {
                     try
                     {
-                        // Use the existing validation logic to check the generated password
                         ValidatePasswordPolicy(password, username, persona);
                     }
                     catch (ValidationException)
                     {
-                        continue; // Regenerate password if it fails validation
+                        continue;
                     }
                 }
-
                 return password;
             }
         }
@@ -549,64 +752,6 @@ namespace BusinessLogic.Services
                 }
             }
         }
-
-        public void GuardarRespuestasSeguridad(string username, Dictionary<int, string> respuestas) => ExecuteServiceOperation(() =>
-        {
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
-                ?? throw new ValidationException($"Usuario '{username}' not found");
-
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { CantPreguntas = 3 };
-            if (respuestas.Count != politica.CantPreguntas)
-                throw new ValidationException($"Se requieren exactamente {politica.CantPreguntas} respuestas de seguridad.");
-
-            // Borrar respuestas de seguridad anteriores para evitar duplicados
-            _userRepository.DeleteRespuestasSeguridadByUsuarioId(usuario.IdUsuario);
-
-            foreach (var par in respuestas)
-            {
-                var respuesta = new RespuestaSeguridad
-                {
-                    IdUsuario = usuario.IdUsuario,
-                    IdPregunta = par.Key,
-                    Respuesta = par.Value // Idealmente, las respuestas también deberían ser hasheadas
-                };
-                _userRepository.AddRespuestaSeguridad(respuesta);
-            }
-        }, "saving security answers");
-
-        public List<PreguntaSeguridad> GetPreguntasSeguridad() => ExecuteServiceOperation(
-            () => _userRepository.GetPreguntasSeguridad(), "getting security questions");
-
-        public List<PreguntaSeguridad> GetPreguntasDeUsuario(string username) => ExecuteServiceOperation(() =>
-        {
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
-                ?? throw new ValidationException($"Usuario '{username}' not found");
-
-            var respuestas = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
-                ?? throw new ValidationException("No se han configurado las preguntas de seguridad.");
-
-            var idPreguntas = respuestas.Select(r => r.IdPregunta).ToList();
-
-            var preguntas = _userRepository.GetPreguntasSeguridad();
-
-            return preguntas.Where(p => idPreguntas.Contains(p.IdPregunta)).ToList();
-
-        }, "getting user security questions");
-
-        public Usuario? GetUserByUsername(string username) => ExecuteServiceOperation(
-            () => _userRepository.GetUsuarioByNombreUsuario(username), "getting user by username");
-
-        public Persona? GetPersonaById(int personaId) => ExecuteServiceOperation(
-            () => _userRepository.GetPersonaById(personaId), "getting persona by id");
-
-        public void UpdatePersona(Persona persona) => ExecuteServiceOperation(() =>
-        {
-            _userRepository.UpdatePersona(persona);
-        }, "updating persona");
-
-        public void DeletePersona(int personaId) => ExecuteServiceOperation(() =>
-        {
-            _userRepository.DeletePersona(personaId);
-        }, "deleting persona");
+        #endregion
     }
 }

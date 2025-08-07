@@ -151,6 +151,27 @@ namespace DataAccess.Repositories
             return list;
         });
 
+        public List<PreguntaSeguridad> GetPreguntasSeguridadByIds(List<int> ids)
+        {
+            if (ids == null || !ids.Any())
+            {
+                return new List<PreguntaSeguridad>();
+            }
+
+            var idList = string.Join(",", ids);
+            var sql = $"SELECT id_pregunta, pregunta FROM preguntas_seguridad WHERE id_pregunta IN ({idList})";
+
+            return ExecuteReader(sql, reader =>
+            {
+                var list = new List<PreguntaSeguridad>();
+                while (reader.Read())
+                {
+                    list.Add(new PreguntaSeguridad { IdPregunta = (int)reader["id_pregunta"], Pregunta = (string)reader["pregunta"] });
+                }
+                return list;
+            });
+        }
+
         public TipoDoc? GetTipoDocByNombre(string nombre) => ExecuteReader("SELECT id_tipo_doc, tipo_doc FROM tipo_doc WHERE tipo_doc = @nombre;", reader =>
         {
             if (!reader.Read()) return null;

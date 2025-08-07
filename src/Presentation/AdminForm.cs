@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using BusinessLogic.Services;
 using UserManagementSystem.BusinessLogic.Exceptions;
 using BusinessLogic.Models;
-using DataAccess.Entities;
 
 namespace Presentation
 {
@@ -14,7 +13,7 @@ namespace Presentation
     {
         private readonly IUserService _userService;
         private readonly string _username;
-        private PoliticaSeguridad? _politica;
+        private PoliticaSeguridadDto? _politica;
         private readonly List<int> _dirtyUserIds = new List<int>();
         private readonly List<int> _dirtyPersonaIds = new List<int>();
 
@@ -23,13 +22,11 @@ namespace Presentation
             InitializeComponent();
             _username = username;
 
-            // Hide password controls for user creation as it's now automated
             lblPassword.Visible = false;
             txtPassword.Visible = false;
 
             _userService = userService;
 
-            // Navigation
             btnNavigatePersonas.Click += (s, e) => ShowPanel(panelPersonas);
             btnNavigateUsuarios.Click += (s, e) => ShowPanel(panelUsuarios);
             btnNavigateGestion.Click += (s, e) => ShowPanel(panelGestionUsuarios);
@@ -43,6 +40,7 @@ namespace Presentation
                     var persona = _userService.GetPersonaById(user.IdPersona);
                     if (persona != null)
                     {
+                        // Assuming ProfileForm is also refactored to accept DTOs
                         var form = new ProfileForm(user, persona);
                         form.ShowDialog();
                     }
@@ -57,17 +55,14 @@ namespace Presentation
                 }
             };
 
-            // Cargar combos al iniciar
             LoadTipoDoc();
             LoadProvincias();
             LoadGeneros();
             LoadPersonas();
             LoadRoles();
 
-            // Setup cascading dropdowns
             cbxProvincia.SelectedIndexChanged += CbxProvincia_SelectedIndexChanged;
             cbxPartido.SelectedIndexChanged += CbxPartido_SelectedIndexChanged;
-
             cbxPartido.Enabled = false;
             cbxLocalidad.Enabled = false;
 
@@ -77,7 +72,6 @@ namespace Presentation
             btnCrearUsuario.Click += BtnCrearUsuario_Click;
             btnGuardarConfig.Click += BtnGuardarConfig_Click;
 
-            // Gestion de Usuarios
             btnRefrescarUsuarios.Click += (s, e) => LoadUsers();
             btnGuardarCambios.Click += BtnGuardarCambios_Click;
             btnEliminarUsuario.Click += BtnEliminarUsuario_Click;
@@ -86,12 +80,10 @@ namespace Presentation
             dtpFechaExpiracionGestion.ValueChanged += dtpFechaExpiracionGestion_ValueChanged;
             dgvUsuarios.CellFormatting += dgvUsuarios_CellFormatting;
 
-            // Gestion de Personas
             btnRefrescarPersonas.Click += (s, e) => LoadPersonasGrid();
             btnGuardarCambiosPersona.Click += BtnGuardarCambiosPersona_Click;
             btnEliminarPersona.Click += BtnEliminarPersona_Click;
             dgvPersonas.CellEndEdit += DgvPersonas_CellEndEdit;
-
 
             LoadUsers();
             LoadPersonasGrid();
@@ -107,7 +99,6 @@ namespace Presentation
             panelGestionUsuarios.Visible = false;
             panelGestionPersonas.Visible = false;
             panelConfiguracion.Visible = false;
-
             panelToShow.Visible = true;
         }
 
@@ -115,24 +106,12 @@ namespace Presentation
         {
             try
             {
-                var users = _userService.GetAllUsers();
-                var userDtos = users.Select(u => new UserDto
-                {
-                    IdUsuario = u.IdUsuario,
-                    Username = u.UsuarioNombre,
-                    NombreCompleto = u.Persona != null ? $"{u.Persona.Nombre} {u.Persona.Apellido}" : "N/A",
-                    Rol = u.Rol?.Nombre,
-                    IdRol = u.IdRol,
-                    CambioContrasenaObligatorio = u.CambioContrasenaObligatorio,
-                    FechaExpiracion = u.FechaExpiracion,
-                    Habilitado = u.FechaBloqueo > DateTime.Now
-                }).ToList();
-
+                var userDtos = _userService.GetAllUsers();
                 dgvUsuarios.DataSource = userDtos;
 
-                // Configure columns
                 dgvUsuarios.Columns["IdUsuario"].Visible = false;
                 dgvUsuarios.Columns["IdRol"].Visible = false;
+                dgvUsuarios.Columns["IdPersona"].Visible = false;
                 dgvUsuarios.Columns["NombreCompleto"].ReadOnly = true;
                 dgvUsuarios.Columns["CambioContrasenaObligatorio"].ReadOnly = true;
 
@@ -240,6 +219,7 @@ namespace Presentation
             }
             else
             {
+                // Default values if no policy is set
                 chkMayusculasMinusculas.Checked = false;
                 chkNumeros.Checked = false;
                 chkCaracteresEspeciales.Checked = false;
@@ -266,7 +246,7 @@ namespace Presentation
 
             if (_politica == null)
             {
-                _politica = new PoliticaSeguridad { IdPolitica = 1 };
+                _politica = new PoliticaSeguridadDto { IdPolitica = 1 };
             }
 
             _politica.MayusYMinus = chkMayusculasMinusculas.Checked;
@@ -293,7 +273,7 @@ namespace Presentation
             }
             cbxTipoDoc.DataSource = tiposDoc;
             cbxTipoDoc.DisplayMember = "Nombre";
-            cbxTipoDoc.ValueMember = "IdTipoDoc"; // Changed to match TipoDoc
+            cbxTipoDoc.ValueMember = "IdTipoDoc";
         }
 
         private void LoadProvincias()
@@ -365,7 +345,7 @@ namespace Presentation
             }
             cbxGenero.DataSource = generos;
             cbxGenero.DisplayMember = "Nombre";
-            cbxGenero.ValueMember = "IdGenero"; // Changed to match Genero
+            cbxGenero.ValueMember = "IdGenero";
         }
 
         private void LoadPersonas()
@@ -380,8 +360,8 @@ namespace Presentation
                     return;
                 }
                 cbxPersona.DataSource = personas;
-                cbxPersona.DisplayMember = "NombreCompleto"; // Matches new Persona property
-                cbxPersona.ValueMember = "IdPersona"; // Fixed from "Id" to "IdPersona"
+                cbxPersona.DisplayMember = "NombreCompleto";
+                cbxPersona.ValueMember = "IdPersona";
             }
             catch (Exception ex)
             {
@@ -400,7 +380,7 @@ namespace Presentation
             }
             cbxRolUsuario.DataSource = roles;
             cbxRolUsuario.DisplayMember = "Nombre";
-            cbxRolUsuario.ValueMember = "IdRol"; // Changed to match Rol
+            cbxRolUsuario.ValueMember = "IdRol";
         }
 
         private void BtnGuardarPersona_Click(object? sender, EventArgs e)
@@ -456,7 +436,7 @@ namespace Presentation
             }
         }
 
-        private void BtnCrearUsuario_Click(object? sender, EventArgs e) // Fixed nullable annotations
+        private void BtnCrearUsuario_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -470,9 +450,9 @@ namespace Presentation
 
                 var usuario = new UserRequest
                 {
-                    PersonaId = cbxPersona.SelectedValue.ToString()!, // Ensure string conversion
+                    PersonaId = cbxPersona.SelectedValue.ToString()!,
                     Username = txtUsuario.Text,
-                    Rol = cbxRolUsuario.Text // Use .Text to get the string value
+                    Rol = cbxRolUsuario.Text
                 };
                 _userService.CrearUsuario(usuario);
                 MessageBox.Show("Usuario creado correctamente. La contraseña ha sido enviada al correo de la persona.", "Info");
@@ -492,7 +472,6 @@ namespace Presentation
             if (dgvUsuarios.SelectedRows.Count > 0)
             {
                 var selectedUser = (UserDto)dgvUsuarios.SelectedRows[0].DataBoundItem;
-                // Temporarily unsubscribe to prevent the ValueChanged event from firing
                 dtpFechaExpiracionGestion.ValueChanged -= dtpFechaExpiracionGestion_ValueChanged;
 
                 if (selectedUser.FechaExpiracion.HasValue)
@@ -504,7 +483,6 @@ namespace Presentation
                 {
                     dtpFechaExpiracionGestion.Checked = false;
                 }
-                // Re-subscribe to the event
                 dtpFechaExpiracionGestion.ValueChanged += dtpFechaExpiracionGestion_ValueChanged;
             }
         }
@@ -532,7 +510,7 @@ namespace Presentation
         {
             if (e.RowIndex >= 0)
             {
-                var persona = (Persona)dgvPersonas.Rows[e.RowIndex].DataBoundItem;
+                var persona = (PersonaDto)dgvPersonas.Rows[e.RowIndex].DataBoundItem;
                 if (!_dirtyPersonaIds.Contains(persona.IdPersona))
                 {
                     _dirtyPersonaIds.Add(persona.IdPersona);
@@ -565,7 +543,7 @@ namespace Presentation
         {
             try
             {
-                if (dgvPersonas.DataSource is List<Persona> personas)
+                if (dgvPersonas.DataSource is List<PersonaDto> personas)
                 {
                     var personasToUpdate = personas.Where(p => _dirtyPersonaIds.Contains(p.IdPersona)).ToList();
                     foreach (var persona in personasToUpdate)
@@ -601,7 +579,7 @@ namespace Presentation
             }
 
             var selectedRow = dgvPersonas.SelectedRows[0];
-            var persona = (Persona)selectedRow.DataBoundItem;
+            var persona = (PersonaDto)selectedRow.DataBoundItem;
 
             var confirmResult = MessageBox.Show($"¿Está seguro de que desea eliminar a la persona '{persona.Nombre} {persona.Apellido}'?",
                                                  "Confirmar Eliminación",

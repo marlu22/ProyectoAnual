@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <!-- Referencias a capas necesarias -->
-    <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj" />
   </ItemGroup>
 
   <ItemGroup>

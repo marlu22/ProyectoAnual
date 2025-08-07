@@ -2,14 +2,9 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using Microsoft.Extensions.Configuration;
-using DataAccess;
-using DataAccess.Repositories;
+using BusinessLogic;
 using BusinessLogic.Services;
-using BusinessLogic.Configuration;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
-using Presentation; // Add this if LoginForm is in Presentation.Forms namespace
+using Presentation; // Required for LoginForm, frmError, etc.
 using UserManagementSystem.BusinessLogic.Exceptions;
 using UserManagementSystem.DataAccess.Exceptions;
 using UserManagementSystem.Presentation.Exceptions;
@@ -27,38 +22,17 @@ internal static class Program
         Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
         AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-        // Configuración y DI
-        var config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: false)
-            .Build();
-
-        var connectionFactory = new DatabaseConnectionFactory(config);
-
-        // Configurar logging
-        var loggerFactory = LoggerFactory.Create(builder =>
+        try
         {
-            builder
-                .AddFilter("Microsoft", LogLevel.Warning)
-                .AddFilter("System", LogLevel.Warning)
-                .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug)
-                .AddConsole()
-                .AddEventLog();
-        });
-
-        ILogger<SqlUserRepository> sqlLogger = loggerFactory.CreateLogger<SqlUserRepository>();
-        IUserRepository userRepository = new SqlUserRepository(connectionFactory, sqlLogger);
-
-        // Configurar y crear EmailService
-        var smtpSettings = new SmtpSettings();
-        config.GetSection("SmtpSettings").Bind(smtpSettings);
-        IEmailService emailService = new EmailService(Options.Create(smtpSettings));
-
-        // Modificar la instanciación de UserService para incluir el nuevo servicio
-        ILogger<UserService> userLogger = loggerFactory.CreateLogger<UserService>();
-        IUserService userService = new UserService(userRepository, emailService, userLogger);
-
-        Application.Run(new LoginForm(userService));
+            // La composición de dependencias ahora se realiza en la capa de lógica de negocio
+            IUserService userService = ServiceFactory.CreateUserService();
+            Application.Run(new LoginForm(userService));
+        }
+        catch (Exception ex)
+        {
+            // Captura cualquier excepción durante la inicialización
+            HandleException(ex);
+        }
     }
 
     private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)

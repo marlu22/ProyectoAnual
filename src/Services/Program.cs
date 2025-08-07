@@ -22,9 +22,12 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+using Session;
+
 builder.Services.AddSingleton<DatabaseConnectionFactory>();
 builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddControllers();
 

@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using BusinessLogic.Services;
 using BusinessLogic.Models;
+using Session;
 
 namespace Services.Controllers
 {
@@ -13,13 +9,13 @@ namespace Services.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
+        private readonly ITokenService _tokenService;
 
-        public AuthController(IConfiguration configuration, IUserService userService)
+        public AuthController(IUserService userService, ITokenService tokenService)
         {
-            _configuration = configuration;
             _userService = userService;
+            _tokenService = tokenService;
         }
 
         // src/Services/Controllers/AuthController.cs (assumed snippet around line 36)
@@ -31,36 +27,22 @@ namespace Services.Controllers
             if (!authResult.Success || authResult.User == null)
                 return Unauthorized("Invalid credentials");
 
+            // Si la autenticación es exitosa pero requiere 2FA, no generamos token aún.
+            if (authResult.Requires2fa)
+            {
+                return Ok(new { authResult.Requires2fa });
+            }
+
             var user = authResult.User;
+            var token = _tokenService.GenerateJwtToken(user.Username);
 
             var response = new
             {
+                Token = token,
                 Username = user.Username,
                 Rol = user.Rol ?? "Unknown",
-                CambioContrasenaObligatorio = user.CambioContrasenaObligatorio,
-                Requires2fa = authResult.Requires2fa
             };
             return Ok(response);
-        }
-
-        private string GenerateJwtToken(string username)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                throw new ArgumentNullException(nameof(username), "Username cannot be null or empty.");
-            }
-
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured."));
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
     }
 

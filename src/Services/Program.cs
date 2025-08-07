@@ -4,6 +4,7 @@ using BusinessLogic.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserManagementSystem.Services.Middleware;
+using Session;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +22,6 @@ builder.Services.AddAuthentication("Bearer")
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "ClaveSuperSecreta"))
         };
     });
-
-using Session;
 
 builder.Services.AddSingleton<DatabaseConnectionFactory>();
 builder.Services.AddScoped<IUserRepository, SqlUserRepository>();

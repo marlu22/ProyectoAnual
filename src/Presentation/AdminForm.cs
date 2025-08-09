@@ -1,5 +1,6 @@
 // src/Presentation/AdminForm.cs
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -14,12 +15,18 @@ namespace Presentation
         private readonly IUserService _userService;
         private readonly string _username;
         private PoliticaSeguridadDto? _politica;
+        private List<UserDto> _allUsers = new List<UserDto>();
+        private List<PersonaDto> _allPersonas = new List<PersonaDto>();
         private readonly List<int> _dirtyUserIds = new List<int>();
         private readonly List<int> _dirtyPersonaIds = new List<int>();
 
         public AdminForm(IUserService userService, string username)
         {
             InitializeComponent();
+
+            SetupDataGridViewStyles(dgvUsuarios);
+            SetupDataGridViewStyles(dgvPersonas);
+
             _username = username;
 
             lblPassword.Visible = false;
@@ -72,7 +79,12 @@ namespace Presentation
             btnCrearUsuario.Click += BtnCrearUsuario_Click;
             btnGuardarConfig.Click += BtnGuardarConfig_Click;
 
-            btnRefrescarUsuarios.Click += (s, e) => LoadUsers();
+            txtBuscarUsuario.TextChanged += TxtBuscarUsuario_TextChanged;
+            btnRefrescarUsuarios.Click += (s, e) =>
+            {
+                LoadUsers();
+                txtBuscarUsuario.Clear();
+            };
             btnGuardarCambios.Click += BtnGuardarCambios_Click;
             btnEliminarUsuario.Click += BtnEliminarUsuario_Click;
             dgvUsuarios.CellEndEdit += DgvUsuarios_CellEndEdit;
@@ -80,7 +92,12 @@ namespace Presentation
             dtpFechaExpiracionGestion.ValueChanged += dtpFechaExpiracionGestion_ValueChanged;
             dgvUsuarios.CellFormatting += dgvUsuarios_CellFormatting;
 
-            btnRefrescarPersonas.Click += (s, e) => LoadPersonasGrid();
+            txtBuscarPersona.TextChanged += TxtBuscarPersona_TextChanged;
+            btnRefrescarPersonas.Click += (s, e) =>
+            {
+                LoadPersonasGrid();
+                txtBuscarPersona.Clear();
+            };
             btnGuardarCambiosPersona.Click += BtnGuardarCambiosPersona_Click;
             btnEliminarPersona.Click += BtnEliminarPersona_Click;
             dgvPersonas.CellEndEdit += DgvPersonas_CellEndEdit;
@@ -106,8 +123,8 @@ namespace Presentation
         {
             try
             {
-                var userDtos = _userService.GetAllUsers();
-                dgvUsuarios.DataSource = userDtos;
+                _allUsers = _userService.GetAllUsers();
+                dgvUsuarios.DataSource = new List<UserDto>(_allUsers);
 
                 dgvUsuarios.Columns["IdUsuario"].Visible = false;
                 dgvUsuarios.Columns["IdRol"].Visible = false;
@@ -131,6 +148,18 @@ namespace Presentation
             }
         }
 
+        private void TxtBuscarUsuario_TextChanged(object? sender, EventArgs e)
+        {
+            var searchText = txtBuscarUsuario.Text.ToLower().Trim();
+
+            var filteredUsers = _allUsers.Where(u =>
+                u.Username.ToLower().Contains(searchText) ||
+                u.NombreCompleto.ToLower().Contains(searchText)
+            ).ToList();
+
+            dgvUsuarios.DataSource = filteredUsers;
+        }
+
         private void DgvUsuarios_CellEndEdit(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -141,6 +170,19 @@ namespace Presentation
                     _dirtyUserIds.Add(userDto.IdUsuario);
                 }
             }
+        }
+
+        private void TxtBuscarPersona_TextChanged(object? sender, EventArgs e)
+        {
+            var searchText = txtBuscarPersona.Text.ToLower().Trim();
+
+            var filteredPersonas = _allPersonas.Where(p =>
+                p.Nombre.ToLower().Contains(searchText) ||
+                p.Apellido.ToLower().Contains(searchText) ||
+                p.NumDoc.ToLower().Contains(searchText)
+            ).ToList();
+
+            dgvPersonas.DataSource = filteredPersonas;
         }
 
         private void BtnGuardarCambios_Click(object? sender, EventArgs e)
@@ -608,13 +650,48 @@ namespace Presentation
         {
             try
             {
-                var personas = _userService.GetPersonas();
-                dgvPersonas.DataSource = personas;
+                _allPersonas = _userService.GetPersonas();
+                dgvPersonas.DataSource = new List<PersonaDto>(_allPersonas);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar personas: {ex.Message}", "Error");
             }
+        }
+
+        private void SetupDataGridViewStyles(DataGridView dgv)
+        {
+            // Basic Style
+            dgv.BorderStyle = BorderStyle.None;
+            dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
+            dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(60, 141, 188);
+            dgv.DefaultCellStyle.SelectionForeColor = Color.WhiteSmoke;
+            dgv.BackgroundColor = Color.White;
+            dgv.EnableHeadersVisualStyles = false;
+            dgv.RowHeadersVisible = false;
+            dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10);
+            dgv.DefaultCellStyle.ForeColor = Color.FromArgb(43, 47, 49);
+            dgv.DefaultCellStyle.Padding = new Padding(8, 4, 8, 4);
+
+            // Header Style
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ColumnHeadersHeight = 40;
+            dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(43, 47, 49);
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
+
+
+            // Column and Row sizing
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv.RowTemplate.Height = 35;
+
+            // Selection
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv.MultiSelect = false;
         }
     }
 }

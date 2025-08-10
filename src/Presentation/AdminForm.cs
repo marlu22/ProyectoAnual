@@ -257,7 +257,7 @@ namespace Presentation
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar personas: {ex.ToString()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al cargar personas: {ex.Message}", "Error");
             }
         }
 
@@ -493,7 +493,7 @@ namespace Presentation
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar personas: {ex.ToString()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al cargar personas: {ex.Message}", "Error");
             }
         }
 

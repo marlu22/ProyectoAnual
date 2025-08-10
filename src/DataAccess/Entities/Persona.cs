@@ -70,20 +70,18 @@ namespace DataAccess.Entities
         public DateTime FechaIngreso { get; private set; }
 
         [ForeignKey("IdTipoDoc")]
-        public virtual TipoDoc? TipoDoc { get; private set; }
+        public virtual TipoDoc? TipoDoc { get; set; }
 
         [ForeignKey("IdLocalidad")]
-        public virtual Localidad? Localidad { get; private set; }
+        public virtual Localidad? Localidad { get; set; }
 
         [ForeignKey("IdGenero")]
-        public virtual Genero? Genero { get; private set; }
+        public virtual Genero? Genero { get; set; }
 
         private Persona() { } // EF Core constructor
 
         public Persona(int legajo, string nombre, string apellido, int idTipoDoc, string numDoc, DateTime? fechaNacimiento, string? cuil, string? calle, string? altura, int idLocalidad, int idGenero, string? correo, string? celular, DateTime fechaIngreso)
         {
-            Validate(legajo.ToString(), nombre, apellido, numDoc, cuil, calle, altura, correo);
-
             Legajo = legajo;
             Nombre = nombre;
             Apellido = apellido;
@@ -102,8 +100,6 @@ namespace DataAccess.Entities
 
         public void Update(int legajo, string nombre, string apellido, int idTipoDoc, string numDoc, DateTime? fechaNacimiento, string? cuil, string? calle, string? altura, int idLocalidad, int idGenero, string? correo, string? celular, DateTime fechaIngreso)
         {
-            Validate(legajo.ToString(), nombre, apellido, numDoc, cuil, calle, altura, correo);
-
             Legajo = legajo;
             Nombre = nombre;
             Apellido = apellido;
@@ -118,40 +114,6 @@ namespace DataAccess.Entities
             Correo = correo;
             Celular = celular;
             FechaIngreso = fechaIngreso;
-        }
-
-        private void Validate(string legajo, string nombre, string apellido, string numDoc, string? cuil, string? calle, string? altura, string? correo)
-        {
-            if (!int.TryParse(legajo, out _))
-                throw new ArgumentException("El legajo debe ser un número válido.", nameof(legajo));
-            if (string.IsNullOrWhiteSpace(nombre))
-                throw new ArgumentException("El nombre no puede estar vacío.", nameof(nombre));
-            if (string.IsNullOrWhiteSpace(apellido))
-                throw new ArgumentException("El apellido no puede estar vacío.", nameof(apellido));
-            if (!long.TryParse(numDoc, out _))
-                throw new ArgumentException("El número de documento debe ser numérico.", nameof(numDoc));
-            if (!string.IsNullOrWhiteSpace(cuil) && !long.TryParse(cuil, out _))
-                throw new ArgumentException("El CUIL debe ser numérico.", nameof(cuil));
-            if (string.IsNullOrWhiteSpace(calle))
-                throw new ArgumentException("La calle no puede estar vacía.", nameof(calle));
-            if (!int.TryParse(altura, out _))
-                throw new ArgumentException("La altura de la dirección debe ser un número.", nameof(altura));
-            if (string.IsNullOrWhiteSpace(correo) || !IsValidEmail(correo))
-                throw new ArgumentException("El formato del correo electrónico no es válido.", nameof(correo));
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
-            try
-            {
-                return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
-            }
-            catch (RegexMatchTimeoutException)
-            {
-                return false;
-            }
         }
     }
 }

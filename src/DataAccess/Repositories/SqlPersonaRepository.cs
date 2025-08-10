@@ -79,33 +79,85 @@ namespace DataAccess.Repositories
                 reader["correo"] as string,
                 reader["celular"] as string,
                 (DateTime)reader["fecha_ingreso"]
-            );
+            )
+            {
+                IdPersona = (int)reader["id_persona"]
+            };
         }, p => p.AddWithValue("@id", id));
 
-        public List<Persona> GetAllPersonas() => ExecuteReader("SELECT * FROM personas;", reader =>
+        public List<Persona> GetAllPersonas()
         {
-            var list = new List<Persona>();
-            while (reader.Read())
+            var sql = @"
+                SELECT
+                    p.*,
+                    td.nombre AS TipoDocNombre,
+                    l.nombre AS LocalidadNombre,
+                    pa.id_partido AS IdPartido,
+                    pa.nombre AS PartidoNombre,
+                    pr.id_provincia AS IdProvincia,
+                    pr.nombre AS ProvinciaNombre,
+                    g.nombre AS GeneroNombre
+                FROM
+                    personas p
+                LEFT JOIN
+                    tipos_doc td ON p.id_tipo_doc = td.id_tipo_doc
+                LEFT JOIN
+                    localidades l ON p.id_localidad = l.id_localidad
+                LEFT JOIN
+                    partidos pa ON l.id_partido = pa.id_partido
+                LEFT JOIN
+                    provincias pr ON pa.id_provincia = pr.id_provincia
+                LEFT JOIN
+                    generos g ON p.id_genero = g.id_genero";
+
+            return ExecuteReader(sql, reader =>
             {
-                list.Add(new Persona(
-                    (int)reader["legajo"],
-                    reader["nombre"] as string ?? string.Empty,
-                    reader["apellido"] as string ?? string.Empty,
-                    (int)reader["id_tipo_doc"],
-                    reader["num_doc"] as string ?? string.Empty,
-                    reader["fecha_nacimiento"] as DateTime?,
-                    reader["cuil"] as string,
-                    reader["calle"] as string,
-                    reader["altura"] as string,
-                    (int)reader["id_localidad"],
-                    (int)reader["id_genero"],
-                    reader["correo"] as string,
-                    reader["celular"] as string,
-                    (DateTime)reader["fecha_ingreso"]
-                ));
-            }
-            return list;
-        });
+                var personas = new List<Persona>();
+                while (reader.Read())
+                {
+                    var persona = new Persona(
+                        (int)reader["legajo"],
+                        reader["nombre"].ToString()!,
+                        reader["apellido"].ToString()!,
+                        (int)reader["id_tipo_doc"],
+                        reader["num_doc"].ToString()!,
+                        reader["fecha_nacimiento"] as DateTime?,
+                        reader["cuil"] as string,
+                        reader["calle"] as string,
+                        reader["altura"] as string,
+                        (int)reader["id_localidad"],
+                        (int)reader["id_genero"],
+                        reader["correo"] as string,
+                        reader["celular"] as string,
+                        (DateTime)reader["fecha_ingreso"]
+                    )
+                    {
+                        IdPersona = (int)reader["id_persona"],
+                        TipoDoc = new TipoDoc { IdTipoDoc = (int)reader["id_tipo_doc"], Nombre = reader["TipoDocNombre"].ToString()! },
+                        Genero = new Genero { IdGenero = (int)reader["id_genero"], Nombre = reader["GeneroNombre"].ToString()! },
+                        Localidad = new Localidad
+                        {
+                            IdLocalidad = (int)reader["id_localidad"],
+                            Nombre = reader["LocalidadNombre"].ToString()!,
+                            IdPartido = (int)reader["IdPartido"],
+                            Partido = new Partido
+                            {
+                                IdPartido = (int)reader["IdPartido"],
+                                Nombre = reader["PartidoNombre"].ToString()!,
+                                IdProvincia = (int)reader["IdProvincia"],
+                                Provincia = new Provincia
+                                {
+                                    IdProvincia = (int)reader["IdProvincia"],
+                                    Nombre = reader["ProvinciaNombre"].ToString()!
+                                }
+                            }
+                        }
+                    };
+                    personas.Add(persona);
+                }
+                return personas;
+            });
+        }
 
         public void AddPersona(Persona persona)
         {

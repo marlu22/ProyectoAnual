@@ -62,32 +62,63 @@ namespace Presentation
                  return;
             }
 
-            Hide();
             switch (authResult.NextAction)
             {
                 case PostLoginAction.ChangePassword:
-                    using (var form = _serviceProvider.GetRequiredService<CambioContrasenaForm>())
-                    {
-                        form.Initialize(authResult.User.Username);
-                        form.ShowDialog();
-                    }
+                    HandleChangePassword(authResult);
                     break;
                 case PostLoginAction.ShowAdminDashboard:
-                    using (var form = _serviceProvider.GetRequiredService<AdminForm>())
-                    {
-                        form.Initialize(authResult.User.Username);
-                        form.ShowDialog();
-                    }
+                    ShowDashboard(_serviceProvider.GetRequiredService<AdminForm>(), authResult.User.Username);
                     break;
                 case PostLoginAction.ShowUserDashboard:
-                    using (var form = _serviceProvider.GetRequiredService<UserForm>())
-                    {
-                        form.Initialize(authResult.User.Username);
-                        form.ShowDialog();
-                    }
+                    ShowDashboard(_serviceProvider.GetRequiredService<UserForm>(), authResult.User.Username);
                     break;
             }
-            Close(); // Close login form when another form is shown
+        }
+
+        private void HandleChangePassword(AuthenticationResult authResult)
+        {
+            using (var form = _serviceProvider.GetRequiredService<CambioContrasenaForm>())
+            {
+                form.Initialize(authResult.User.Username);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    // After successful password change, show the appropriate dashboard
+                    if (authResult.User.Rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ShowDashboard(_serviceProvider.GetRequiredService<AdminForm>(), authResult.User.Username);
+                    }
+                    else
+                    {
+                        ShowDashboard(_serviceProvider.GetRequiredService<UserForm>(), authResult.User.Username);
+                    }
+                }
+                else
+                {
+                    // If password change is cancelled, show login form again
+                    this.Show();
+                }
+            }
+        }
+
+        private void ShowDashboard(Form dashboard, string username)
+        {
+            this.Hide();
+            if (dashboard is AdminForm adminForm)
+            {
+                adminForm.Initialize(username);
+            }
+            else if (dashboard is UserForm userForm)
+            {
+                userForm.Initialize(username);
+            }
+
+            dashboard.FormClosed += (s, args) => {
+                this.txtContrasena.Clear();
+                this.txtUsuario.Clear();
+                this.Show();
+            };
+            dashboard.Show();
         }
 
         private void BtnRecuperarContrasena_Click(object? sender, EventArgs e)

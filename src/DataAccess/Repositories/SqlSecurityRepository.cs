@@ -96,17 +96,20 @@ namespace DataAccess.Repositories
             }
 
             var parameterNames = new List<string>();
+            for (int i = 0; i < ids.Count; i++)
+            {
+                parameterNames.Add($"@id{i}");
+            }
+
+            var sql = $"SELECT id_pregunta, pregunta FROM preguntas_seguridad WHERE id_pregunta IN ({string.Join(",", parameterNames)})";
+
             Action<SqlParameterCollection> addParametersAction = p =>
             {
                 for (int i = 0; i < ids.Count; i++)
                 {
-                    var paramName = $"@id{i}";
-                    parameterNames.Add(paramName);
-                    p.AddWithValue(paramName, ids[i]);
+                    p.AddWithValue(parameterNames[i], ids[i]);
                 }
             };
-
-            var sql = $"SELECT id_pregunta, pregunta FROM preguntas_seguridad WHERE id_pregunta IN ({string.Join(",", parameterNames)})";
 
             return ExecuteReader(sql, reader =>
             {

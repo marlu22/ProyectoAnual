@@ -45,6 +45,23 @@ namespace BusinessLogic.Services
             }
         }
 
+        private void ExecuteServiceOperation(Action operation, string operationName)
+        {
+            try
+            {
+                operation();
+            }
+            catch (ValidationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
+            }
+        }
+
         public void CrearPersona(PersonaRequest request) => ExecuteServiceOperation(() =>
         {
             _logger.LogInformation("Iniciando la creación de la persona con legajo: {Legajo}", request.Legajo);

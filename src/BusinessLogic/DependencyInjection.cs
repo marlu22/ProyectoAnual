@@ -3,6 +3,7 @@ using BusinessLogic.Security;
 using BusinessLogic.Services;
 using DataAccess;
 using DataAccess.Repositories;
+using BusinessLogic.Factories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -36,6 +37,10 @@ namespace BusinessLogic
             // Register DataAccess components
             services.AddSingleton<DatabaseConnectionFactory>();
             services.AddScoped<IUserRepository, SqlUserRepository>();
+
+            // Register BusinessLogic factories
+            services.AddTransient<IPersonaFactory, PersonaFactory>();
+            services.AddTransient<IUsuarioFactory, UsuarioFactory>();
 
             // Register BusinessLogic services
             services.AddTransient<IEmailService, EmailService>();

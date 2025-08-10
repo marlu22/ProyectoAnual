@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using BusinessLogic.Exceptions;
 using BusinessLogic.Security;
 using BusinessLogic.Factories;
+using BusinessLogic.Mappers;
 
 namespace BusinessLogic.Services
 {
@@ -20,17 +21,17 @@ namespace BusinessLogic.Services
         private readonly IEmailService _emailService;
         private readonly ILogger<UserManagementService> _logger;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly PersonaFactory _personaFactory;
-        private readonly UsuarioFactory _usuarioFactory;
+        private readonly IPersonaFactory _personaFactory;
+        private readonly IUsuarioFactory _usuarioFactory;
 
-        public UserManagementService(IUserRepository userRepository, IEmailService emailService, ILogger<UserManagementService> logger, IPasswordHasher passwordHasher)
+        public UserManagementService(IUserRepository userRepository, IEmailService emailService, ILogger<UserManagementService> logger, IPasswordHasher passwordHasher, IPersonaFactory personaFactory, IUsuarioFactory usuarioFactory)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
-            _personaFactory = new PersonaFactory(_userRepository);
-            _usuarioFactory = new UsuarioFactory(_userRepository, _passwordHasher);
+            _personaFactory = personaFactory ?? throw new ArgumentNullException(nameof(personaFactory));
+            _usuarioFactory = usuarioFactory ?? throw new ArgumentNullException(nameof(usuarioFactory));
         }
 
         private T ExecuteServiceOperation<T>(Func<T> operation, string operationName)
@@ -96,7 +97,7 @@ namespace BusinessLogic.Services
         public PoliticaSeguridadDto? GetPoliticaSeguridad() => ExecuteServiceOperation(() =>
         {
             var politica = _userRepository.GetPoliticaSeguridad();
-            return MapToPoliticaSeguridadDto(politica);
+            return PoliticaSeguridadMapper.MapToPoliticaSeguridadDto(politica);
         }, "getting security policy");
 
         public void UpdatePoliticaSeguridad(PoliticaSeguridadDto politicaDto) => ExecuteServiceOperation(() =>
@@ -108,7 +109,7 @@ namespace BusinessLogic.Services
         }, "updating security policy");
 
         public List<UserDto> GetAllUsers() => ExecuteServiceOperation(() =>
-            _userRepository.GetAllUsers().Select(u => MapToUserDto(u)!).ToList(),
+            _userRepository.GetAllUsers().Select(u => UserMapper.MapToUserDto(u)!).ToList(),
             "getting all users");
 
         public void UpdateUser(UserDto userDto) => ExecuteServiceOperation(() =>
@@ -156,84 +157,17 @@ namespace BusinessLogic.Services
         public UserDto? GetUserByUsername(string username) => ExecuteServiceOperation(() =>
         {
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
-            return MapToUserDto(usuario);
+            return UserMapper.MapToUserDto(usuario);
         }, "getting user by username");
 
         public PersonaDto? GetPersonaById(int personaId) => ExecuteServiceOperation(() =>
         {
             var persona = _userRepository.GetPersonaById(personaId);
-            return MapToPersonaDto(persona);
+            return PersonaMapper.MapToPersonaDto(persona);
         }, "getting persona by id");
 
         public List<PersonaDto> GetPersonas() => ExecuteServiceOperation(() =>
-            _userRepository.GetAllPersonas().Select(p => MapToPersonaDto(p)!).ToList(),
+            _userRepository.GetAllPersonas().Select(p => PersonaMapper.MapToPersonaDto(p)!).ToList(),
             "getting all people");
-
-        #region Mappers
-        private UserDto? MapToUserDto(Usuario? u)
-        {
-            if (u == null) return null;
-            return new UserDto
-            {
-                IdUsuario = u.IdUsuario,
-                Username = u.UsuarioNombre,
-                NombreCompleto = u.Persona != null ? $"{u.Persona.Nombre} {u.Persona.Apellido}" : "N/A",
-                Rol = u.Rol?.Nombre,
-                IdRol = u.IdRol,
-                IdPersona = u.IdPersona,
-                CambioContrasenaObligatorio = u.CambioContrasenaObligatorio,
-                FechaExpiracion = u.FechaExpiracion,
-                Habilitado = u.FechaBloqueo > DateTime.Now
-            };
-        }
-
-        private PersonaDto? MapToPersonaDto(Persona? p)
-        {
-            if (p == null) return null;
-            return new PersonaDto
-            {
-                IdPersona = p.IdPersona,
-                Legajo = p.Legajo,
-                Nombre = p.Nombre,
-                Apellido = p.Apellido,
-                NombreCompleto = p.NombreCompleto,
-                IdTipoDoc = p.IdTipoDoc,
-                TipoDocNombre = p.TipoDoc?.Nombre,
-                NumDoc = p.NumDoc,
-                FechaNacimiento = p.FechaNacimiento,
-                Cuil = p.Cuil,
-                Calle = p.Calle,
-                Altura = p.Altura,
-                IdLocalidad = p.IdLocalidad,
-                LocalidadNombre = p.Localidad?.Nombre,
-                IdPartido = p.Localidad?.IdPartido ?? 0,
-                PartidoNombre = p.Localidad?.Partido?.Nombre,
-                IdProvincia = p.Localidad?.Partido?.IdProvincia ?? 0,
-                ProvinciaNombre = p.Localidad?.Partido?.Provincia?.Nombre,
-                IdGenero = p.IdGenero,
-                GeneroNombre = p.Genero?.Nombre,
-                Correo = p.Correo,
-                Celular = p.Celular,
-                FechaIngreso = p.FechaIngreso
-            };
-        }
-
-        private PoliticaSeguridadDto? MapToPoliticaSeguridadDto(PoliticaSeguridad? politica)
-        {
-            if (politica == null) return null;
-            return new PoliticaSeguridadDto
-            {
-                IdPolitica = politica.IdPolitica,
-                MayusYMinus = politica.MayusYMinus,
-                LetrasYNumeros = politica.LetrasYNumeros,
-                CaracterEspecial = politica.CaracterEspecial,
-                Autenticacion2FA = politica.Autenticacion2FA,
-                NoRepetirAnteriores = politica.NoRepetirAnteriores,
-                SinDatosPersonales = politica.SinDatosPersonales,
-                MinCaracteres = politica.MinCaracteres,
-                CantPreguntas = politica.CantPreguntas
-            };
-        }
-        #endregion
     }
 }

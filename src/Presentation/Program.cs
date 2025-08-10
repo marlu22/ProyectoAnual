@@ -71,42 +71,54 @@ namespace Presentation
         {
             if (ex == null) return;
 
-            LogException(ex);
+            string errorId = Guid.NewGuid().ToString();
+            LogException(ex, errorId);
 
             try
             {
-                // Try to resolve the error form from DI container
+                string userMessage;
+                // For validation and business errors, we can show the actual exception message
+                // as it is considered safe and user-friendly.
+                if (ex is ValidationException || ex is BusinessLogicException)
+                {
+                    userMessage = ex.Message;
+                }
+                else
+                {
+                    // For all other unexpected exceptions, show a generic message.
+                    userMessage = $"An unexpected error occurred. Please contact support and provide the following Error ID: {errorId}";
+                }
+
                 var errorForm = ServiceProvider?.GetService<frmError>();
                 if (errorForm != null)
                 {
-                    errorForm.SetError(ex);
+                    errorForm.SetErrorDetails(userMessage, errorId, ex);
                     errorForm.ShowDialog();
                 }
                 else
                 {
-                    // Fallback if DI fails
-                    MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(userMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch
             {
-                // Fallback if even the error form fails
-                MessageBox.Show($"A critical error occurred and the application cannot continue: {ex.Message}", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show($"A critical error occurred and the application cannot continue. Error ID: {errorId}", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
-
+            // Only exit for truly unexpected, critical errors.
             if (!(ex is ValidationException) && !(ex is BusinessLogicException) && !(ex is UILayerException))
             {
                 Environment.Exit(1);
             }
         }
 
-        private static void LogException(Exception ex)
+        private static void LogException(Exception ex, string errorId)
         {
             try
             {
                 string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error_log.txt");
-                string errorMessage = $"[{DateTime.Now}] - {ex.GetType().FullName}:{Environment.NewLine}" +
+                string errorMessage = $"[{DateTime.Now}] - Error ID: {errorId}{Environment.NewLine}" +
+                                      $"Exception Type: {ex.GetType().FullName}{Environment.NewLine}" +
                                       $"Message: {ex.Message}{Environment.NewLine}" +
                                       $"StackTrace:{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}" +
                                       "--------------------------------------------------" +

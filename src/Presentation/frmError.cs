@@ -10,11 +10,25 @@ namespace Presentation
             InitializeComponent();
         }
 
-        public void SetError(Exception ex)
+        public void SetErrorDetails(string userMessage, string errorId, Exception ex)
         {
-            txtMessage.Text = ex.Message;
-            txtExceptionType.Text = ex.GetType().FullName;
-            txtStackTrace.Text = ex.StackTrace;
+            // --- User-Friendly Part ---
+            txtMessage.Text = userMessage;
+
+            lblExceptionType.Text = "Error ID:";
+            txtExceptionType.Text = errorId;
+
+            // --- Technical Details Part (for developers) ---
+            // In a real app, this might be in a collapsible panel.
+            // For now, we'll just put the technical info in the stack trace box.
+            string technicalDetails = $"Exception Type: {ex.GetType().FullName}\n\n" +
+                                      $"Message: {ex.Message}\n\n" +
+                                      $"Stack Trace:\n{ex.StackTrace}";
+            txtStackTrace.Text = technicalDetails;
+
+            // Optional: Make the stack trace less prominent initially.
+            // this.Height = 180; // Start smaller
+            // btnShowDetails.Click += (s,e) => { this.Height = 430; };
         }
     }
 }

@@ -48,8 +48,12 @@ namespace BusinessLogic
             // Register BusinessLogic services
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IPasswordHasher, PasswordHasher>();
+            services.AddTransient<IPasswordPolicyValidator, PasswordPolicyValidator>();
 
-            services.AddTransient<IUserAuthenticationService, UserAuthenticationService>();
+            services.AddTransient<UserAuthenticationService>();
+            services.AddTransient<IAuthenticationService, UserAuthenticationService>();
+            services.AddTransient<IPasswordService, UserAuthenticationService>();
+            services.AddTransient<ISecurityQuestionService, UserAuthenticationService>();
             services.AddTransient<IUserManagementService, UserManagementService>();
             services.AddTransient<IReferenceDataService, ReferenceDataService>();
 

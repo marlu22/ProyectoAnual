@@ -12,7 +12,7 @@ using BusinessLogic.Security;
 
 namespace BusinessLogic.Services
 {
-    public class UserAuthenticationService : IUserAuthenticationService
+    public class UserAuthenticationService : IAuthenticationService, IPasswordService, ISecurityQuestionService
     {
         private readonly IUserRepository _userRepository;
         private readonly IPersonaRepository _personaRepository;
@@ -20,6 +20,7 @@ namespace BusinessLogic.Services
         private readonly IEmailService _emailService;
         private readonly ILogger<UserAuthenticationService> _logger;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordPolicyValidator _passwordPolicyValidator;
 
         public UserAuthenticationService(
             IUserRepository userRepository,
@@ -27,7 +28,8 @@ namespace BusinessLogic.Services
             ISecurityRepository securityRepository,
             IEmailService emailService,
             ILogger<UserAuthenticationService> logger,
-            IPasswordHasher passwordHasher)
+            IPasswordHasher passwordHasher,
+            IPasswordPolicyValidator passwordPolicyValidator)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _personaRepository = personaRepository ?? throw new ArgumentNullException(nameof(personaRepository));
@@ -35,6 +37,7 @@ namespace BusinessLogic.Services
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
+            _passwordPolicyValidator = passwordPolicyValidator ?? throw new ArgumentNullException(nameof(passwordPolicyValidator));
         }
 
         private T ExecuteServiceOperation<T>(Func<T> operation, string operationName)
@@ -142,8 +145,7 @@ namespace BusinessLogic.Services
                     var code = new Random().Next(100000, 999999).ToString();
                     var expiry = DateTime.UtcNow.AddMinutes(5);
 
-                    usuario.SetTwoFactorCode(code, expiry);
-                    _userRepository.UpdateUsuario(usuario);
+                    _userRepository.Set2faCode(username, code, expiry);
 
                     await _emailService.Send2faCodeEmailAsync(persona.Correo, code);
 
@@ -453,7 +455,7 @@ namespace BusinessLogic.Services
                 {
                     try
                     {
-                        new PasswordPolicyValidator().Validate(password, username, persona, politica);
+                        _passwordPolicyValidator.Validate(password, username, persona, politica);
                     }
                     catch (ValidationException)
                     {

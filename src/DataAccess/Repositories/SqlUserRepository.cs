@@ -72,7 +72,7 @@ namespace DataAccess.Repositories
             }
         }
 
-        public List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario) => ExecuteReader("SELECT id, id_usuario, fecha_cambio, contrasena_script FROM historial_contrasena WHERE id_usuario = @id_usuario;", reader =>
+        public List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario) => ExecuteReader("sp_get_historial_contrasenas_by_usuario_id", reader =>
         {
             var list = new List<HistorialContrasena>();
             while (reader.Read())
@@ -86,7 +86,7 @@ namespace DataAccess.Repositories
                 });
             }
             return list;
-        }, p => p.AddWithValue("@id_usuario", idUsuario));
+        }, p => p.AddWithValue("@id_usuario", idUsuario), CommandType.StoredProcedure);
 
         public Usuario? GetUsuarioByNombreUsuario(string nombre) => ExecuteReader("sp_get_usuario_by_nombre", reader =>
         {
@@ -105,14 +105,14 @@ namespace DataAccess.Repositories
         }, p => p.AddWithValue("@usuario_nombre", nombre), CommandType.StoredProcedure);
 
         public void Set2faCode(string username, string? code, DateTime? expiry) => ExecuteNonQuery(
-            "UPDATE usuarios SET Codigo2FA = @code, Codigo2FAExpiracion = @expiry WHERE usuario = @username",
+            "sp_set_2fa_code",
             p =>
             {
                 p.AddWithValue("@code", (object?)code ?? DBNull.Value);
                 p.AddWithValue("@expiry", (object?)expiry ?? DBNull.Value);
                 p.AddWithValue("@username", username);
             },
-            CommandType.Text
+            CommandType.StoredProcedure
         );
 
         public List<Usuario> GetAllUsers() => ExecuteReader("sp_get_all_users", reader =>

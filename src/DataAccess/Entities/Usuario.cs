@@ -121,30 +121,48 @@ namespace DataAccess.Entities
             Codigo2FAExpiracion = expiration;
         }
 
+        private Usuario(int idUsuario, string usuarioNombre, byte[] contrasenaScript, int idPersona, DateTime fechaBloqueo, string? nombreUsuarioBloqueo, DateTime fechaUltimoCambio, int idRol, int? idPolitica, bool cambioContrasenaObligatorio, string? codigo2FA, DateTime? codigo2FAExpiracion, DateTime? fechaExpiracion, Rol rol)
+        {
+            IdUsuario = idUsuario;
+            UsuarioNombre = usuarioNombre;
+            ContrasenaScript = contrasenaScript;
+            IdPersona = idPersona;
+            FechaBloqueo = fechaBloqueo;
+            NombreUsuarioBloqueo = nombreUsuarioBloqueo;
+            FechaUltimoCambio = fechaUltimoCambio;
+            IdRol = idRol;
+            IdPolitica = idPolitica;
+            CambioContrasenaObligatorio = cambioContrasenaObligatorio;
+            Codigo2FA = codigo2FA;
+            Codigo2FAExpiracion = codigo2FAExpiracion;
+            FechaExpiracion = fechaExpiracion;
+            Rol = rol;
+        }
+
         public static Usuario FromDataReader(SqlDataReader reader)
         {
-            var usuario = new Usuario
+            var rol = new Rol
             {
-                IdUsuario = (int)reader["id_usuario"],
-                UsuarioNombre = reader["usuario"] as string ?? string.Empty,
-                ContrasenaScript = (byte[])reader["contrasena_script"],
-                IdPersona = (int)reader["id_persona"],
-                FechaBloqueo = (DateTime)reader["fecha_bloqueo"],
-                NombreUsuarioBloqueo = reader["nombre_usuario_bloqueo"] as string,
-                FechaUltimoCambio = (DateTime)reader["fecha_ultimo_cambio"],
-                IdRol = (int)reader["id_rol"],
-                IdPolitica = reader["id_politica"] as int?,
-                CambioContrasenaObligatorio = (bool)reader["CambioContrasenaObligatorio"],
-                Codigo2FA = reader["Codigo2FA"] as string,
-                Codigo2FAExpiracion = reader["Codigo2FAExpiracion"] as DateTime?,
-                FechaExpiracion = reader["FechaExpiracion"] as DateTime?,
-                Rol = new Rol
-                {
-                    IdRol = (int)reader["rol_id_rol"],
-                    Nombre = reader["rol"] as string
-                }
+                IdRol = (int)reader["rol_id_rol"],
+                Nombre = reader["rol"] as string
             };
-            return usuario;
+
+            return new Usuario(
+                (int)reader["id_usuario"],
+                reader["usuario"] as string ?? string.Empty,
+                (byte[])reader["contrasena_script"],
+                (int)reader["id_persona"],
+                (DateTime)reader["fecha_bloqueo"],
+                reader["nombre_usuario_bloqueo"] as string,
+                (DateTime)reader["fecha_ultimo_cambio"],
+                (int)reader["id_rol"],
+                reader["id_politica"] as int?,
+                (bool)reader["CambioContrasenaObligatorio"],
+                reader["Codigo2FA"] as string,
+                reader["Codigo2FAExpiracion"] as DateTime?,
+                reader["FechaExpiracion"] as DateTime?,
+                rol
+            );
         }
     }
 }

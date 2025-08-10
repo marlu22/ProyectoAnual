@@ -100,7 +100,7 @@ namespace DataAccess.Repositories
                 FROM
                     personas p
                 LEFT JOIN
-                    tipos_doc td ON p.id_tipo_doc = td.id_tipo_doc
+                    tipo_doc td ON p.id_tipo_doc = td.id_tipo_doc
                 LEFT JOIN
                     localidades l ON p.id_localidad = l.id_localidad
                 LEFT JOIN

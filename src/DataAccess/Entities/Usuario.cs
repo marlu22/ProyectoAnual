@@ -144,7 +144,7 @@ namespace DataAccess.Entities
             var rol = new Rol
             {
                 IdRol = (int)reader["rol_id_rol"],
-                Nombre = reader["rol"] as string
+                Nombre = reader["rol"] as string ?? string.Empty
             };
 
             return new Usuario(

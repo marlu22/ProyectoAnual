@@ -88,7 +88,7 @@ namespace BusinessLogic.Tests
         {
             // Arrange
             var userDto = new UserDto { Username = "nonexistent", IdRol = 1 };
-            _userRepositoryMock.Setup(r => r.GetUsuarioByNombreUsuario("nonexistent")).Returns((Usuario)null);
+            _userRepositoryMock.Setup(r => r.GetUsuarioByNombreUsuario("nonexistent")).Returns((Usuario?)null);
 
             // Act & Assert
             var ex = Assert.Throws<ValidationException>(() => _sut.UpdateUser(userDto));

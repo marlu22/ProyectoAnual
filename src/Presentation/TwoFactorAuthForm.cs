@@ -8,15 +8,15 @@ namespace Presentation
 {
     public partial class TwoFactorAuthForm : Form
     {
-        private readonly IUserService _userService;
+        private readonly IUserAuthenticationService _authService;
         private readonly string _username;
 
         public AuthenticationResult? AuthResult { get; private set; }
 
-        public TwoFactorAuthForm(IUserService userService, string username)
+        public TwoFactorAuthForm(IUserAuthenticationService authService, string username)
         {
             InitializeComponent();
-            _userService = userService;
+            _authService = authService;
             _username = username;
             btnVerificar.Click += BtnVerificar_Click;
         }
@@ -29,7 +29,7 @@ namespace Presentation
                 return;
             }
 
-            AuthResult = await _userService.Validate2faAsync(_username, txtCodigo.Text.Trim());
+            AuthResult = await _authService.Validate2faAsync(_username, txtCodigo.Text.Trim());
 
             if (AuthResult.Success)
             {

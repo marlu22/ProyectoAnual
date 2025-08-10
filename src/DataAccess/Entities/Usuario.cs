@@ -61,5 +61,21 @@ namespace DataAccess.Entities
 
         [ForeignKey("IdPolitica")]
         public virtual PoliticaSeguridad? PoliticaSeguridad { get; set; }
+
+        public void Deshabilitar(string nombreUsuarioBloqueo)
+        {
+            if (string.IsNullOrWhiteSpace(nombreUsuarioBloqueo))
+            {
+                throw new ArgumentException("El nombre del usuario que bloquea no puede ser nulo o vacío.", nameof(nombreUsuarioBloqueo));
+            }
+            FechaBloqueo = DateTime.Now;
+            NombreUsuarioBloqueo = nombreUsuarioBloqueo;
+        }
+
+        public void Habilitar()
+        {
+            FechaBloqueo = new DateTime(9999, 12, 31);
+            NombreUsuarioBloqueo = null;
+        }
     }
 }

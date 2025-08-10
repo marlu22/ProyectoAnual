@@ -8,12 +8,19 @@ namespace Presentation
 {
     public partial class LoginForm : Form
     {
-        private readonly IUserService _userService;
+        private readonly IUserAuthenticationService _authService;
+        private readonly IUserManagementService _managementService;
+        private readonly IReferenceDataService _referenceService;
 
-        public LoginForm(IUserService userService)
+        public LoginForm(
+            IUserAuthenticationService authService,
+            IUserManagementService managementService,
+            IReferenceDataService referenceService)
         {
             InitializeComponent();
-            _userService = userService;
+            _authService = authService;
+            _managementService = managementService;
+            _referenceService = referenceService;
             btnLogin.Click += BtnLogin_Click;
             btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
         }
@@ -30,11 +37,11 @@ namespace Presentation
             string username = txtUsuario.Text.Trim();
             string password = txtContrasena.Text.Trim();
 
-            var authResult = await _userService.AuthenticateAsync(username, password);
+            var authResult = await _authService.AuthenticateAsync(username, password);
 
             if (authResult.Requires2fa)
             {
-                var twoFactorForm = new TwoFactorAuthForm(_userService, username);
+                var twoFactorForm = new TwoFactorAuthForm(_authService, username);
                 if (twoFactorForm.ShowDialog() == DialogResult.OK)
                 {
                     authResult = twoFactorForm.AuthResult;
@@ -61,13 +68,13 @@ namespace Presentation
             switch (authResult.NextAction)
             {
                 case PostLoginAction.ChangePassword:
-                    new CambioContrasenaForm(_userService, authResult.User.Username).ShowDialog();
+                    new CambioContrasenaForm(_authService, authResult.User.Username).ShowDialog();
                     break;
                 case PostLoginAction.ShowAdminDashboard:
-                    new AdminForm(_userService, authResult.User.Username).ShowDialog();
+                    new AdminForm(_authService, _managementService, _referenceService, authResult.User.Username).ShowDialog();
                     break;
                 case PostLoginAction.ShowUserDashboard:
-                    new UserForm(_userService, authResult.User.Username).ShowDialog();
+                    new UserForm(_authService, _managementService, authResult.User.Username).ShowDialog();
                     break;
             }
             Show();
@@ -75,7 +82,7 @@ namespace Presentation
 
         private void BtnRecuperarContrasena_Click(object? sender, EventArgs e)
         {
-            var form = new RecuperarContrasenaForm(_userService);
+            var form = new RecuperarContrasenaForm(_authService);
             form.ShowDialog();
         }
 

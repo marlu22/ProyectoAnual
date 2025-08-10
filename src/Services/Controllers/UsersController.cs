@@ -1,7 +1,7 @@
 // src/Services/Controllers/UsersController.cs
 using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.Services;
-using DataAccess.Entities;
+using BusinessLogic.Models;
 using System.Collections.Generic;
 
 namespace Services.Controllers
@@ -10,17 +10,17 @@ namespace Services.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _managementService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserManagementService managementService)
         {
-            _userService = userService;
+            _managementService = managementService;
         }
 
         [HttpGet]
-        public ActionResult<List<Usuario>> GetAllUsers()
+        public ActionResult<List<UserDto>> GetAllUsers()
         {
-            var users = _userService.GetAllUsers();
+            var users = _managementService.GetAllUsers();
             return Ok(users);
         }
     }

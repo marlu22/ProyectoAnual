@@ -18,15 +18,27 @@ namespace BusinessLogic.Services
     public class UserManagementService : IUserManagementService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPersonaRepository _personaRepository;
+        private readonly ISecurityRepository _securityRepository;
         private readonly IEmailService _emailService;
         private readonly ILogger<UserManagementService> _logger;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IPersonaFactory _personaFactory;
         private readonly IUsuarioFactory _usuarioFactory;
 
-        public UserManagementService(IUserRepository userRepository, IEmailService emailService, ILogger<UserManagementService> logger, IPasswordHasher passwordHasher, IPersonaFactory personaFactory, IUsuarioFactory usuarioFactory)
+        public UserManagementService(
+            IUserRepository userRepository,
+            IPersonaRepository personaRepository,
+            ISecurityRepository securityRepository,
+            IEmailService emailService,
+            ILogger<UserManagementService> logger,
+            IPasswordHasher passwordHasher,
+            IPersonaFactory personaFactory,
+            IUsuarioFactory usuarioFactory)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _personaRepository = personaRepository ?? throw new ArgumentNullException(nameof(personaRepository));
+            _securityRepository = securityRepository ?? throw new ArgumentNullException(nameof(securityRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
@@ -73,7 +85,7 @@ namespace BusinessLogic.Services
             _logger.LogInformation("Iniciando la creación de la persona con legajo: {Legajo}", request.Legajo);
             var persona = _personaFactory.Create(request);
             _logger.LogInformation("Llamando a AddPersona en el repositorio.");
-            _userRepository.AddPersona(persona);
+            _personaRepository.AddPersona(persona);
             _logger.LogInformation("Persona creada con éxito en el repositorio.");
         }, "creating a person");
 
@@ -83,7 +95,7 @@ namespace BusinessLogic.Services
 
             _userRepository.AddUsuario(usuario);
 
-            var persona = _userRepository.GetPersonaById(usuario.IdPersona)!; // We know the persona exists from the factory
+            var persona = _personaRepository.GetPersonaById(usuario.IdPersona)!; // We know the persona exists from the factory
 
             var task = _emailService.SendPasswordResetEmailAsync(persona.Correo!, plainPassword);
             task.ContinueWith(t => {
@@ -96,16 +108,16 @@ namespace BusinessLogic.Services
 
         public PoliticaSeguridadDto? GetPoliticaSeguridad() => ExecuteServiceOperation(() =>
         {
-            var politica = _userRepository.GetPoliticaSeguridad();
+            var politica = _securityRepository.GetPoliticaSeguridad();
             return PoliticaSeguridadMapper.MapToPoliticaSeguridadDto(politica);
         }, "getting security policy");
 
         public void UpdatePoliticaSeguridad(PoliticaSeguridadDto politicaDto) => ExecuteServiceOperation(() =>
         {
-            var politica = _userRepository.GetPoliticaSeguridad()
+            var politica = _securityRepository.GetPoliticaSeguridad()
                 ?? throw new ValidationException("No se encontró la política de seguridad para actualizar.");
             politica.Update(politicaDto.MayusYMinus, politicaDto.LetrasYNumeros, politicaDto.CaracterEspecial, politicaDto.Autenticacion2FA, politicaDto.NoRepetirAnteriores, politicaDto.SinDatosPersonales, politicaDto.MinCaracteres, politicaDto.CantPreguntas);
-            _userRepository.UpdatePoliticaSeguridad(politica);
+            _securityRepository.UpdatePoliticaSeguridad(politica);
         }, "updating security policy");
 
         public List<UserDto> GetAllUsers() => ExecuteServiceOperation(() =>
@@ -142,16 +154,16 @@ namespace BusinessLogic.Services
 
         public void UpdatePersona(PersonaDto personaDto) => ExecuteServiceOperation(() =>
         {
-            var persona = _userRepository.GetPersonaById(personaDto.IdPersona)
+            var persona = _personaRepository.GetPersonaById(personaDto.IdPersona)
                 ?? throw new ValidationException($"Persona with id {personaDto.IdPersona} not found");
 
             persona.Update(personaDto.Legajo, personaDto.Nombre, personaDto.Apellido, personaDto.IdTipoDoc, personaDto.NumDoc, personaDto.FechaNacimiento, personaDto.Cuil, personaDto.Calle, personaDto.Altura, personaDto.IdLocalidad, personaDto.IdGenero, personaDto.Correo, personaDto.Celular, personaDto.FechaIngreso);
 
-            _userRepository.UpdatePersona(persona);
+            _personaRepository.UpdatePersona(persona);
         }, "updating persona");
 
         public void DeletePersona(int personaId) => ExecuteServiceOperation(() =>
-            _userRepository.DeletePersona(personaId),
+            _personaRepository.DeletePersona(personaId),
             "deleting persona");
 
         public UserDto? GetUserByUsername(string username) => ExecuteServiceOperation(() =>
@@ -162,12 +174,12 @@ namespace BusinessLogic.Services
 
         public PersonaDto? GetPersonaById(int personaId) => ExecuteServiceOperation(() =>
         {
-            var persona = _userRepository.GetPersonaById(personaId);
+            var persona = _personaRepository.GetPersonaById(personaId);
             return PersonaMapper.MapToPersonaDto(persona);
         }, "getting persona by id");
 
         public List<PersonaDto> GetPersonas() => ExecuteServiceOperation(() =>
-            _userRepository.GetAllPersonas().Select(p => PersonaMapper.MapToPersonaDto(p)!).ToList(),
+            _personaRepository.GetAllPersonas().Select(p => PersonaMapper.MapToPersonaDto(p)!).ToList(),
             "getting all people");
     }
 }

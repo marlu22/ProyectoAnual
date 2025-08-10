@@ -13,11 +13,22 @@ namespace BusinessLogic.Factories
     public class UsuarioFactory : IUsuarioFactory
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPersonaRepository _personaRepository;
+        private readonly IReferenceDataRepository _referenceDataRepository;
+        private readonly ISecurityRepository _securityRepository;
         private readonly IPasswordHasher _passwordHasher;
 
-        public UsuarioFactory(IUserRepository userRepository, IPasswordHasher passwordHasher)
+        public UsuarioFactory(
+            IUserRepository userRepository,
+            IPersonaRepository personaRepository,
+            IReferenceDataRepository referenceDataRepository,
+            ISecurityRepository securityRepository,
+            IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
+            _personaRepository = personaRepository;
+            _referenceDataRepository = referenceDataRepository;
+            _securityRepository = securityRepository;
             _passwordHasher = passwordHasher;
         }
 
@@ -28,7 +39,7 @@ namespace BusinessLogic.Factories
                 throw new ValidationException("El Id de la persona no es válido.");
             }
 
-            var persona = _userRepository.GetPersonaById(personaId)
+            var persona = _personaRepository.GetPersonaById(personaId)
                 ?? throw new ValidationException("Persona no encontrada");
 
             if (string.IsNullOrWhiteSpace(persona.Correo))
@@ -38,8 +49,8 @@ namespace BusinessLogic.Factories
 
             string passwordToUse = GenerateRandomPassword(request.Username, persona);
             var passwordHash = _passwordHasher.Hash(request.Username, passwordToUse);
-            var rolId = _userRepository.GetRolByNombre(request.Rol)?.IdRol ?? throw new ValidationException("Rol no encontrado");
-            var politica = _userRepository.GetPoliticaSeguridad();
+            var rolId = _referenceDataRepository.GetRolByNombre(request.Rol)?.IdRol ?? throw new ValidationException("Rol no encontrado");
+            var politica = _securityRepository.GetPoliticaSeguridad();
 
             var usuario = new Usuario(request.Username, passwordHash, personaId, rolId, politica?.IdPolitica);
 
@@ -48,7 +59,7 @@ namespace BusinessLogic.Factories
 
         private string GenerateRandomPassword(string? username = null, Persona? persona = null)
         {
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
+            var politica = _securityRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
             var random = new Random();
 
             while (true)

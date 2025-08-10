@@ -10,12 +10,12 @@ namespace BusinessLogic.Services
 {
     public class ReferenceDataService : IReferenceDataService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IReferenceDataRepository _referenceDataRepository;
         private readonly ILogger<ReferenceDataService> _logger;
 
-        public ReferenceDataService(IUserRepository userRepository, ILogger<ReferenceDataService> logger)
+        public ReferenceDataService(IReferenceDataRepository referenceDataRepository, ILogger<ReferenceDataService> logger)
         {
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _referenceDataRepository = referenceDataRepository ?? throw new ArgumentNullException(nameof(referenceDataRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -33,27 +33,27 @@ namespace BusinessLogic.Services
         }
 
         public List<TipoDocDto> GetTiposDoc() => ExecuteServiceOperation(() =>
-            _userRepository.GetAllTiposDoc().Select(t => new TipoDocDto { IdTipoDoc = t.IdTipoDoc, Nombre = t.Nombre }).ToList(),
+            _referenceDataRepository.GetAllTiposDoc().Select(t => new TipoDocDto { IdTipoDoc = t.IdTipoDoc, Nombre = t.Nombre }).ToList(),
             "getting all document types");
 
         public List<ProvinciaDto> GetProvincias() => ExecuteServiceOperation(() =>
-            _userRepository.GetAllProvincias().Select(p => new ProvinciaDto { IdProvincia = p.IdProvincia, Nombre = p.Nombre }).ToList(),
+            _referenceDataRepository.GetAllProvincias().Select(p => new ProvinciaDto { IdProvincia = p.IdProvincia, Nombre = p.Nombre }).ToList(),
             "getting all provinces");
 
         public List<PartidoDto> GetPartidosByProvinciaId(int provinciaId) => ExecuteServiceOperation(() =>
-            _userRepository.GetPartidosByProvinciaId(provinciaId).Select(p => new PartidoDto { IdPartido = p.IdPartido, Nombre = p.Nombre, IdProvincia = p.IdProvincia }).ToList(),
+            _referenceDataRepository.GetPartidosByProvinciaId(provinciaId).Select(p => new PartidoDto { IdPartido = p.IdPartido, Nombre = p.Nombre, IdProvincia = p.IdProvincia }).ToList(),
             "getting partidos by provincia");
 
         public List<LocalidadDto> GetLocalidadesByPartidoId(int partidoId) => ExecuteServiceOperation(() =>
-            _userRepository.GetLocalidadesByPartidoId(partidoId).Select(l => new LocalidadDto { IdLocalidad = l.IdLocalidad, Nombre = l.Nombre, IdPartido = l.IdPartido }).ToList(),
+            _referenceDataRepository.GetLocalidadesByPartidoId(partidoId).Select(l => new LocalidadDto { IdLocalidad = l.IdLocalidad, Nombre = l.Nombre, IdPartido = l.IdPartido }).ToList(),
             "getting localidades by partido");
 
         public List<GeneroDto> GetGeneros() => ExecuteServiceOperation(() =>
-            _userRepository.GetAllGeneros().Select(g => new GeneroDto { IdGenero = g.IdGenero, Nombre = g.Nombre }).ToList(),
+            _referenceDataRepository.GetAllGeneros().Select(g => new GeneroDto { IdGenero = g.IdGenero, Nombre = g.Nombre }).ToList(),
             "getting all genders");
 
         public List<RolDto> GetRoles() => ExecuteServiceOperation(() =>
-            _userRepository.GetAllRoles().Select(r => new RolDto { IdRol = r.IdRol, Nombre = r.Nombre }).ToList(),
+            _referenceDataRepository.GetAllRoles().Select(r => new RolDto { IdRol = r.IdRol, Nombre = r.Nombre }).ToList(),
             "getting all roles");
     }
 }

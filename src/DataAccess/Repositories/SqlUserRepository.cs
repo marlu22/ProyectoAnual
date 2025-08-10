@@ -115,13 +115,7 @@ namespace DataAccess.Repositories
 
         private static Usuario MapToUsuario(SqlDataReader reader)
         {
-            return new Usuario(
-                reader["usuario"] as string ?? string.Empty,
-                (byte[])reader["contrasena_script"],
-                (int)reader["id_persona"],
-                (int)reader["id_rol"],
-                reader["id_politica"] as int?
-            );
+            return Usuario.FromDataReader(reader);
         }
 
         public async Task AddHistorialContrasenaAsync(HistorialContrasena historial) => await ExecuteNonQueryAsync("sp_historial_contrasena", p =>

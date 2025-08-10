@@ -50,10 +50,13 @@ namespace BusinessLogic
             services.AddTransient<IPasswordHasher, PasswordHasher>();
             services.AddTransient<IPasswordPolicyValidator, PasswordPolicyValidator>();
 
-            services.AddTransient<UserAuthenticationService>();
-            services.AddTransient<IAuthenticationService, UserAuthenticationService>();
-            services.AddTransient<IPasswordService, UserAuthenticationService>();
-            services.AddTransient<ISecurityQuestionService, UserAuthenticationService>();
+            // Register new granular services
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IPasswordService, PasswordService>();
+
+            services.AddTransient<ISecurityQuestionService, SecurityQuestionService>();
+            services.AddTransient<ISecurityPolicyService, SecurityPolicyService>();
+
             services.AddTransient<IUserManagementService, UserManagementService>();
             services.AddTransient<IReferenceDataService, ReferenceDataService>();
 

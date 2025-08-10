@@ -991,7 +991,7 @@ BEGIN
         @nombre_usuario_bloqueo = NULL,
         @fecha_ultimo_cambio = @fecha_ultimo_cambio,
         @id_rol = @id_rol,
-        @CambioContrasenaObligatorio = 0;
+        @CambioContrasenaObligatorio = 1;
 END
 ELSE
 BEGIN

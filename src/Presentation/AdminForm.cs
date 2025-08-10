@@ -7,6 +7,7 @@ using BusinessLogic.Services;
 using BusinessLogic.Exceptions;
 using BusinessLogic.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Presentation.Helpers;
 
 namespace Presentation
 {
@@ -15,11 +16,10 @@ namespace Presentation
         private readonly IUserManagementService _managementService;
         private readonly IReferenceDataService _referenceService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly DataGridViewManager _userGridManager;
         private string _username = string.Empty;
         private PoliticaSeguridadDto? _politica;
-        private List<UserDto> _allUsers = new List<UserDto>();
         private List<PersonaDto> _allPersonas = new List<PersonaDto>();
-        private readonly List<int> _dirtyUserIds = new List<int>();
         private readonly List<int> _dirtyPersonaIds = new List<int>();
 
         public AdminForm(IUserManagementService managementService, IReferenceDataService referenceService, IServiceProvider serviceProvider)
@@ -28,6 +28,7 @@ namespace Presentation
             _managementService = managementService;
             _referenceService = referenceService;
             _serviceProvider = serviceProvider;
+            _userGridManager = new DataGridViewManager(managementService, dgvUsuarios);
 
             SetupForm();
         }
@@ -96,12 +97,12 @@ namespace Presentation
             txtBuscarUsuario.TextChanged += TxtBuscarUsuario_TextChanged;
             btnRefrescarUsuarios.Click += (s, e) =>
             {
-                LoadUsers();
+                _userGridManager.LoadUsers();
                 txtBuscarUsuario.Clear();
             };
-            btnGuardarCambios.Click += BtnGuardarCambios_Click;
-            btnEliminarUsuario.Click += BtnEliminarUsuario_Click;
-            dgvUsuarios.CellEndEdit += DgvUsuarios_CellEndEdit;
+            btnGuardarCambios.Click += (s, e) => _userGridManager.SaveChanges();
+            btnEliminarUsuario.Click += (s, e) => _userGridManager.DeleteSelectedUser();
+            //dgvUsuarios.CellEndEdit += DgvUsuarios_CellEndEdit; // This is now handled inside the manager
             dgvUsuarios.SelectionChanged += dgvUsuarios_SelectionChanged;
             dtpFechaExpiracionGestion.ValueChanged += dtpFechaExpiracionGestion_ValueChanged;
             dgvUsuarios.CellFormatting += dgvUsuarios_CellFormatting;
@@ -116,7 +117,7 @@ namespace Presentation
             btnEliminarPersona.Click += BtnEliminarPersona_Click;
             dgvPersonas.CellEndEdit += DgvPersonas_CellEndEdit;
 
-            LoadUsers();
+            _userGridManager.LoadUsers();
             LoadPersonasGrid();
 
             dtpFechaExpiracionGestion.ShowCheckBox = true;
@@ -133,57 +134,9 @@ namespace Presentation
             panelToShow.Visible = true;
         }
 
-        private void LoadUsers()
-        {
-            try
-            {
-                _allUsers = _managementService.GetAllUsers();
-                dgvUsuarios.DataSource = new List<UserDto>(_allUsers);
-
-                dgvUsuarios.Columns["IdUsuario"].Visible = false;
-                dgvUsuarios.Columns["IdRol"].Visible = false;
-                dgvUsuarios.Columns["IdPersona"].Visible = false;
-                dgvUsuarios.Columns["NombreCompleto"].ReadOnly = true;
-                dgvUsuarios.Columns["CambioContrasenaObligatorio"].ReadOnly = true;
-
-                if (dgvUsuarios.Columns["FechaExpiracion"] != null)
-                {
-                    dgvUsuarios.Columns["FechaExpiracion"].HeaderText = "Fecha de Expiración";
-                    dgvUsuarios.Columns["FechaExpiracion"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                }
-                if (dgvUsuarios.Columns["Habilitado"] != null)
-                {
-                    dgvUsuarios.Columns["Habilitado"].HeaderText = "Habilitado";
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar usuarios: {ex.Message}", "Error");
-            }
-        }
-
         private void TxtBuscarUsuario_TextChanged(object? sender, EventArgs e)
         {
-            var searchText = txtBuscarUsuario.Text.ToLower().Trim();
-
-            var filteredUsers = _allUsers.Where(u =>
-                (u.Username?.ToLower() ?? "").Contains(searchText) ||
-                (u.NombreCompleto?.ToLower() ?? "").Contains(searchText)
-            ).ToList();
-
-            dgvUsuarios.DataSource = filteredUsers;
-        }
-
-        private void DgvUsuarios_CellEndEdit(object? sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                var userDto = (UserDto)dgvUsuarios.Rows[e.RowIndex].DataBoundItem;
-                if (!_dirtyUserIds.Contains(userDto.IdUsuario))
-                {
-                    _dirtyUserIds.Add(userDto.IdUsuario);
-                }
-            }
+            _userGridManager.FilterUsers(txtBuscarUsuario.Text);
         }
 
         private void TxtBuscarPersona_TextChanged(object? sender, EventArgs e)
@@ -197,66 +150,6 @@ namespace Presentation
             ).ToList();
 
             dgvPersonas.DataSource = filteredPersonas;
-        }
-
-        private void BtnGuardarCambios_Click(object? sender, EventArgs e)
-        {
-            try
-            {
-                if (dgvUsuarios.DataSource is List<UserDto> userDtos)
-                {
-                    var usersToUpdate = userDtos.Where(u => _dirtyUserIds.Contains(u.IdUsuario)).ToList();
-                    foreach (var userDto in usersToUpdate)
-                    {
-                        _managementService.UpdateUser(userDto);
-                    }
-
-                    if (usersToUpdate.Any())
-                    {
-                        MessageBox.Show("Cambios guardados exitosamente.", "Éxito");
-                    }
-                    else
-                    {
-                        MessageBox.Show("No hay cambios para guardar.", "Información");
-                    }
-
-                    _dirtyUserIds.Clear();
-                    LoadUsers();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al guardar cambios: {ex.Message}", "Error");
-            }
-        }
-
-        private void BtnEliminarUsuario_Click(object? sender, EventArgs e)
-        {
-            if (dgvUsuarios.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Por favor, seleccione un usuario para eliminar.", "Advertencia");
-                return;
-            }
-
-            var selectedRow = dgvUsuarios.SelectedRows[0];
-            var userDto = (UserDto)selectedRow.DataBoundItem;
-
-            var confirmResult = MessageBox.Show($"¿Está seguro de que desea eliminar al usuario '{userDto.Username}'?",
-                                                 "Confirmar Eliminación",
-                                                 MessageBoxButtons.YesNo);
-            if (confirmResult == DialogResult.Yes)
-            {
-                try
-                {
-                    _managementService.DeleteUser(userDto.IdUsuario);
-                    MessageBox.Show("Usuario eliminado exitosamente.", "Éxito");
-                    LoadUsers();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error al eliminar usuario: {ex.Message}", "Error");
-                }
-            }
         }
 
         private void LoadPoliticaSeguridad()
@@ -553,10 +446,7 @@ namespace Presentation
                 if (selectedUser.FechaExpiracion != newValue)
                 {
                     selectedUser.FechaExpiracion = newValue;
-                    if (!_dirtyUserIds.Contains(selectedUser.IdUsuario))
-                    {
-                        _dirtyUserIds.Add(selectedUser.IdUsuario);
-                    }
+                    _userGridManager.AddDirtyUserId(selectedUser.IdUsuario);
                     dgvUsuarios.Refresh();
                 }
             }

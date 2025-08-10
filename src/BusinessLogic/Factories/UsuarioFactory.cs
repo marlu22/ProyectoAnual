@@ -10,7 +10,7 @@ using BusinessLogic.Exceptions;
 
 namespace BusinessLogic.Factories
 {
-    public class UsuarioFactory
+    public class UsuarioFactory : IUsuarioFactory
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;

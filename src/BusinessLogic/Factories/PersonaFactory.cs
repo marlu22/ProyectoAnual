@@ -5,7 +5,7 @@ using BusinessLogic.Exceptions;
 
 namespace BusinessLogic.Factories
 {
-    public class PersonaFactory
+    public class PersonaFactory : IPersonaFactory
     {
         private readonly IUserRepository _userRepository;
 

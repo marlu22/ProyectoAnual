@@ -50,7 +50,9 @@ namespace Presentation
         // Controles para "Gestion de Usuarios"
         private System.Windows.Forms.Panel panelGestionUsuarios;
         private System.Windows.Forms.TableLayoutPanel gestionUsuariosLayout;
-        private System.Windows.Forms.DataGridView dgvUsuarios;
+        private System.Windows.Forms.Label lblBuscarUsuario;
+        private RoundedTextBox txtBuscarUsuario;
+        private DoubleBufferedDataGridView dgvUsuarios;
         private System.Windows.Forms.Label lblFechaExpiracionGestion;
         private System.Windows.Forms.DateTimePicker dtpFechaExpiracionGestion;
         private RoundedButton btnRefrescarUsuarios, btnGuardarCambios, btnEliminarUsuario;
@@ -58,7 +60,9 @@ namespace Presentation
         // Controles para "Gestion de Personas"
         private System.Windows.Forms.Panel panelGestionPersonas;
         private System.Windows.Forms.TableLayoutPanel gestionPersonasLayout;
-        private System.Windows.Forms.DataGridView dgvPersonas;
+        private System.Windows.Forms.Label lblBuscarPersona;
+        private RoundedTextBox txtBuscarPersona;
+        private DoubleBufferedDataGridView dgvPersonas;
         private RoundedButton btnRefrescarPersonas;
         private System.Windows.Forms.FlowLayoutPanel personasButtonPanel;
         private RoundedButton btnEliminarPersona;
@@ -130,7 +134,9 @@ namespace Presentation
             btnCrearUsuario = new RoundedButton();
             panelGestionUsuarios = new System.Windows.Forms.Panel();
             gestionUsuariosLayout = new System.Windows.Forms.TableLayoutPanel();
-            dgvUsuarios = new System.Windows.Forms.DataGridView();
+            lblBuscarUsuario = new System.Windows.Forms.Label();
+            txtBuscarUsuario = new RoundedTextBox();
+            dgvUsuarios = new DoubleBufferedDataGridView();
             lblFechaExpiracionGestion = new System.Windows.Forms.Label();
             dtpFechaExpiracionGestion = new System.Windows.Forms.DateTimePicker();
             buttonPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -163,7 +169,9 @@ namespace Presentation
             buttonPanel.SuspendLayout();
             panelGestionPersonas = new System.Windows.Forms.Panel();
             gestionPersonasLayout = new System.Windows.Forms.TableLayoutPanel();
-            dgvPersonas = new System.Windows.Forms.DataGridView();
+            lblBuscarPersona = new System.Windows.Forms.Label();
+            txtBuscarPersona = new RoundedTextBox();
+            dgvPersonas = new DoubleBufferedDataGridView();
             personasButtonPanel = new System.Windows.Forms.FlowLayoutPanel();
             btnEliminarPersona = new RoundedButton();
             btnGuardarCambiosPersona = new RoundedButton();
@@ -845,26 +853,55 @@ namespace Presentation
             // 
             gestionUsuariosLayout.BackColor = System.Drawing.Color.Transparent;
             gestionUsuariosLayout.ColumnCount = 3;
-            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
-            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
-            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
-            gestionUsuariosLayout.Controls.Add(dgvUsuarios, 0, 0);
-            gestionUsuariosLayout.Controls.Add(lblFechaExpiracionGestion, 0, 1);
-            gestionUsuariosLayout.Controls.Add(dtpFechaExpiracionGestion, 1, 1);
-            gestionUsuariosLayout.Controls.Add(buttonPanel, 0, 2);
+            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            gestionUsuariosLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 220F));
+            gestionUsuariosLayout.Controls.Add(lblBuscarUsuario, 0, 0);
+            gestionUsuariosLayout.Controls.Add(txtBuscarUsuario, 1, 0);
+            gestionUsuariosLayout.Controls.Add(dgvUsuarios, 0, 1);
+            gestionUsuariosLayout.Controls.Add(lblFechaExpiracionGestion, 0, 2);
+            gestionUsuariosLayout.Controls.Add(dtpFechaExpiracionGestion, 1, 2);
+            gestionUsuariosLayout.Controls.Add(buttonPanel, 0, 3);
             gestionUsuariosLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             gestionUsuariosLayout.Location = new System.Drawing.Point(0, 0);
             gestionUsuariosLayout.Name = "gestionUsuariosLayout";
-            gestionUsuariosLayout.RowCount = 3;
-            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 75F));
-            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            gestionUsuariosLayout.RowCount = 4;
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            gestionUsuariosLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             gestionUsuariosLayout.Size = new System.Drawing.Size(623, 600);
             gestionUsuariosLayout.TabIndex = 0;
             // 
+            //
+            // lblBuscarUsuario
+            //
+            lblBuscarUsuario.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblBuscarUsuario.AutoSize = true;
+            lblBuscarUsuario.ForeColor = System.Drawing.Color.White;
+            lblBuscarUsuario.Location = new System.Drawing.Point(38, 8);
+            lblBuscarUsuario.Name = "lblBuscarUsuario";
+            lblBuscarUsuario.Size = new System.Drawing.Size(59, 23);
+            lblBuscarUsuario.TabIndex = 4;
+            lblBuscarUsuario.Text = "Buscar:";
+            //
+            // txtBuscarUsuario
+            //
+            txtBuscarUsuario.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtBuscarUsuario.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtBuscarUsuario.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            gestionUsuariosLayout.SetColumnSpan(txtBuscarUsuario, 2);
+            txtBuscarUsuario.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtBuscarUsuario.ForeColor = System.Drawing.Color.White;
+            txtBuscarUsuario.Location = new System.Drawing.Point(103, 8);
+            txtBuscarUsuario.Name = "txtBuscarUsuario";
+            txtBuscarUsuario.Size = new System.Drawing.Size(517, 23);
+            txtBuscarUsuario.TabIndex = 5;
+            //
             // dgvUsuarios
             // 
             dgvUsuarios.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            gestionUsuariosLayout.SetColumnSpan(dgvUsuarios, 3);
             dgvUsuarios.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dgvUsuarios.ColumnHeadersHeight = 29;
             gestionUsuariosLayout.SetColumnSpan(dgvUsuarios, 3);
@@ -953,42 +990,74 @@ namespace Presentation
             // gestionPersonasLayout
             //
             gestionPersonasLayout.BackColor = System.Drawing.Color.Transparent;
-            gestionPersonasLayout.ColumnCount = 1;
+            gestionPersonasLayout.ColumnCount = 3;
+            gestionPersonasLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             gestionPersonasLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            gestionPersonasLayout.Controls.Add(dgvPersonas, 0, 0);
-            gestionPersonasLayout.Controls.Add(personasButtonPanel, 0, 1);
+            gestionPersonasLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 220F));
+            gestionPersonasLayout.Controls.Add(lblBuscarPersona, 0, 0);
+            gestionPersonasLayout.Controls.Add(txtBuscarPersona, 1, 0);
+            gestionPersonasLayout.Controls.Add(dgvPersonas, 0, 1);
+            gestionPersonasLayout.Controls.Add(personasButtonPanel, 0, 2);
             gestionPersonasLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             gestionPersonasLayout.Location = new System.Drawing.Point(0, 0);
             gestionPersonasLayout.Name = "gestionPersonasLayout";
-            gestionPersonasLayout.RowCount = 2;
-            gestionPersonasLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 90F));
-            gestionPersonasLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            gestionPersonasLayout.RowCount = 3;
+            gestionPersonasLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            gestionPersonasLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            gestionPersonasLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             gestionPersonasLayout.Size = new System.Drawing.Size(623, 600);
             gestionPersonasLayout.TabIndex = 0;
+            //
+            //
+            // lblBuscarPersona
+            //
+            lblBuscarPersona.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblBuscarPersona.AutoSize = true;
+            lblBuscarPersona.ForeColor = System.Drawing.Color.White;
+            lblBuscarPersona.Location = new System.Drawing.Point(38, 8);
+            lblBuscarPersona.Name = "lblBuscarPersona";
+            lblBuscarPersona.Size = new System.Drawing.Size(59, 23);
+            lblBuscarPersona.TabIndex = 6;
+            lblBuscarPersona.Text = "Buscar:";
+            //
+            // txtBuscarPersona
+            //
+            txtBuscarPersona.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtBuscarPersona.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtBuscarPersona.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            gestionPersonasLayout.SetColumnSpan(txtBuscarPersona, 2);
+            txtBuscarPersona.Font = new System.Drawing.Font("Segoe UI", 10F);
+            txtBuscarPersona.ForeColor = System.Drawing.Color.White;
+            txtBuscarPersona.Location = new System.Drawing.Point(103, 8);
+            txtBuscarPersona.Name = "txtBuscarPersona";
+            txtBuscarPersona.Size = new System.Drawing.Size(517, 23);
+            txtBuscarPersona.TabIndex = 7;
             //
             // dgvPersonas
             //
             dgvPersonas.BorderStyle = System.Windows.Forms.BorderStyle.None;
             dgvPersonas.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            gestionPersonasLayout.SetColumnSpan(dgvPersonas, 3);
             dgvPersonas.ColumnHeadersHeight = 29;
             dgvPersonas.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvPersonas.EnableHeadersVisualStyles = false;
-            dgvPersonas.Location = new System.Drawing.Point(3, 3);
+            dgvPersonas.Location = new System.Drawing.Point(3, 43);
             dgvPersonas.Name = "dgvPersonas";
             dgvPersonas.RowHeadersWidth = 51;
-            dgvPersonas.Size = new System.Drawing.Size(617, 534);
+            dgvPersonas.Size = new System.Drawing.Size(617, 504);
             dgvPersonas.TabIndex = 0;
             //
             // personasButtonPanel
             //
             personasButtonPanel.BackColor = System.Drawing.Color.Transparent;
+            gestionPersonasLayout.SetColumnSpan(personasButtonPanel, 3);
             personasButtonPanel.Controls.Add(btnEliminarPersona);
             personasButtonPanel.Controls.Add(btnGuardarCambiosPersona);
             personasButtonPanel.Controls.Add(btnRefrescarPersonas);
             personasButtonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            personasButtonPanel.Location = new System.Drawing.Point(3, 543);
+            personasButtonPanel.Location = new System.Drawing.Point(3, 553);
             personasButtonPanel.Name = "personasButtonPanel";
-            personasButtonPanel.Size = new System.Drawing.Size(617, 54);
+            personasButtonPanel.Size = new System.Drawing.Size(617, 44);
             personasButtonPanel.TabIndex = 1;
             //
             // btnEliminarPersona

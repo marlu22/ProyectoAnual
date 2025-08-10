@@ -114,5 +114,62 @@ namespace BusinessLogic.Services
                     <p style='font-size: 0.8em; color: #777;'>Si usted no intentó iniciar sesión, por favor ignore este correo electrónico.</p>
                 </div>";
         }
+
+        public async Task SendWelcomeEmailAsync(string toEmail, string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(toEmail))
+            {
+                Console.WriteLine("No se proporcionó una dirección de correo para el correo de bienvenida.");
+                return;
+            }
+
+            try
+            {
+                using var client = new SmtpClient(_smtpSettings.Server, _smtpSettings.Port)
+                {
+                    Credentials = new NetworkCredential(_smtpSettings.Username, _smtpSettings.Password),
+                    EnableSsl = _smtpSettings.UseSsl
+                };
+
+                var from = new MailAddress(_smtpSettings.SenderEmail, _smtpSettings.SenderName);
+                var to = new MailAddress(toEmail);
+
+                using var mailMessage = new MailMessage(from, to)
+                {
+                    Subject = "¡Bienvenido a Nuestro Sistema!",
+                    IsBodyHtml = true,
+                    Body = GetWelcomeEmailBody(username, password)
+                };
+
+                await client.SendMailAsync(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error al enviar el correo de bienvenida. Verifique la configuración SMTP. Detalles: {ex.Message}", ex);
+            }
+        }
+
+        private static string GetWelcomeEmailBody(string username, string password)
+        {
+            return $@"
+        <div style='font-family: Arial, sans-serif; color: #333; line-height: 1.6;'>
+            <h1 style='color: #0056b3;'>¡Bienvenido!</h1>
+            <p>Hola {username},</p>
+            <p>¡Le damos la bienvenida a nuestro sistema! Su cuenta ha sido creada exitosamente.</p>
+            <p>A continuación, encontrará sus credenciales de acceso. Le recomendamos guardarlas en un lugar seguro.</p>
+
+            <div style='background-color: #f2f2f2; padding: 15px; border-left: 5px solid #0056b3;'>
+                <p><strong>Nombre de Usuario:</strong> {username}</p>
+                <p><strong>Contraseña Temporal:</strong> <span style='color: #darkorange; font-weight: bold;'>{password}</span></p>
+            </div>
+
+            <p>Por su seguridad, se le pedirá que cambie esta contraseña la próxima vez que inicie sesión.</p>
+
+            <p>Si tiene alguna pregunta, no dude en contactarnos.</p>
+            <br>
+            <p>Saludos cordiales,</p>
+            <p><strong>El Equipo de Soporte</strong></p>
+        </div>";
+        }
     }
 }

@@ -61,29 +61,97 @@ namespace DataAccess.Repositories
             }
         }
 
-        public Persona? GetPersonaById(int id) => ExecuteReader("SELECT * FROM personas WHERE id_persona = @id;", reader =>
+        public Persona? GetPersonaById(int id)
         {
-            if (!reader.Read()) return null;
-            return new Persona(
-                (int)reader["legajo"],
-                reader["nombre"] as string ?? string.Empty,
-                reader["apellido"] as string ?? string.Empty,
-                (int)reader["id_tipo_doc"],
-                reader["num_doc"] as string ?? string.Empty,
-                reader["fecha_nacimiento"] as DateTime?,
-                reader["cuil"] as string,
-                reader["calle"] as string,
-                reader["altura"] as string,
-                (int)reader["id_localidad"],
-                (int)reader["id_genero"],
-                reader["correo"] as string,
-                reader["celular"] as string,
-                (DateTime)reader["fecha_ingreso"]
-            )
+            var sql = @"
+                SELECT
+                    p.id_persona, p.legajo, p.nombre, p.apellido, p.id_tipo_doc, p.num_doc, p.fecha_nacimiento, p.cuil, p.calle, p.altura, p.id_localidad, p.id_genero, p.correo, p.celular, p.fecha_ingreso,
+                    td.tipo_doc AS TipoDocNombre,
+                    l.localidad AS LocalidadNombre,
+                    pa.id_partido AS IdPartido,
+                    pa.partido AS PartidoNombre,
+                    pr.id_provincia AS IdProvincia,
+                    pr.provincia AS ProvinciaNombre,
+                    g.genero AS GeneroNombre
+                FROM
+                    personas p
+                LEFT JOIN
+                    tipo_doc td ON p.id_tipo_doc = td.id_tipo_doc
+                LEFT JOIN
+                    localidades l ON p.id_localidad = l.id_localidad
+                LEFT JOIN
+                    partidos pa ON l.id_partido = pa.id_partido
+                LEFT JOIN
+                    provincias pr ON pa.id_provincia = pr.id_provincia
+                LEFT JOIN
+                    generos g ON p.id_genero = g.id_genero
+                WHERE p.id_persona = @id";
+
+            return ExecuteReader(sql, reader =>
             {
-                IdPersona = (int)reader["id_persona"]
-            };
-        }, p => p.AddWithValue("@id", id));
+                if (!reader.Read()) return null;
+
+                var persona = new Persona(
+                    (int)reader["legajo"],
+                    reader["nombre"].ToString()!,
+                    reader["apellido"].ToString()!,
+                    (int)reader["id_tipo_doc"],
+                    reader["num_doc"].ToString()!,
+                    reader["fecha_nacimiento"] as DateTime?,
+                    reader["cuil"] as string,
+                    reader["calle"] as string,
+                    reader["altura"] as string,
+                    (int)reader["id_localidad"],
+                    (int)reader["id_genero"],
+                    reader["correo"] as string,
+                    reader["celular"] as string,
+                    (DateTime)reader["fecha_ingreso"]
+                )
+                {
+                    IdPersona = (int)reader["id_persona"],
+                    TipoDoc = new TipoDoc { IdTipoDoc = (int)reader["id_tipo_doc"], Nombre = reader["TipoDocNombre"] as string ?? string.Empty },
+                    Genero = new Genero { IdGenero = (int)reader["id_genero"], Nombre = reader["GeneroNombre"] as string ?? string.Empty }
+                };
+
+                var localidad = new Localidad
+                {
+                    IdLocalidad = (int)reader["id_localidad"],
+                    Nombre = reader["LocalidadNombre"] as string ?? string.Empty
+                };
+
+                if (reader["IdPartido"] != DBNull.Value)
+                {
+                    var idPartido = (int)reader["IdPartido"];
+                    var partido = new Partido
+                    {
+                        IdPartido = idPartido,
+                        Nombre = reader["PartidoNombre"] as string ?? string.Empty
+                    };
+
+                    if (reader["IdProvincia"] != DBNull.Value)
+                    {
+                        var idProvincia = (int)reader["IdProvincia"];
+                        partido.IdProvincia = idProvincia;
+                        partido.Provincia = new Provincia
+                        {
+                            IdProvincia = idProvincia,
+                            Nombre = reader["ProvinciaNombre"] as string ?? string.Empty
+                        };
+                    }
+
+                    localidad.IdPartido = idPartido;
+                    localidad.Partido = partido;
+                }
+                else
+                {
+                    localidad.IdPartido = 0;
+                    localidad.Partido = null!;
+                }
+
+                persona.Localidad = localidad;
+                return persona;
+            }, p => p.AddWithValue("@id", id));
+        }
 
         public List<Persona> GetAllPersonas()
         {

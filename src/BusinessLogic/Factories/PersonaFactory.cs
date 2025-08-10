@@ -7,11 +7,11 @@ namespace BusinessLogic.Factories
 {
     public class PersonaFactory : IPersonaFactory
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IReferenceDataRepository _referenceDataRepository;
 
-        public PersonaFactory(IUserRepository userRepository)
+        public PersonaFactory(IReferenceDataRepository referenceDataRepository)
         {
-            _userRepository = userRepository;
+            _referenceDataRepository = referenceDataRepository;
         }
 
         public Persona Create(PersonaRequest request)
@@ -25,9 +25,9 @@ namespace BusinessLogic.Factories
                 throw new ValidationException("El ID de localidad no es válido.");
             }
 
-            var idTipoDoc = _userRepository.GetTipoDocByNombre(request.TipoDoc)?.IdTipoDoc
+            var idTipoDoc = _referenceDataRepository.GetTipoDocByNombre(request.TipoDoc)?.IdTipoDoc
                 ?? throw new ValidationException("Tipo de documento no encontrado");
-            var idGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero
+            var idGenero = _referenceDataRepository.GetGeneroByNombre(request.Genero)?.IdGenero
                 ?? throw new ValidationException("Género no encontrado");
 
             return new Persona(

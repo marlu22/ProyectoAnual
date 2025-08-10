@@ -15,13 +15,23 @@ namespace BusinessLogic.Services
     public class UserAuthenticationService : IUserAuthenticationService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPersonaRepository _personaRepository;
+        private readonly ISecurityRepository _securityRepository;
         private readonly IEmailService _emailService;
         private readonly ILogger<UserAuthenticationService> _logger;
         private readonly IPasswordHasher _passwordHasher;
 
-        public UserAuthenticationService(IUserRepository userRepository, IEmailService emailService, ILogger<UserAuthenticationService> logger, IPasswordHasher passwordHasher)
+        public UserAuthenticationService(
+            IUserRepository userRepository,
+            IPersonaRepository personaRepository,
+            ISecurityRepository securityRepository,
+            IEmailService emailService,
+            ILogger<UserAuthenticationService> logger,
+            IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _personaRepository = personaRepository ?? throw new ArgumentNullException(nameof(personaRepository));
+            _securityRepository = securityRepository ?? throw new ArgumentNullException(nameof(securityRepository));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
@@ -120,10 +130,10 @@ namespace BusinessLogic.Services
                     return AuthenticationResult.Failed("La cuenta ha expirado.");
                 }
 
-                var politica = _userRepository.GetPoliticaSeguridad();
+                var politica = _securityRepository.GetPoliticaSeguridad();
                 if (politica?.Autenticacion2FA ?? false)
                 {
-                    var persona = _userRepository.GetPersonaById(usuario.IdPersona);
+                    var persona = _personaRepository.GetPersonaById(usuario.IdPersona);
                     if (persona == null || string.IsNullOrWhiteSpace(persona.Correo))
                     {
                         return AuthenticationResult.Failed("No se puede usar 2FA sin un correo configurado.");
@@ -215,17 +225,17 @@ namespace BusinessLogic.Services
             if (string.IsNullOrWhiteSpace(username))
                 throw new ValidationException("Username is required");
 
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
+            var politica = _securityRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
             if (respuestas == null || respuestas.Count != politica.CantPreguntas || respuestas.Any(r => string.IsNullOrWhiteSpace(r.Value)))
                 throw new ValidationException($"Se requieren {politica.CantPreguntas} respuestas de seguridad.");
 
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
-            var persona = _userRepository.GetPersonaById(usuario.IdPersona)
+            var persona = _personaRepository.GetPersonaById(usuario.IdPersona)
                 ?? throw new ValidationException("Persona no encontrada");
 
-            var respuestasGuardadas = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
+            var respuestasGuardadas = _securityRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
                 ?? throw new ValidationException("No se han configurado las preguntas de seguridad.");
 
             if (respuestasGuardadas.Count != politica.CantPreguntas)
@@ -270,14 +280,14 @@ namespace BusinessLogic.Services
                 throw new ValidationException("La contraseña actual es incorrecta. Por favor, intente de nuevo.");
             }
 
-            var persona = _userRepository.GetPersonaById(usuario.IdPersona)
+            var persona = _personaRepository.GetPersonaById(usuario.IdPersona)
                 ?? throw new ValidationException("Persona no encontrada");
 
             ValidatePasswordPolicy(newPassword, username, persona);
 
             var newPasswordHash = _passwordHasher.Hash(username, newPassword);
 
-            var politica = _userRepository.GetPoliticaSeguridad();
+            var politica = _securityRepository.GetPoliticaSeguridad();
             if (politica?.NoRepetirAnteriores ?? false)
             {
                 var historial = _userRepository.GetHistorialContrasenasByUsuarioId(usuario.IdUsuario);
@@ -304,11 +314,11 @@ namespace BusinessLogic.Services
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
+            var politica = _securityRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
             if (respuestas.Count != politica.CantPreguntas)
                 throw new ValidationException($"Se requieren exactamente {politica.CantPreguntas} respuestas de seguridad.");
 
-            _userRepository.DeleteRespuestasSeguridadByUsuarioId(usuario.IdUsuario);
+            _securityRepository.DeleteRespuestasSeguridadByUsuarioId(usuario.IdUsuario);
 
             foreach (var par in respuestas)
             {
@@ -318,12 +328,12 @@ namespace BusinessLogic.Services
                     IdPregunta = par.Key,
                     Respuesta = par.Value
                 };
-                _userRepository.AddRespuestaSeguridad(respuesta);
+                _securityRepository.AddRespuestaSeguridad(respuesta);
             }
         }, "saving security answers");
 
         public List<PreguntaSeguridadDto> GetPreguntasSeguridad() => ExecuteServiceOperation(() =>
-            _userRepository.GetPreguntasSeguridad().Select(p => new PreguntaSeguridadDto { IdPregunta = p.IdPregunta, Pregunta = p.Pregunta }).ToList(),
+            _securityRepository.GetPreguntasSeguridad().Select(p => new PreguntaSeguridadDto { IdPregunta = p.IdPregunta, Pregunta = p.Pregunta }).ToList(),
             "getting security questions");
 
         public List<PreguntaSeguridadDto> GetPreguntasDeUsuario(string username) => ExecuteServiceOperation(() =>
@@ -331,18 +341,18 @@ namespace BusinessLogic.Services
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
-            var respuestas = _userRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
+            var respuestas = _securityRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
                 ?? throw new ValidationException("No se han configurado las preguntas de seguridad.");
 
             var idPreguntas = respuestas.Select(r => r.IdPregunta).ToList();
-            var preguntas = _userRepository.GetPreguntasSeguridadByIds(idPreguntas);
+            var preguntas = _securityRepository.GetPreguntasSeguridadByIds(idPreguntas);
 
             return preguntas.Select(p => new PreguntaSeguridadDto { IdPregunta = p.IdPregunta, Pregunta = p.Pregunta }).ToList();
         }, "getting user security questions");
 
         public PoliticaSeguridadDto? GetPoliticaSeguridad() => ExecuteServiceOperation(() =>
         {
-            var politica = _userRepository.GetPoliticaSeguridad();
+            var politica = _securityRepository.GetPoliticaSeguridad();
             return MapToPoliticaSeguridadDto(politica);
         }, "getting security policy");
 
@@ -365,7 +375,7 @@ namespace BusinessLogic.Services
 
         private void ValidatePasswordPolicy(string password, string username, Persona persona)
         {
-            var politica = _userRepository.GetPoliticaSeguridad();
+            var politica = _securityRepository.GetPoliticaSeguridad();
             if (politica == null) return;
 
             if (password.Length < politica.MinCaracteres)
@@ -405,7 +415,7 @@ namespace BusinessLogic.Services
 
         private string GenerateRandomPassword(string? username = null, Persona? persona = null)
         {
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
+            var politica = _securityRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
             var random = new Random();
 
             while (true)

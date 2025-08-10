@@ -14,6 +14,8 @@ namespace BusinessLogic.Tests
     public class UserManagementServiceTests
     {
         private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<IPersonaRepository> _personaRepositoryMock;
+        private readonly Mock<ISecurityRepository> _securityRepositoryMock;
         private readonly Mock<IEmailService> _emailServiceMock;
         private readonly Mock<ILogger<UserManagementService>> _loggerMock;
         private readonly Mock<IPasswordHasher> _passwordHasherMock;
@@ -24,6 +26,8 @@ namespace BusinessLogic.Tests
         public UserManagementServiceTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
+            _personaRepositoryMock = new Mock<IPersonaRepository>();
+            _securityRepositoryMock = new Mock<ISecurityRepository>();
             _emailServiceMock = new Mock<IEmailService>();
             _loggerMock = new Mock<ILogger<UserManagementService>>();
             _passwordHasherMock = new Mock<IPasswordHasher>();
@@ -32,6 +36,8 @@ namespace BusinessLogic.Tests
 
             _sut = new UserManagementService(
                 _userRepositoryMock.Object,
+                _personaRepositoryMock.Object,
+                _securityRepositoryMock.Object,
                 _emailServiceMock.Object,
                 _loggerMock.Object,
                 _passwordHasherMock.Object,
@@ -50,7 +56,7 @@ namespace BusinessLogic.Tests
             var plainPassword = "plainPassword123";
 
             _usuarioFactoryMock.Setup(f => f.Create(userRequest)).Returns((usuario, plainPassword));
-            _userRepositoryMock.Setup(r => r.GetPersonaById(1)).Returns(persona);
+            _personaRepositoryMock.Setup(r => r.GetPersonaById(1)).Returns(persona);
 
 
             // Act
@@ -131,13 +137,13 @@ namespace BusinessLogic.Tests
             // Arrange
             var politicaDto = new PoliticaSeguridadDto { IdPolitica = 1, MinCaracteres = 10, CantPreguntas = 3 };
             var politica = new PoliticaSeguridad(1, true, true, true, true, true, true, 8, 3);
-            _userRepositoryMock.Setup(r => r.GetPoliticaSeguridad()).Returns(politica);
+            _securityRepositoryMock.Setup(r => r.GetPoliticaSeguridad()).Returns(politica);
 
             // Act
             _sut.UpdatePoliticaSeguridad(politicaDto);
 
             // Assert
-            _userRepositoryMock.Verify(r => r.UpdatePoliticaSeguridad(It.Is<PoliticaSeguridad>(p => p.MinCaracteres == 10)), Times.Once);
+            _securityRepositoryMock.Verify(r => r.UpdatePoliticaSeguridad(It.Is<PoliticaSeguridad>(p => p.MinCaracteres == 10)), Times.Once);
         }
 
         [Fact]
@@ -153,7 +159,7 @@ namespace BusinessLogic.Tests
 
             // Assert
             _personaFactoryMock.Verify(f => f.Create(personaRequest), Times.Once);
-            _userRepositoryMock.Verify(r => r.AddPersona(persona), Times.Once);
+            _personaRepositoryMock.Verify(r => r.AddPersona(persona), Times.Once);
         }
     }
 }

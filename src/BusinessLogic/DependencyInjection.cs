@@ -37,6 +37,9 @@ namespace BusinessLogic
             // Register DataAccess components
             services.AddSingleton<DatabaseConnectionFactory>();
             services.AddScoped<IUserRepository, SqlUserRepository>();
+            services.AddScoped<IPersonaRepository, SqlPersonaRepository>();
+            services.AddScoped<ISecurityRepository, SqlSecurityRepository>();
+            services.AddScoped<IReferenceDataRepository, SqlReferenceDataRepository>();
 
             // Register BusinessLogic factories
             services.AddTransient<IPersonaFactory, PersonaFactory>();

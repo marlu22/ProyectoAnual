@@ -33,5 +33,17 @@ namespace DataAccess.Entities
 
         [Column("cant_preguntas")]
         public int CantPreguntas { get; set; }
+
+        public void Update(bool mayusYMinus, bool letrasYNumeros, bool caracterEspecial, bool autenticacion2FA, bool noRepetirAnteriores, bool sinDatosPersonales, int minCaracteres, int cantPreguntas)
+        {
+            MayusYMinus = mayusYMinus;
+            LetrasYNumeros = letrasYNumeros;
+            CaracterEspecial = caracterEspecial;
+            Autenticacion2FA = autenticacion2FA;
+            NoRepetirAnteriores = noRepetirAnteriores;
+            SinDatosPersonales = sinDatosPersonales;
+            MinCaracteres = minCaracteres;
+            CantPreguntas = cantPreguntas;
+        }
     }
 }

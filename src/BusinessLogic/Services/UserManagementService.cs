@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using UserManagementSystem.BusinessLogic.Exceptions;
 using BusinessLogic.Security;
+using BusinessLogic.Factories;
 
 namespace BusinessLogic.Services
 {
@@ -19,6 +20,8 @@ namespace BusinessLogic.Services
         private readonly IEmailService _emailService;
         private readonly ILogger<UserManagementService> _logger;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly PersonaFactory _personaFactory;
+        private readonly UsuarioFactory _usuarioFactory;
 
         public UserManagementService(IUserRepository userRepository, IEmailService emailService, ILogger<UserManagementService> logger, IPasswordHasher passwordHasher)
         {
@@ -26,6 +29,8 @@ namespace BusinessLogic.Services
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
+            _personaFactory = new PersonaFactory(_userRepository);
+            _usuarioFactory = new UsuarioFactory(_userRepository, _passwordHasher);
         }
 
         private T ExecuteServiceOperation<T>(Func<T> operation, string operationName)
@@ -65,51 +70,7 @@ namespace BusinessLogic.Services
         public void CrearPersona(PersonaRequest request) => ExecuteServiceOperation(() =>
         {
             _logger.LogInformation("Iniciando la creación de la persona con legajo: {Legajo}", request.Legajo);
-
-            if (!int.TryParse(request.Legajo, out int legajo))
-            {
-                _logger.LogWarning("El legajo '{Legajo}' no es un número válido.", request.Legajo);
-                throw new ValidationException("El legajo debe ser un número válido.");
-            }
-
-            if (string.IsNullOrWhiteSpace(request.Nombre))
-                throw new ValidationException("El nombre no puede estar vacío.");
-            if (string.IsNullOrWhiteSpace(request.Apellido))
-                throw new ValidationException("El apellido no puede estar vacío.");
-            if (!long.TryParse(request.NumDoc, out _))
-                throw new ValidationException("El número de documento debe ser numérico.");
-            if (!string.IsNullOrWhiteSpace(request.Cuil) && !long.TryParse(request.Cuil, out _))
-                throw new ValidationException("El CUIL debe ser numérico.");
-            if (string.IsNullOrWhiteSpace(request.Calle))
-                throw new ValidationException("La calle no puede estar vacía.");
-            if (!int.TryParse(request.Altura, out _))
-                throw new ValidationException("La altura de la dirección debe ser un número.");
-            if (string.IsNullOrWhiteSpace(request.Correo) || !IsValidEmail(request.Correo))
-                throw new ValidationException("El formato del correo electrónico no es válido.");
-            if (!int.TryParse(request.Localidad, out int localidadId))
-            {
-                _logger.LogWarning("El ID de localidad '{Localidad}' no es válido.", request.Localidad);
-                throw new ValidationException("El ID de localidad no es válido.");
-            }
-
-            var persona = new Persona
-            {
-                Legajo = legajo,
-                Nombre = request.Nombre,
-                Apellido = request.Apellido,
-                IdTipoDoc = _userRepository.GetTipoDocByNombre(request.TipoDoc)?.IdTipoDoc ?? throw new ValidationException("Tipo de documento no encontrado"),
-                NumDoc = request.NumDoc,
-                FechaNacimiento = request.FechaNacimiento,
-                Cuil = request.Cuil,
-                Calle = request.Calle,
-                Altura = request.Altura,
-                IdLocalidad = localidadId,
-                IdGenero = _userRepository.GetGeneroByNombre(request.Genero)?.IdGenero ?? throw new ValidationException("Género no encontrado"),
-                Correo = request.Correo,
-                Celular = request.Celular,
-                FechaIngreso = request.FechaIngreso
-            };
-
+            var persona = _personaFactory.Create(request);
             _logger.LogInformation("Llamando a AddPersona en el repositorio.");
             _userRepository.AddPersona(persona);
             _logger.LogInformation("Persona creada con éxito en el repositorio.");
@@ -117,32 +78,13 @@ namespace BusinessLogic.Services
 
         public void CrearUsuario(UserRequest request) => ExecuteServiceOperation(() =>
         {
-            var persona = _userRepository.GetPersonaById(int.Parse(request.PersonaId))
-                ?? throw new ValidationException("Persona no encontrada");
+            var (usuario, plainPassword) = _usuarioFactory.Create(request);
 
-            if (string.IsNullOrWhiteSpace(persona.Correo))
-            {
-                throw new ValidationException("La persona seleccionada no tiene un correo electrónico para enviar la contraseña.");
-            }
-
-            string passwordToUse = GenerateRandomPassword(request.Username, persona);
-
-            // The constructor for Usuario should be enriched in a future refactoring
-            var usuario = new Usuario
-            {
-                IdPersona = int.Parse(request.PersonaId),
-                UsuarioNombre = request.Username,
-                ContrasenaScript = _passwordHasher.Hash(request.Username, passwordToUse),
-                IdRol = _userRepository.GetRolByNombre(request.Rol)?.IdRol ?? throw new ValidationException("Rol no encontrado"),
-                FechaUltimoCambio = DateTime.Now,
-                // We should use the Habilitar() method here, but the entity is not instantiated yet.
-                // This highlights a need for a Factory for Usuario as well.
-                FechaBloqueo = new DateTime(9999, 12, 31),
-                CambioContrasenaObligatorio = true
-            };
             _userRepository.AddUsuario(usuario);
 
-            var task = _emailService.SendPasswordResetEmailAsync(persona.Correo, passwordToUse);
+            var persona = _userRepository.GetPersonaById(usuario.IdPersona)!; // We know the persona exists from the factory
+
+            var task = _emailService.SendPasswordResetEmailAsync(persona.Correo!, plainPassword);
             task.ContinueWith(t => {
                 if (t.IsFaulted)
                 {
@@ -159,16 +101,8 @@ namespace BusinessLogic.Services
 
         public void UpdatePoliticaSeguridad(PoliticaSeguridadDto politicaDto) => ExecuteServiceOperation(() =>
         {
-            // This logic could also be moved to the PoliticaSeguridad entity.
             var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { IdPolitica = politicaDto.IdPolitica };
-            politica.MayusYMinus = politicaDto.MayusYMinus;
-            politica.LetrasYNumeros = politicaDto.LetrasYNumeros;
-            politica.CaracterEspecial = politicaDto.CaracterEspecial;
-            politica.Autenticacion2FA = politicaDto.Autenticacion2FA;
-            politica.NoRepetirAnteriores = politicaDto.NoRepetirAnteriores;
-            politica.SinDatosPersonales = politicaDto.SinDatosPersonales;
-            politica.MinCaracteres = politicaDto.MinCaracteres;
-            politica.CantPreguntas = politicaDto.CantPreguntas;
+            politica.Update(politicaDto.MayusYMinus, politicaDto.LetrasYNumeros, politicaDto.CaracterEspecial, politicaDto.Autenticacion2FA, politicaDto.NoRepetirAnteriores, politicaDto.SinDatosPersonales, politicaDto.MinCaracteres, politicaDto.CantPreguntas);
             _userRepository.UpdatePoliticaSeguridad(politica);
         }, "updating security policy");
 
@@ -181,20 +115,8 @@ namespace BusinessLogic.Services
             var usuario = _userRepository.GetUsuarioByNombreUsuario(userDto.Username)
                 ?? throw new ValidationException($"Usuario '{userDto.Username}' not found");
 
-            // This logic should be moved to the entity.
-            usuario.UsuarioNombre = userDto.Username;
-            usuario.IdRol = userDto.IdRol;
-            usuario.FechaExpiracion = userDto.FechaExpiracion;
-            usuario.CambioContrasenaObligatorio = userDto.CambioContrasenaObligatorio;
-
-            if (userDto.Habilitado)
-            {
-                usuario.Habilitar();
-            }
-            else
-            {
-                usuario.Deshabilitar("Admin"); // Placeholder for admin user
-            }
+            // The admin username should come from the current session context in a real app
+            usuario.Update(userDto.Username, userDto.IdRol, userDto.FechaExpiracion, userDto.CambioContrasenaObligatorio, userDto.Habilitado, "Admin");
 
             _userRepository.UpdateUsuario(usuario);
         }, "updating user");
@@ -208,21 +130,7 @@ namespace BusinessLogic.Services
             var persona = _userRepository.GetPersonaById(personaDto.IdPersona)
                 ?? throw new ValidationException($"Persona with id {personaDto.IdPersona} not found");
 
-            // This logic should be moved to the entity.
-            persona.Legajo = personaDto.Legajo;
-            persona.Nombre = personaDto.Nombre;
-            persona.Apellido = personaDto.Apellido;
-            persona.IdTipoDoc = personaDto.IdTipoDoc;
-            persona.NumDoc = personaDto.NumDoc;
-            persona.FechaNacimiento = personaDto.FechaNacimiento;
-            persona.Cuil = personaDto.Cuil;
-            persona.Calle = personaDto.Calle;
-            persona.Altura = personaDto.Altura;
-            persona.IdLocalidad = personaDto.IdLocalidad;
-            persona.IdGenero = personaDto.IdGenero;
-            persona.Correo = personaDto.Correo;
-            persona.Celular = personaDto.Celular;
-            persona.FechaIngreso = personaDto.FechaIngreso;
+            persona.Update(personaDto.Legajo, personaDto.Nombre, personaDto.Apellido, personaDto.IdTipoDoc, personaDto.NumDoc, personaDto.FechaNacimiento, personaDto.Cuil, personaDto.Calle, personaDto.Altura, personaDto.IdLocalidad, personaDto.IdGenero, personaDto.Correo, personaDto.Celular, personaDto.FechaIngreso);
 
             _userRepository.UpdatePersona(persona);
         }, "updating persona");
@@ -311,73 +219,6 @@ namespace BusinessLogic.Services
                 MinCaracteres = politica.MinCaracteres,
                 CantPreguntas = politica.CantPreguntas
             };
-        }
-        #endregion
-
-        #region Private Helpers
-        private bool IsValidEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
-            try
-            {
-                return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
-            }
-            catch (RegexMatchTimeoutException)
-            {
-                return false;
-            }
-        }
-
-        private string GenerateRandomPassword(string? username = null, Persona? persona = null)
-        {
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad();
-            var random = new Random();
-
-            while (true)
-            {
-                var minLength = politica.MinCaracteres > 0 ? politica.MinCaracteres : 12;
-                var passwordChars = new List<char>();
-                const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                const string lower = "abcdefghijklmnopqrstuvwxyz";
-                const string digits = "0123456789";
-                const string specials = "!@#$%^&*()";
-                var allChars = new StringBuilder(upper).Append(lower).Append(digits).Append(specials).ToString();
-
-                if (politica.MayusYMinus)
-                {
-                    passwordChars.Add(upper[random.Next(upper.Length)]);
-                    passwordChars.Add(lower[random.Next(lower.Length)]);
-                }
-                if (politica.LetrasYNumeros)
-                {
-                    passwordChars.Add(digits[random.Next(digits.Length)]);
-                }
-                if (politica.CaracterEspecial)
-                {
-                    passwordChars.Add(specials[random.Next(specials.Length)]);
-                }
-
-                while (passwordChars.Count < minLength)
-                {
-                    passwordChars.Add(allChars[random.Next(allChars.Length)]);
-                }
-
-                var password = new string(passwordChars.OrderBy(c => random.Next()).ToArray());
-
-                if (politica.SinDatosPersonales && username != null && persona != null)
-                {
-                    try
-                    {
-                        new PasswordPolicyValidator().Validate(password, username, persona, politica);
-                    }
-                    catch (ValidationException)
-                    {
-                        continue;
-                    }
-                }
-                return password;
-            }
         }
         #endregion
     }

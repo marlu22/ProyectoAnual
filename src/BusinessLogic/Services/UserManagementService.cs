@@ -57,7 +57,7 @@ namespace BusinessLogic.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during {OperationName}", operationName);
-                throw new BusinessLogicException($"An unexpected error occurred during {operationName}: {ex.Message}", ex);
+                throw new BusinessLogicException("DIAGNOSTIC TEST: USER MANAGEMENT SERVICE FAILED.", ex);
             }
         }
 
@@ -74,7 +74,7 @@ namespace BusinessLogic.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during {OperationName}", operationName);
-                throw new BusinessLogicException($"An unexpected error occurred during {operationName}: {ex.Message}", ex);
+                throw new BusinessLogicException("DIAGNOSTIC TEST: USER MANAGEMENT SERVICE FAILED.", ex);
             }
         }
         private async Task<T> ExecuteServiceOperationAsync<T>(Func<Task<T>> operation, string operationName)
@@ -90,7 +90,7 @@ namespace BusinessLogic.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during {OperationName}", operationName);
-                throw new BusinessLogicException($"An unexpected error occurred during {operationName}: {ex.Message}", ex);
+                throw new BusinessLogicException("DIAGNOSTIC TEST: USER MANAGEMENT SERVICE FAILED.", ex);
             }
         }
 
@@ -107,7 +107,7 @@ namespace BusinessLogic.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during {OperationName}", operationName);
-                throw new BusinessLogicException($"An unexpected error occurred during {operationName}: {ex.Message}", ex);
+                throw new BusinessLogicException("DIAGNOSTIC TEST: USER MANAGEMENT SERVICE FAILED.", ex);
             }
         }
 

@@ -1,7 +1,7 @@
-// src/DataAccess/Repositories/SqlUserRepository.cs
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using DataAccess.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
@@ -20,62 +20,60 @@ namespace DataAccess.Repositories
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        // Generic helper for executing read operations
-        private T ExecuteReader<T>(string sql, Func<SqlDataReader, T> map, Action<SqlParameterCollection>? addParameters = null, CommandType commandType = CommandType.Text)
+        private async Task<T> ExecuteReaderAsync<T>(string sql, Func<SqlDataReader, Task<T>> map, Action<SqlParameterCollection>? addParameters = null, CommandType commandType = CommandType.Text)
         {
             try
             {
                 using (var connection = (SqlConnection)_connectionFactory.CreateConnection())
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
                     using (var command = connection.CreateCommand())
                     {
                         command.CommandText = sql;
                         command.CommandType = commandType;
                         addParameters?.Invoke(command.Parameters);
 
-                        using (var reader = command.ExecuteReader())
+                        using (var reader = await command.ExecuteReaderAsync())
                         {
-                            return map(reader);
+                            return await map(reader);
                         }
                     }
                 }
             }
             catch (SqlException ex)
             {
-                _logger.LogError(ex, "Ocurrió un error de SQL al ejecutar ExecuteReader para el comando: {sql}", sql);
+                _logger.LogError(ex, "Ocurrió un error de SQL al ejecutar ExecuteReaderAsync para el comando: {sql}", sql);
                 throw new DataAccessLayerException($"Ocurrió un error de SQL al ejecutar {sql}", ex);
             }
         }
 
-        // Generic helper for executing write operations
-        private void ExecuteNonQuery(string sql, Action<SqlParameterCollection> addParameters, CommandType commandType = CommandType.StoredProcedure)
+        private async Task ExecuteNonQueryAsync(string sql, Action<SqlParameterCollection> addParameters, CommandType commandType = CommandType.StoredProcedure)
         {
             try
             {
                 using (var connection = (SqlConnection)_connectionFactory.CreateConnection())
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
                     using (var command = connection.CreateCommand())
                     {
                         command.CommandText = sql;
                         command.CommandType = commandType;
                         addParameters(command.Parameters);
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
             }
             catch (SqlException ex)
             {
-                _logger.LogError(ex, "Ocurrió un error de SQL al ejecutar ExecuteNonQuery para el comando: {sql}", sql);
+                _logger.LogError(ex, "Ocurrió un error de SQL al ejecutar ExecuteNonQueryAsync para el comando: {sql}", sql);
                 throw new DataAccessLayerException($"Ocurrió un error de SQL al ejecutar {sql}", ex);
             }
         }
 
-        public List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario) => ExecuteReader("sp_get_historial_contrasenas_by_usuario_id", reader =>
+        public async Task<List<HistorialContrasena>> GetHistorialContrasenasByUsuarioIdAsync(int idUsuario) => await ExecuteReaderAsync("sp_get_historial_contrasenas_by_usuario_id", async reader =>
         {
             var list = new List<HistorialContrasena>();
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 list.Add(new HistorialContrasena
                 {
@@ -88,23 +86,13 @@ namespace DataAccess.Repositories
             return list;
         }, p => p.AddWithValue("@id_usuario", idUsuario), CommandType.StoredProcedure);
 
-        public Usuario? GetUsuarioByNombreUsuario(string nombre) => ExecuteReader("sp_get_usuario_by_nombre", reader =>
+        public async Task<Usuario?> GetUsuarioByNombreUsuarioAsync(string nombre) => await ExecuteReaderAsync("sp_get_usuario_by_nombre", async reader =>
         {
-            if (!reader.Read()) return null;
-            var usuario = new Usuario(
-                reader["usuario"] as string ?? string.Empty,
-                (byte[])reader["contrasena_script"],
-                (int)reader["id_persona"],
-                (int)reader["id_rol"],
-                reader["id_politica"] as int?
-            );
-            // As the constructor sets default values, we might need to update some properties
-            // based on the data returned from the database if they differ from the defaults.
-            // For now, we assume the constructor logic is sufficient.
-            return usuario;
+            if (!await reader.ReadAsync()) return null;
+            return MapToUsuario(reader);
         }, p => p.AddWithValue("@usuario_nombre", nombre), CommandType.StoredProcedure);
 
-        public void Set2faCode(string username, string? code, DateTime? expiry) => ExecuteNonQuery(
+        public async Task Set2faCodeAsync(string username, string? code, DateTime? expiry) => await ExecuteNonQueryAsync(
             "sp_set_2fa_code",
             p =>
             {
@@ -115,30 +103,34 @@ namespace DataAccess.Repositories
             CommandType.StoredProcedure
         );
 
-        public List<Usuario> GetAllUsers() => ExecuteReader("sp_get_all_users", reader =>
+        public async Task<List<Usuario>> GetAllUsersAsync() => await ExecuteReaderAsync("sp_get_all_users", async reader =>
         {
             var list = new List<Usuario>();
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
-                var usuario = new Usuario(
-                    reader["usuario"] as string ?? string.Empty,
-                    (byte[])reader["contrasena_script"],
-                    (int)reader["id_persona"],
-                    (int)reader["id_rol"],
-                    reader["id_politica"] as int?
-                );
-                list.Add(usuario);
+                list.Add(MapToUsuario(reader));
             }
             return list;
         }, commandType: CommandType.StoredProcedure);
 
-        public void AddHistorialContrasena(HistorialContrasena historial) => ExecuteNonQuery("sp_historial_contrasena", p =>
+        private static Usuario MapToUsuario(SqlDataReader reader)
+        {
+            return new Usuario(
+                reader["usuario"] as string ?? string.Empty,
+                (byte[])reader["contrasena_script"],
+                (int)reader["id_persona"],
+                (int)reader["id_rol"],
+                reader["id_politica"] as int?
+            );
+        }
+
+        public async Task AddHistorialContrasenaAsync(HistorialContrasena historial) => await ExecuteNonQueryAsync("sp_historial_contrasena", p =>
         {
             p.AddWithValue("@id_usuario", historial.IdUsuario);
             p.AddWithValue("@contrasena_script", historial.ContrasenaScript);
         });
 
-        public void AddUsuario(Usuario usuario) => ExecuteNonQuery("sp_insert_usuario", p =>
+        public async Task AddUsuarioAsync(Usuario usuario) => await ExecuteNonQueryAsync("sp_insert_usuario", p =>
         {
             p.AddWithValue("@usuario", usuario.UsuarioNombre);
             p.AddWithValue("@contrasena_script", usuario.ContrasenaScript);
@@ -150,7 +142,7 @@ namespace DataAccess.Repositories
             p.AddWithValue("@CambioContrasenaObligatorio", usuario.CambioContrasenaObligatorio);
         });
 
-        public void UpdateUsuario(Usuario usuario) => ExecuteNonQuery("sp_actualizar_usuario", p =>
+        public async Task UpdateUsuarioAsync(Usuario usuario) => await ExecuteNonQueryAsync("sp_actualizar_usuario", p =>
         {
             p.AddWithValue("@id_usuario", usuario.IdUsuario);
             p.AddWithValue("@usuario", usuario.UsuarioNombre);
@@ -163,7 +155,7 @@ namespace DataAccess.Repositories
             p.AddWithValue("@CambioContrasenaObligatorio", usuario.CambioContrasenaObligatorio);
         });
 
-        public void DeleteUsuario(int usuarioId) => ExecuteNonQuery("sp_delete_usuario", p =>
+        public async Task DeleteUsuarioAsync(int usuarioId) => await ExecuteNonQueryAsync("sp_delete_usuario", p =>
         {
             p.AddWithValue("@id_usuario", usuarioId);
         });

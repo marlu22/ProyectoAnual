@@ -79,31 +79,62 @@ namespace BusinessLogic.Services
                 throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
             }
         }
-
-        public void CrearPersona(PersonaRequest request) => ExecuteServiceOperation(() =>
+        private async Task<T> ExecuteServiceOperationAsync<T>(Func<Task<T>> operation, string operationName)
         {
-            _logger.LogInformation("Iniciando la creación de la persona con legajo: {Legajo}", request.Legajo);
-            var persona = _personaFactory.Create(request);
-            _logger.LogInformation("Llamando a AddPersona en el repositorio.");
-            _personaRepository.AddPersona(persona);
-            _logger.LogInformation("Persona creada con éxito en el repositorio.");
-        }, "creating a person");
+            try
+            {
+                return await operation();
+            }
+            catch (ValidationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
+            }
+        }
 
-        public void CrearUsuario(UserRequest request) => ExecuteServiceOperation(() =>
+        private async Task ExecuteServiceOperationAsync(Func<Task> operation, string operationName)
+        {
+            try
+            {
+                await operation();
+            }
+            catch (ValidationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
+            }
+        }
+
+        public Task CrearPersonaAsync(PersonaRequest request)
+        {
+            ExecuteServiceOperation(() =>
+            {
+                _logger.LogInformation("Iniciando la creación de la persona con legajo: {Legajo}", request.Legajo);
+                var persona = _personaFactory.Create(request);
+                _logger.LogInformation("Llamando a AddPersona en el repositorio.");
+                _personaRepository.AddPersona(persona);
+                _logger.LogInformation("Persona creada con éxito en el repositorio.");
+            }, "creating a person");
+            return Task.CompletedTask;
+        }
+
+        public async Task CrearUsuarioAsync(UserRequest request) => await ExecuteServiceOperationAsync(async () =>
         {
             var (usuario, plainPassword) = _usuarioFactory.Create(request);
 
-            _userRepository.AddUsuario(usuario);
+            await _userRepository.AddUsuarioAsync(usuario);
 
             var persona = _personaRepository.GetPersonaById(usuario.IdPersona)!; // We know the persona exists from the factory
 
-            var task = _emailService.SendPasswordResetEmailAsync(persona.Correo!, plainPassword);
-            task.ContinueWith(t => {
-                if (t.IsFaulted)
-                {
-                    _logger.LogError(t.Exception, "Failed to send password reset email.");
-                }
-            });
+            await _emailService.SendPasswordResetEmailAsync(persona.Correo!, plainPassword);
         }, "creating a user");
 
         public PoliticaSeguridadDto? GetPoliticaSeguridad() => ExecuteServiceOperation(() =>
@@ -120,9 +151,9 @@ namespace BusinessLogic.Services
             _securityRepository.UpdatePoliticaSeguridad(politica);
         }, "updating security policy");
 
-        public List<UserDto> GetAllUsers() => ExecuteServiceOperation(() =>
+        public async Task<List<UserDto>> GetAllUsersAsync() => await ExecuteServiceOperationAsync(async () =>
         {
-            var usuarios = _userRepository.GetAllUsers();
+            var usuarios = await _userRepository.GetAllUsersAsync();
             var personas = _personaRepository.GetAllPersonas().ToDictionary(p => p.IdPersona);
 
             return usuarios.Select(u =>
@@ -138,9 +169,9 @@ namespace BusinessLogic.Services
             }).ToList();
         }, "getting all users");
 
-        public void UpdateUser(UserDto userDto) => ExecuteServiceOperation(() =>
+        public async Task UpdateUserAsync(UserDto userDto) => await ExecuteServiceOperationAsync(async () =>
         {
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(userDto.Username)
+            var usuario = await _userRepository.GetUsuarioByNombreUsuarioAsync(userDto.Username)
                 ?? throw new ValidationException($"Usuario '{userDto.Username}' not found");
 
             // The admin username should come from the current session context in a real app
@@ -159,41 +190,53 @@ namespace BusinessLogic.Services
                 usuario.Deshabilitar(adminUsername);
             }
 
-            _userRepository.UpdateUsuario(usuario);
+            await _userRepository.UpdateUsuarioAsync(usuario);
         }, "updating user");
 
-        public void DeleteUser(int userId) => ExecuteServiceOperation(() =>
-            _userRepository.DeleteUsuario(userId),
+        public async Task DeleteUserAsync(int userId) => await ExecuteServiceOperationAsync(async () =>
+            await _userRepository.DeleteUsuarioAsync(userId),
             "deleting user");
 
-        public void UpdatePersona(PersonaDto personaDto) => ExecuteServiceOperation(() =>
+        public Task UpdatePersonaAsync(PersonaDto personaDto)
         {
-            var persona = _personaRepository.GetPersonaById(personaDto.IdPersona)
-                ?? throw new ValidationException($"Persona with id {personaDto.IdPersona} not found");
+            ExecuteServiceOperation(() =>
+            {
+                var persona = _personaRepository.GetPersonaById(personaDto.IdPersona)
+                    ?? throw new ValidationException($"Persona with id {personaDto.IdPersona} not found");
 
-            persona.Update(personaDto.Legajo, personaDto.Nombre, personaDto.Apellido, personaDto.IdTipoDoc, personaDto.NumDoc, personaDto.FechaNacimiento, personaDto.Cuil, personaDto.Calle, personaDto.Altura, personaDto.IdLocalidad, personaDto.IdGenero, personaDto.Correo, personaDto.Celular, personaDto.FechaIngreso);
+                persona.Update(personaDto.Legajo, personaDto.Nombre, personaDto.Apellido, personaDto.IdTipoDoc, personaDto.NumDoc, personaDto.FechaNacimiento, personaDto.Cuil, personaDto.Calle, personaDto.Altura, personaDto.IdLocalidad, personaDto.IdGenero, personaDto.Correo, personaDto.Celular, personaDto.FechaIngreso);
 
-            _personaRepository.UpdatePersona(persona);
-        }, "updating persona");
+                _personaRepository.UpdatePersona(persona);
+            }, "updating persona");
+            return Task.CompletedTask;
+        }
 
-        public void DeletePersona(int personaId) => ExecuteServiceOperation(() =>
-            _personaRepository.DeletePersona(personaId),
-            "deleting persona");
-
-        public UserDto? GetUserByUsername(string username) => ExecuteServiceOperation(() =>
+        public Task DeletePersonaAsync(int personaId)
         {
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
+            ExecuteServiceOperation(() => _personaRepository.DeletePersona(personaId), "deleting persona");
+            return Task.CompletedTask;
+        }
+
+        public async Task<UserDto?> GetUserByUsernameAsync(string username) => await ExecuteServiceOperationAsync(async () =>
+        {
+            var usuario = await _userRepository.GetUsuarioByNombreUsuarioAsync(username);
             return UserMapper.MapToUserDto(usuario);
         }, "getting user by username");
 
-        public PersonaDto? GetPersonaById(int personaId) => ExecuteServiceOperation(() =>
+        public Task<PersonaDto?> GetPersonaByIdAsync(int personaId)
         {
-            var persona = _personaRepository.GetPersonaById(personaId);
-            return PersonaMapper.MapToPersonaDto(persona);
-        }, "getting persona by id");
+            return Task.FromResult(ExecuteServiceOperation(() =>
+            {
+                var persona = _personaRepository.GetPersonaById(personaId);
+                return PersonaMapper.MapToPersonaDto(persona);
+            }, "getting persona by id"));
+        }
 
-        public List<PersonaDto> GetPersonas() => ExecuteServiceOperation(() =>
-            _personaRepository.GetAllPersonas().Select(p => PersonaMapper.MapToPersonaDto(p)!).ToList(),
-            "getting all people");
+        public Task<List<PersonaDto>> GetPersonasAsync()
+        {
+            return Task.FromResult(ExecuteServiceOperation(() =>
+                _personaRepository.GetAllPersonas().Select(p => PersonaMapper.MapToPersonaDto(p)!).ToList(),
+                "getting all people"));
+        }
     }
 }

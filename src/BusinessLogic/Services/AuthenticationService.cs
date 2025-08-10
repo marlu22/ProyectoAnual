@@ -43,54 +43,81 @@ namespace BusinessLogic.Services
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                     return AuthenticationResult.Failed("Usuario o contraseña no pueden estar vacíos.");
 
-                var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
-                if (usuario == null)
-                    return AuthenticationResult.Failed("Usuario o contraseña incorrectos.");
+                var usuario = await _userRepository.GetUsuarioByNombreUsuarioAsync(username);
 
-                var hash = _passwordHasher.Hash(username, password);
-                if (!hash.SequenceEqual(usuario.ContrasenaScript))
-                    return AuthenticationResult.Failed("Usuario o contraseña incorrectos.");
-
-                if (usuario.FechaBloqueo < DateTime.Now)
+                var validationResult = ValidateCredentials(usuario, username, password) ?? CheckAccountStatus(usuario!);
+                if (validationResult != null)
                 {
-                    return AuthenticationResult.Failed("La cuenta se encuentra deshabilitada.");
-                }
-
-                if (usuario.FechaExpiracion.HasValue && usuario.FechaExpiracion.Value < DateTime.Now)
-                {
-                    return AuthenticationResult.Failed("La cuenta ha expirado.");
+                    return validationResult;
                 }
 
                 var politica = _securityPolicyService.GetPoliticaSeguridad();
                 if (politica?.Autenticacion2FA ?? false)
                 {
-                    var persona = _personaRepository.GetPersonaById(usuario.IdPersona);
-                    if (persona == null || string.IsNullOrWhiteSpace(persona.Correo))
-                    {
-                        return AuthenticationResult.Failed("No se puede usar 2FA sin un correo configurado.");
-                    }
-
-                    var code = new Random().Next(100000, 999999).ToString();
-                    var expiry = DateTime.UtcNow.AddMinutes(5);
-
-                    _userRepository.Set2faCode(username, code, expiry);
-
-                    await _emailService.Send2faCodeEmailAsync(persona.Correo, code);
-
-                    return AuthenticationResult.TwoFactorRequired();
+                    return await HandleTwoFactorAuthentication(username, usuario!.IdPersona);
                 }
 
-                var userResponse = new UserResponse
-                {
-                    Username = usuario.UsuarioNombre,
-                    Rol = usuario.Rol?.Nombre,
-                    CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio,
-                    IdPersona = usuario.IdPersona
-                };
-
-                var nextAction = DetermineNextAction(userResponse);
-                return AuthenticationResult.Succeeded(userResponse, nextAction);
+                return CreateSuccessfulAuthenticationResult(usuario!);
             }, "authenticating user");
+        }
+
+        private AuthenticationResult? ValidateCredentials(DataAccess.Entities.Usuario? usuario, string username, string password)
+        {
+            if (usuario == null)
+                return AuthenticationResult.Failed("Usuario o contraseña incorrectos.");
+
+            var hash = _passwordHasher.Hash(username, password);
+            if (!hash.SequenceEqual(usuario.ContrasenaScript))
+                return AuthenticationResult.Failed("Usuario o contraseña incorrectos.");
+
+            return null; // Credentials are valid
+        }
+
+        private AuthenticationResult? CheckAccountStatus(DataAccess.Entities.Usuario usuario)
+        {
+            if (usuario.FechaBloqueo < DateTime.Now)
+            {
+                return AuthenticationResult.Failed("La cuenta se encuentra deshabilitada.");
+            }
+
+            if (usuario.FechaExpiracion.HasValue && usuario.FechaExpiracion.Value < DateTime.Now)
+            {
+                return AuthenticationResult.Failed("La cuenta ha expirado.");
+            }
+
+            return null; // Account status is valid
+        }
+
+        private async Task<AuthenticationResult> HandleTwoFactorAuthentication(string username, int personaId)
+        {
+            var persona = _personaRepository.GetPersonaById(personaId);
+            if (persona == null || string.IsNullOrWhiteSpace(persona.Correo))
+            {
+                return AuthenticationResult.Failed("No se puede usar 2FA sin un correo configurado.");
+            }
+
+            var code = new Random().Next(100000, 999999).ToString();
+            var expiry = DateTime.UtcNow.AddMinutes(5);
+
+            await _userRepository.Set2faCodeAsync(username, code, expiry);
+
+            await _emailService.Send2faCodeEmailAsync(persona.Correo, code);
+
+            return AuthenticationResult.TwoFactorRequired();
+        }
+
+        private AuthenticationResult CreateSuccessfulAuthenticationResult(DataAccess.Entities.Usuario usuario)
+        {
+            var userResponse = new UserResponse
+            {
+                Username = usuario.UsuarioNombre,
+                Rol = usuario.Rol?.Nombre,
+                CambioContrasenaObligatorio = usuario.CambioContrasenaObligatorio,
+                IdPersona = usuario.IdPersona
+            };
+
+            var nextAction = DetermineNextAction(userResponse);
+            return AuthenticationResult.Succeeded(userResponse, nextAction);
         }
 
         public async Task<AuthenticationResult> Validate2faAsync(string username, string code)
@@ -102,14 +129,14 @@ namespace BusinessLogic.Services
                     return AuthenticationResult.Failed("El código 2FA es requerido.");
                 }
 
-                var usuario = _userRepository.GetUsuarioByNombreUsuario(username);
+                var usuario = await _userRepository.GetUsuarioByNombreUsuarioAsync(username);
                 if (usuario == null || usuario.Codigo2FA != code || usuario.Codigo2FAExpiracion < DateTime.UtcNow)
                 {
                     return AuthenticationResult.Failed("El código 2FA es inválido o ha expirado.");
                 }
 
                 usuario.SetTwoFactorCode(null, null);
-                _userRepository.UpdateUsuario(usuario);
+                await _userRepository.UpdateUsuarioAsync(usuario);
 
                 var userResponse = new UserResponse
                 {

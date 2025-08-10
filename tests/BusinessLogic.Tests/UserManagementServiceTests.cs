@@ -47,7 +47,7 @@ namespace BusinessLogic.Tests
         }
 
         [Fact]
-        public void CrearUsuario_WithValidData_ShouldCallAddUsuarioAndSendEmail()
+        public async Task CrearUsuarioAsync_WithValidData_ShouldCallAddUsuarioAndSendEmail()
         {
             // Arrange
             var userRequest = new UserRequest { PersonaId = "1", Username = "testuser", Rol = "Usuario" };
@@ -57,59 +57,62 @@ namespace BusinessLogic.Tests
 
             _usuarioFactoryMock.Setup(f => f.Create(userRequest)).Returns((usuario, plainPassword));
             _personaRepositoryMock.Setup(r => r.GetPersonaById(1)).Returns(persona);
-
+            _userRepositoryMock.Setup(r => r.AddUsuarioAsync(usuario)).Returns(Task.CompletedTask);
+            _emailServiceMock.Setup(s => s.SendPasswordResetEmailAsync(persona.Correo!, plainPassword)).Returns(Task.CompletedTask);
 
             // Act
-            _sut.CrearUsuario(userRequest);
+            await _sut.CrearUsuarioAsync(userRequest);
 
             // Assert
-            _userRepositoryMock.Verify(r => r.AddUsuario(usuario), Times.Once);
+            _userRepositoryMock.Verify(r => r.AddUsuarioAsync(usuario), Times.Once);
             _emailServiceMock.Verify(s => s.SendPasswordResetEmailAsync(persona.Correo!, plainPassword), Times.Once);
         }
 
         [Fact]
-        public void UpdateUser_WhenUserExists_ShouldUpdateAndCallRepository()
+        public async Task UpdateUserAsync_WhenUserExists_ShouldUpdateAndCallRepository()
         {
             // Arrange
             var userDto = new UserDto { Username = "testuser", IdRol = 1, FechaExpiracion = null, Habilitado = true };
             var usuario = new Usuario("testuser", new byte[0], 1, 1, 1);
-            _userRepositoryMock.Setup(r => r.GetUsuarioByNombreUsuario("testuser")).Returns(usuario);
+            _userRepositoryMock.Setup(r => r.GetUsuarioByNombreUsuarioAsync("testuser")).ReturnsAsync(usuario);
+            _userRepositoryMock.Setup(r => r.UpdateUsuarioAsync(It.IsAny<Usuario>())).Returns(Task.CompletedTask);
 
             // Act
-            _sut.UpdateUser(userDto);
+            await _sut.UpdateUserAsync(userDto);
 
             // Assert
-            _userRepositoryMock.Verify(r => r.UpdateUsuario(It.Is<Usuario>(u => u.UsuarioNombre == "testuser")), Times.Once);
+            _userRepositoryMock.Verify(r => r.UpdateUsuarioAsync(It.Is<Usuario>(u => u.UsuarioNombre == "testuser")), Times.Once);
             Assert.True(usuario.FechaBloqueo > DateTime.Now); // Habilitado
         }
 
         [Fact]
-        public void UpdateUser_WhenUserDoesNotExist_ShouldThrowValidationException()
+        public async Task UpdateUserAsync_WhenUserDoesNotExist_ShouldThrowValidationException()
         {
             // Arrange
             var userDto = new UserDto { Username = "nonexistent", IdRol = 1 };
-            _userRepositoryMock.Setup(r => r.GetUsuarioByNombreUsuario("nonexistent")).Returns((Usuario?)null);
+            _userRepositoryMock.Setup(r => r.GetUsuarioByNombreUsuarioAsync("nonexistent")).ReturnsAsync((Usuario?)null);
 
             // Act & Assert
-            var ex = Assert.Throws<ValidationException>(() => _sut.UpdateUser(userDto));
+            var ex = await Assert.ThrowsAsync<ValidationException>(() => _sut.UpdateUserAsync(userDto));
             Assert.Contains("'nonexistent' not found", ex.Message);
         }
 
         [Fact]
-        public void DeleteUser_WhenUserExists_ShouldCallRepository()
+        public async Task DeleteUserAsync_WhenUserExists_ShouldCallRepository()
         {
             // Arrange
             int userId = 1;
+            _userRepositoryMock.Setup(r => r.DeleteUsuarioAsync(userId)).Returns(Task.CompletedTask);
 
             // Act
-            _sut.DeleteUser(userId);
+            await _sut.DeleteUserAsync(userId);
 
             // Assert
-            _userRepositoryMock.Verify(r => r.DeleteUsuario(userId), Times.Once);
+            _userRepositoryMock.Verify(r => r.DeleteUsuarioAsync(userId), Times.Once);
         }
 
         [Fact]
-        public void GetAllUsers_WhenUsersAndPersonasExist_ReturnsCorrectlyMappedDtos()
+        public async Task GetAllUsersAsync_WhenUsersAndPersonasExist_ReturnsCorrectlyMappedDtos()
         {
             // Arrange
             var users = new List<Usuario>
@@ -123,11 +126,11 @@ namespace BusinessLogic.Tests
                 new Persona(2, "Jane", "Doe", 1, "456", DateTime.Now, "456", "street", "456", 1, 1, "jane.doe@test.com", "456", DateTime.Now) { IdPersona = 2 }
             };
 
-            _userRepositoryMock.Setup(r => r.GetAllUsers()).Returns(users);
+            _userRepositoryMock.Setup(r => r.GetAllUsersAsync()).ReturnsAsync(users);
             _personaRepositoryMock.Setup(r => r.GetAllPersonas()).Returns(personas);
 
             // Act
-            var result = _sut.GetAllUsers();
+            var result = await _sut.GetAllUsersAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -160,15 +163,17 @@ namespace BusinessLogic.Tests
         }
 
         [Fact]
-        public void CrearPersona_WithValidData_CallsFactoryAndRepository()
+        public async Task CrearPersonaAsync_WithValidData_CallsFactoryAndRepository()
         {
             // Arrange
             var personaRequest = new PersonaRequest { Nombre = "Test", Apellido = "Person" };
             var persona = new Persona(1, "Test", "Person", 1, "12345678", System.DateTime.Now, "20123456789", "Test Street", "123", 1, 1, "test@example.com", "1234567890", System.DateTime.Now);
             _personaFactoryMock.Setup(f => f.Create(personaRequest)).Returns(persona);
+            // AddPersona is still synchronous in the mock, as per the decision to not make all repos async yet
+            _personaRepositoryMock.Setup(r => r.AddPersona(persona));
 
             // Act
-            _sut.CrearPersona(personaRequest);
+            await _sut.CrearPersonaAsync(personaRequest);
 
             // Assert
             _personaFactoryMock.Verify(f => f.Create(personaRequest), Times.Once);

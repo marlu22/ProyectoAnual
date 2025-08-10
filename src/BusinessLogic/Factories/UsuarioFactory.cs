@@ -6,7 +6,7 @@ using BusinessLogic.Models;
 using BusinessLogic.Security;
 using DataAccess.Entities;
 using DataAccess.Repositories;
-using UserManagementSystem.BusinessLogic.Exceptions;
+using BusinessLogic.Exceptions;
 
 namespace BusinessLogic.Factories
 {
@@ -23,7 +23,12 @@ namespace BusinessLogic.Factories
 
         public (Usuario Usuario, string PlainPassword) Create(UserRequest request)
         {
-            var persona = _userRepository.GetPersonaById(int.Parse(request.PersonaId))
+            if (!int.TryParse(request.PersonaId, out int personaId))
+            {
+                throw new ValidationException("El Id de la persona no es válido.");
+            }
+
+            var persona = _userRepository.GetPersonaById(personaId)
                 ?? throw new ValidationException("Persona no encontrada");
 
             if (string.IsNullOrWhiteSpace(persona.Correo))
@@ -32,25 +37,18 @@ namespace BusinessLogic.Factories
             }
 
             string passwordToUse = GenerateRandomPassword(request.Username, persona);
+            var passwordHash = _passwordHasher.Hash(request.Username, passwordToUse);
+            var rolId = _userRepository.GetRolByNombre(request.Rol)?.IdRol ?? throw new ValidationException("Rol no encontrado");
+            var politica = _userRepository.GetPoliticaSeguridad();
 
-            var usuario = new Usuario
-            {
-                IdPersona = int.Parse(request.PersonaId),
-                UsuarioNombre = request.Username,
-                ContrasenaScript = _passwordHasher.Hash(request.Username, passwordToUse),
-                IdRol = _userRepository.GetRolByNombre(request.Rol)?.IdRol ?? throw new ValidationException("Rol no encontrado"),
-                FechaUltimoCambio = DateTime.Now,
-                CambioContrasenaObligatorio = true
-            };
-
-            usuario.Habilitar(); // Use the entity's own method to set the state
+            var usuario = new Usuario(request.Username, passwordHash, personaId, rolId, politica?.IdPolitica);
 
             return (usuario, passwordToUse);
         }
 
         private string GenerateRandomPassword(string? username = null, Persona? persona = null)
         {
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad();
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
             var random = new Random();
 
             while (true)

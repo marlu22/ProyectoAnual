@@ -5,9 +5,8 @@ using System.Windows.Forms;
 using BusinessLogic;
 using BusinessLogic.Services;
 using Presentation; // Required for LoginForm, frmError, etc.
-using UserManagementSystem.BusinessLogic.Exceptions;
-using UserManagementSystem.DataAccess.Exceptions;
-using UserManagementSystem.Presentation.Exceptions;
+using BusinessLogic.Exceptions;
+using Presentation.Exceptions;
 
 internal static class Program
 {

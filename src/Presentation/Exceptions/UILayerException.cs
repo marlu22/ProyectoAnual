@@ -1,6 +1,6 @@
 using System;
 
-namespace UserManagementSystem.Presentation.Exceptions
+namespace Presentation.Exceptions
 {
     public class UILayerException : Exception
     {

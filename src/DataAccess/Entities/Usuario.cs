@@ -9,58 +9,72 @@ namespace DataAccess.Entities
     {
         [Key]
         [Column("id_usuario")]
-        public int IdUsuario { get; set; }
+        public int IdUsuario { get; private set; }
 
         [Required]
         [Column("usuario")]
         [StringLength(30)]
-        public string UsuarioNombre { get; set; } = null!;
+        public string UsuarioNombre { get; private set; } = null!;
 
         [Required]
         [Column("contrasena_script")]
         [MaxLength(512)]
-        public byte[] ContrasenaScript { get; set; } = null!;
+        public byte[] ContrasenaScript { get; private set; } = null!;
 
         [Column("id_persona")]
-        public int IdPersona { get; set; }
+        public int IdPersona { get; private set; }
 
         [Column("fecha_bloqueo")]
-        public DateTime FechaBloqueo { get; set; }
+        public DateTime FechaBloqueo { get; private set; }
 
         [Column("nombre_usuario_bloqueo")]
         [StringLength(30)]
-        public string? NombreUsuarioBloqueo { get; set; }
+        public string? NombreUsuarioBloqueo { get; private set; }
 
         [Column("fecha_ultimo_cambio")]
-        public DateTime FechaUltimoCambio { get; set; }
+        public DateTime FechaUltimoCambio { get; private set; }
 
         [Column("id_rol")]
-        public int IdRol { get; set; }
+        public int IdRol { get; private set; }
 
         [Column("id_politica")]
-        public int? IdPolitica { get; set; }
+        public int? IdPolitica { get; private set; }
 
         [Column("CambioContrasenaObligatorio")]
-        public bool CambioContrasenaObligatorio { get; set; }
+        public bool CambioContrasenaObligatorio { get; private set; }
 
         [Column("Codigo2FA")]
         [StringLength(10)]
-        public string? Codigo2FA { get; set; }
+        public string? Codigo2FA { get; private set; }
 
         [Column("Codigo2FAExpiracion")]
-        public DateTime? Codigo2FAExpiracion { get; set; }
+        public DateTime? Codigo2FAExpiracion { get; private set; }
 
         [Column("FechaExpiracion")]
-        public DateTime? FechaExpiracion { get; set; }
+        public DateTime? FechaExpiracion { get; private set; }
 
         [ForeignKey("IdPersona")]
-        public virtual Persona Persona { get; set; } = null!;
+        public virtual Persona Persona { get; private set; } = null!;
 
         [ForeignKey("IdRol")]
-        public virtual Rol Rol { get; set; } = null!;
+        public virtual Rol Rol { get; private set; } = null!;
 
         [ForeignKey("IdPolitica")]
-        public virtual PoliticaSeguridad? PoliticaSeguridad { get; set; }
+        public virtual PoliticaSeguridad? PoliticaSeguridad { get; private set; }
+
+        private Usuario() { } // EF Core constructor
+
+        public Usuario(string usuarioNombre, byte[] contrasenaScript, int idPersona, int idRol, int? idPolitica)
+        {
+            UsuarioNombre = !string.IsNullOrWhiteSpace(usuarioNombre) ? usuarioNombre : throw new ArgumentException("El nombre de usuario no puede estar vacío.", nameof(usuarioNombre));
+            ContrasenaScript = contrasenaScript ?? throw new ArgumentNullException(nameof(contrasenaScript));
+            IdPersona = idPersona;
+            IdRol = idRol;
+            IdPolitica = idPolitica;
+            FechaUltimoCambio = DateTime.Now;
+            CambioContrasenaObligatorio = true;
+            Habilitar();
+        }
 
         public void Deshabilitar(string nombreUsuarioBloqueo)
         {
@@ -78,21 +92,32 @@ namespace DataAccess.Entities
             NombreUsuarioBloqueo = null;
         }
 
-        public void Update(string username, int idRol, DateTime? fechaExpiracion, bool cambioContrasenaObligatorio, bool habilitado, string adminUsername)
+        public void ChangeRole(int newRoleId)
         {
-            UsuarioNombre = username;
-            IdRol = idRol;
-            FechaExpiracion = fechaExpiracion;
-            CambioContrasenaObligatorio = cambioContrasenaObligatorio;
+            IdRol = newRoleId;
+        }
 
-            if (habilitado)
-            {
-                Habilitar();
-            }
-            else
-            {
-                Deshabilitar(adminUsername);
-            }
+        public void ForcePasswordChange(bool required)
+        {
+            CambioContrasenaObligatorio = required;
+        }
+
+        public void SetExpiration(DateTime? expirationDate)
+        {
+            FechaExpiracion = expirationDate;
+        }
+
+        public void ChangePassword(byte[] newPasswordHash)
+        {
+            ContrasenaScript = newPasswordHash;
+            FechaUltimoCambio = DateTime.Now;
+            CambioContrasenaObligatorio = false;
+        }
+
+        public void SetTwoFactorCode(string? code, DateTime? expiration)
+        {
+            Codigo2FA = code;
+            Codigo2FAExpiracion = expiration;
         }
     }
 }

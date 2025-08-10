@@ -7,7 +7,7 @@ using BusinessLogic.Models;
 using DataAccess.Entities;
 using DataAccess.Repositories;
 using Microsoft.Extensions.Logging;
-using UserManagementSystem.BusinessLogic.Exceptions;
+using BusinessLogic.Exceptions;
 using BusinessLogic.Security;
 
 namespace BusinessLogic.Services
@@ -132,7 +132,9 @@ namespace BusinessLogic.Services
                     var code = new Random().Next(100000, 999999).ToString();
                     var expiry = DateTime.UtcNow.AddMinutes(5);
 
-                    _userRepository.Set2faCode(username, code, expiry);
+                    usuario.SetTwoFactorCode(code, expiry);
+                    _userRepository.UpdateUsuario(usuario);
+
                     await _emailService.Send2faCodeEmailAsync(persona.Correo, code);
 
                     return AuthenticationResult.TwoFactorRequired();
@@ -179,7 +181,8 @@ namespace BusinessLogic.Services
                     return Task.FromResult(AuthenticationResult.Failed("El código 2FA es inválido o ha expirado."));
                 }
 
-                _userRepository.Set2faCode(username, null, null);
+                usuario.SetTwoFactorCode(null, null);
+                _userRepository.UpdateUsuario(usuario);
 
                 var userResponse = new UserResponse
                 {
@@ -212,7 +215,7 @@ namespace BusinessLogic.Services
             if (string.IsNullOrWhiteSpace(username))
                 throw new ValidationException("Username is required");
 
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { CantPreguntas = 3 };
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
             if (respuestas == null || respuestas.Count != politica.CantPreguntas || respuestas.Any(r => string.IsNullOrWhiteSpace(r.Value)))
                 throw new ValidationException($"Se requieren {politica.CantPreguntas} respuestas de seguridad.");
 
@@ -239,11 +242,10 @@ namespace BusinessLogic.Services
             }
 
             var newPassword = GenerateRandomPassword(username, persona);
-            // This is not ideal, we are modifying the entity directly.
-            // A future refactoring could be to create a method on Usuario like `ResetPassword`.
-            usuario.ContrasenaScript = _passwordHasher.Hash(username, newPassword);
-            usuario.FechaUltimoCambio = DateTime.Now;
-            usuario.CambioContrasenaObligatorio = true;
+            var newPasswordHash = _passwordHasher.Hash(username, newPassword);
+
+            usuario.ChangePassword(newPasswordHash);
+            usuario.ForcePasswordChange(true);
             _userRepository.UpdateUsuario(usuario);
 
             if (string.IsNullOrEmpty(persona.Correo))
@@ -293,9 +295,7 @@ namespace BusinessLogic.Services
                 FechaCambio = DateTime.Now
             });
 
-            usuario.ContrasenaScript = newPasswordHash;
-            usuario.FechaUltimoCambio = DateTime.Now;
-            usuario.CambioContrasenaObligatorio = false;
+            usuario.ChangePassword(newPasswordHash);
             _userRepository.UpdateUsuario(usuario);
         }, "changing password");
 
@@ -304,7 +304,7 @@ namespace BusinessLogic.Services
             var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { CantPreguntas = 3 };
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
             if (respuestas.Count != politica.CantPreguntas)
                 throw new ValidationException($"Se requieren exactamente {politica.CantPreguntas} respuestas de seguridad.");
 
@@ -405,7 +405,7 @@ namespace BusinessLogic.Services
 
         private string GenerateRandomPassword(string? username = null, Persona? persona = null)
         {
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad();
+            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad(0, false, true, true, false, false, true, 12, 3);
             var random = new Random();
 
             while (true)

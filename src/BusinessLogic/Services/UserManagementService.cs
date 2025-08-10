@@ -8,7 +8,7 @@ using DataAccess.Entities;
 using DataAccess.Repositories;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
-using UserManagementSystem.BusinessLogic.Exceptions;
+using BusinessLogic.Exceptions;
 using BusinessLogic.Security;
 using BusinessLogic.Factories;
 
@@ -101,7 +101,8 @@ namespace BusinessLogic.Services
 
         public void UpdatePoliticaSeguridad(PoliticaSeguridadDto politicaDto) => ExecuteServiceOperation(() =>
         {
-            var politica = _userRepository.GetPoliticaSeguridad() ?? new PoliticaSeguridad { IdPolitica = politicaDto.IdPolitica };
+            var politica = _userRepository.GetPoliticaSeguridad()
+                ?? throw new ValidationException("No se encontró la política de seguridad para actualizar.");
             politica.Update(politicaDto.MayusYMinus, politicaDto.LetrasYNumeros, politicaDto.CaracterEspecial, politicaDto.Autenticacion2FA, politicaDto.NoRepetirAnteriores, politicaDto.SinDatosPersonales, politicaDto.MinCaracteres, politicaDto.CantPreguntas);
             _userRepository.UpdatePoliticaSeguridad(politica);
         }, "updating security policy");
@@ -116,7 +117,20 @@ namespace BusinessLogic.Services
                 ?? throw new ValidationException($"Usuario '{userDto.Username}' not found");
 
             // The admin username should come from the current session context in a real app
-            usuario.Update(userDto.Username, userDto.IdRol, userDto.FechaExpiracion, userDto.CambioContrasenaObligatorio, userDto.Habilitado, "Admin");
+            const string adminUsername = "Admin";
+
+            usuario.ChangeRole(userDto.IdRol);
+            usuario.SetExpiration(userDto.FechaExpiracion);
+            usuario.ForcePasswordChange(userDto.CambioContrasenaObligatorio);
+
+            if (userDto.Habilitado)
+            {
+                usuario.Habilitar();
+            }
+            else
+            {
+                usuario.Deshabilitar(adminUsername);
+            }
 
             _userRepository.UpdateUsuario(usuario);
         }, "updating user");

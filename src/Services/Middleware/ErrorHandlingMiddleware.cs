@@ -2,11 +2,11 @@ using System;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using UserManagementSystem.BusinessLogic.Exceptions;
+using BusinessLogic.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace UserManagementSystem.Services.Middleware
+namespace Services.Middleware
 {
     public class ErrorHandlingMiddleware
     {

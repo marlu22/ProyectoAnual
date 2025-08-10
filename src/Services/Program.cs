@@ -5,7 +5,7 @@ using BusinessLogic.Security;
 using BusinessLogic.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using UserManagementSystem.Services.Middleware;
+using Services.Middleware;
 using Session;
 
 var builder = WebApplication.CreateBuilder(args);

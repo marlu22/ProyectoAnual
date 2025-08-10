@@ -2,7 +2,7 @@
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
-using UserManagementSystem.BusinessLogic.Exceptions;
+using BusinessLogic.Exceptions;
 
 namespace Presentation
 {

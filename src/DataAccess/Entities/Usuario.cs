@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Data.SqlClient;
 
 namespace DataAccess.Entities
 {
@@ -9,7 +10,7 @@ namespace DataAccess.Entities
     {
         [Key]
         [Column("id_usuario")]
-        public int IdUsuario { get; set; }
+        public int IdUsuario { get; private set; }
 
         [Required]
         [Column("usuario")]
@@ -118,6 +119,32 @@ namespace DataAccess.Entities
         {
             Codigo2FA = code;
             Codigo2FAExpiracion = expiration;
+        }
+
+        public static Usuario FromDataReader(SqlDataReader reader)
+        {
+            var usuario = new Usuario
+            {
+                IdUsuario = (int)reader["id_usuario"],
+                UsuarioNombre = reader["usuario"] as string ?? string.Empty,
+                ContrasenaScript = (byte[])reader["contrasena_script"],
+                IdPersona = (int)reader["id_persona"],
+                FechaBloqueo = (DateTime)reader["fecha_bloqueo"],
+                NombreUsuarioBloqueo = reader["nombre_usuario_bloqueo"] as string,
+                FechaUltimoCambio = (DateTime)reader["fecha_ultimo_cambio"],
+                IdRol = (int)reader["id_rol"],
+                IdPolitica = reader["id_politica"] as int?,
+                CambioContrasenaObligatorio = (bool)reader["CambioContrasenaObligatorio"],
+                Codigo2FA = reader["Codigo2FA"] as string,
+                Codigo2FAExpiracion = reader["Codigo2FAExpiracion"] as DateTime?,
+                FechaExpiracion = reader["FechaExpiracion"] as DateTime?,
+                Rol = new Rol
+                {
+                    IdRol = (int)reader["rol_id_rol"],
+                    Nombre = reader["rol"] as string
+                }
+            };
+            return usuario;
         }
     }
 }

@@ -37,11 +37,6 @@ namespace BusinessLogic.Services
             {
                 throw;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during {OperationName}", operationName);
-                throw new BusinessLogicException("DIAGNOSTIC TEST: PERSONA SERVICE FAILED.", ex);
-            }
         }
 
         private void ExecuteServiceOperation(Action operation, string operationName)
@@ -53,11 +48,6 @@ namespace BusinessLogic.Services
             catch (ValidationException)
             {
                 throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during {OperationName}", operationName);
-                throw new BusinessLogicException("DIAGNOSTIC TEST: PERSONA SERVICE FAILED.", ex);
             }
         }
 

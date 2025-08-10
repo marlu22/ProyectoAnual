@@ -1,18 +1,18 @@
-// src/DataAccess/Repositories/IUserRepository.cs
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DataAccess.Entities;
 
 namespace DataAccess.Repositories
 {
     public interface IUserRepository
     {
-        void AddUsuario(Usuario usuario);
-        Usuario? GetUsuarioByNombreUsuario(string nombre);
-        void UpdateUsuario(Usuario usuario);
-        void Set2faCode(string username, string? code, System.DateTime? expiry);
-        List<Usuario> GetAllUsers();
-        List<HistorialContrasena> GetHistorialContrasenasByUsuarioId(int idUsuario);
-        void AddHistorialContrasena(HistorialContrasena historial);
-        void DeleteUsuario(int usuarioId);
+        Task AddUsuarioAsync(Usuario usuario);
+        Task<Usuario?> GetUsuarioByNombreUsuarioAsync(string nombre);
+        Task UpdateUsuarioAsync(Usuario usuario);
+        Task Set2faCodeAsync(string username, string? code, System.DateTime? expiry);
+        Task<List<Usuario>> GetAllUsersAsync();
+        Task<List<HistorialContrasena>> GetHistorialContrasenasByUsuarioIdAsync(int idUsuario);
+        Task AddHistorialContrasenaAsync(HistorialContrasena historial);
+        Task DeleteUsuarioAsync(int usuarioId);
     }
 }

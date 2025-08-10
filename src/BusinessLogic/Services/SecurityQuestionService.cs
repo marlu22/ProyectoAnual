@@ -34,15 +34,16 @@ namespace BusinessLogic.Services
             return _securityPolicyService.GetPoliticaSeguridad();
         }
 
-        public void GuardarRespuestasSeguridad(string username, Dictionary<int, string> respuestas) => ExecuteServiceOperation(() =>
+        public async Task GuardarRespuestasSeguridadAsync(string username, Dictionary<int, string> respuestas) => await ExecuteServiceOperationAsync(async () =>
         {
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+            var usuario = await _userRepository.GetUsuarioByNombreUsuarioAsync(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
             var politica = _securityRepository.GetPoliticaSeguridad() ?? throw new BusinessLogicException("Security policy not configured.");
             if (respuestas.Count != politica.CantPreguntas)
                 throw new ValidationException($"Se requieren exactamente {politica.CantPreguntas} respuestas de seguridad.");
 
+            // Assuming ISecurityRepository will also be made async. For now, keeping it sync.
             _securityRepository.DeleteRespuestasSeguridadByUsuarioId(usuario.IdUsuario);
 
             foreach (var par in respuestas)
@@ -61,9 +62,9 @@ namespace BusinessLogic.Services
             _securityRepository.GetPreguntasSeguridad().Select(p => new PreguntaSeguridadDto { IdPregunta = p.IdPregunta, Pregunta = p.Pregunta }).ToList(),
             "getting security questions");
 
-        public List<PreguntaSeguridadDto> GetPreguntasDeUsuario(string username) => ExecuteServiceOperation(() =>
+        public async Task<List<PreguntaSeguridadDto>> GetPreguntasDeUsuarioAsync(string username) => await ExecuteServiceOperationAsync(async () =>
         {
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+            var usuario = await _userRepository.GetUsuarioByNombreUsuarioAsync(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
             var respuestas = _securityRepository.GetRespuestasSeguridadByUsuarioId(usuario.IdUsuario)
@@ -80,6 +81,39 @@ namespace BusinessLogic.Services
             try
             {
                 return operation();
+            }
+            catch (ValidationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
+            }
+        }
+
+        private async Task ExecuteServiceOperationAsync(Func<Task> operation, string operationName)
+        {
+            try
+            {
+                await operation();
+            }
+            catch (ValidationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during {OperationName}", operationName);
+                throw new BusinessLogicException($"An unexpected error occurred during {operationName}.", ex);
+            }
+        }
+        private async Task<T> ExecuteServiceOperationAsync<T>(Func<Task<T>> operation, string operationName)
+        {
+            try
+            {
+                return await operation();
             }
             catch (ValidationException)
             {

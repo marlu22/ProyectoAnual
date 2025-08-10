@@ -49,7 +49,7 @@ namespace BusinessLogic.Services
             if (respuestas == null || respuestas.Count != politica.CantPreguntas || respuestas.Any(r => string.IsNullOrWhiteSpace(r.Value)))
                 throw new ValidationException($"Se requieren {politica.CantPreguntas} respuestas de seguridad.");
 
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+            var usuario = await _userRepository.GetUsuarioByNombreUsuarioAsync(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
             var persona = _personaRepository.GetPersonaById(usuario.IdPersona)
@@ -76,7 +76,7 @@ namespace BusinessLogic.Services
 
             usuario.ChangePassword(newPasswordHash);
             usuario.ForcePasswordChange(true);
-            _userRepository.UpdateUsuario(usuario);
+            await _userRepository.UpdateUsuarioAsync(usuario);
 
             if (string.IsNullOrEmpty(persona.Correo))
             {
@@ -86,12 +86,12 @@ namespace BusinessLogic.Services
             await _emailService.SendPasswordResetEmailAsync(persona.Correo, newPassword);
         }, "recovering password");
 
-        public void CambiarContrasena(string username, string newPassword, string oldPassword) => ExecuteServiceOperation(() =>
+        public async Task CambiarContrasenaAsync(string username, string newPassword, string oldPassword) => await ExecuteServiceOperationAsync(async () =>
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(oldPassword))
                 throw new ValidationException("Todos los campos son requeridos.");
 
-            var usuario = _userRepository.GetUsuarioByNombreUsuario(username)
+            var usuario = await _userRepository.GetUsuarioByNombreUsuarioAsync(username)
                 ?? throw new ValidationException($"Usuario '{username}' not found");
 
             var oldPasswordHash = _passwordHasher.Hash(username, oldPassword);
@@ -110,7 +110,7 @@ namespace BusinessLogic.Services
             var politica = _securityRepository.GetPoliticaSeguridad();
             if (politica?.NoRepetirAnteriores ?? false)
             {
-                var historial = _userRepository.GetHistorialContrasenasByUsuarioId(usuario.IdUsuario);
+                var historial = await _userRepository.GetHistorialContrasenasByUsuarioIdAsync(usuario.IdUsuario);
                 if (historial.Any(h => h.ContrasenaScript.SequenceEqual(newPasswordHash)))
                 {
                     throw new ValidationException("La nueva contraseña no puede ser igual a ninguna de las contraseñas anteriores.");
@@ -118,7 +118,7 @@ namespace BusinessLogic.Services
             }
 
             var currentPasswordHash = usuario.ContrasenaScript;
-            _userRepository.AddHistorialContrasena(new HistorialContrasena
+            await _userRepository.AddHistorialContrasenaAsync(new HistorialContrasena
             {
                 IdUsuario = usuario.IdUsuario,
                 ContrasenaScript = currentPasswordHash,
@@ -126,7 +126,7 @@ namespace BusinessLogic.Services
             });
 
             usuario.ChangePassword(newPasswordHash);
-            _userRepository.UpdateUsuario(usuario);
+            await _userRepository.UpdateUsuarioAsync(usuario);
         }, "changing password");
 
         private void ValidatePasswordPolicy(string password, string username, Persona persona)

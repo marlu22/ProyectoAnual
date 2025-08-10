@@ -12,7 +12,7 @@ En resumen:
 - **La arquitectura ahora es estrictamente correcta.**
 - **Se han eliminado todas las violaciones de dependencias** entre capas.
 - **Se ha eliminado el proyecto `Common`** que no se utilizaba.
-- **La responsabilidad de la creación de servicios (Composition Root) se ha centralizado** en la capa de lógica de negocio.
+- **La gestión de dependencias se realiza con el contenedor de DI de .NET** (`Microsoft.Extensions.DependencyInjection`), configurado en la capa de `Presentation`.
 
 ## Diagrama de Arquitectura Corregido
 
@@ -35,7 +35,7 @@ A continuación se muestra un diagrama que ilustra la nueva estructura del siste
                                  v
 +--------------------------------------------------------------------------+
 |                 BusinessLogic (Capa de Lógica de Negocio)                  |
-| (Contiene ServiceFactory, reglas de negocio, servicios, DTOs, etc.)      |
+| (Contiene servicios, DTOs, lógica de negocio y un método de extensión para DI) |
 +--------------------------------------------------------------------------+
                                  |
                                  v
@@ -55,12 +55,12 @@ A continuación se muestra un diagrama que ilustra la nueva estructura del siste
 
 ### 1. Capa de Presentación (`Presentation`)
 - **Propósito:** Ser la interfaz de usuario para la aplicación de escritorio (Windows Forms).
-- **Análisis:** **Correcto.** Esta capa ahora depende únicamente de `BusinessLogic`. La inicialización de los servicios se solicita a `BusinessLogic.ServiceFactory`, eliminando la dependencia directa que existía con `DataAccess`. Cumple estrictamente su rol de presentación.
+- **Análisis:** **Correcto.** Esta capa ahora depende únicamente de `BusinessLogic`. La inicialización de servicios se realiza en `Program.cs` usando el **Host Genérico de .NET**, que configura el contenedor de inyección de dependencias. Los formularios reciben sus dependencias (como servicios de la capa de negocio) a través de **inyección por constructor**.
 - **Veredicto:** :white_check_mark: **Corregido y Correcto.**
 
 ### 2. Capa de Lógica de Negocio (`BusinessLogic`)
 - **Propósito:** Contener la lógica de negocio central y actuar como el único punto de contacto con la capa de datos.
-- **Análisis:** **Correcto.** Esta capa sigue siendo el corazón de la aplicación. Ahora también contiene la **Raíz de Composición** (`ServiceFactory`), que es responsable de instanciar y conectar los servicios y repositorios. Esto centraliza la gestión de dependencias y oculta los detalles de implementación de las capas superiores.
+- **Análisis:** **Correcto.** Esta capa sigue siendo el corazón de la aplicación. Proporciona un **método de extensión de `IServiceCollection` (`AddInfrastructure`)** que permite a las capas de presentación registrar todos los servicios y repositorios necesarios de forma encapsulada, sin necesidad de conocer los detalles de implementación. Esto promueve un bajo acoplamiento.
 - **Veredicto:** :white_check_mark: **Correcto.**
 
 ### 3. Capa de Acceso a Datos (`DataAccess`)

@@ -40,7 +40,7 @@ namespace BusinessLogic.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during {OperationName}", operationName);
-                throw new BusinessLogicException($"An unexpected error occurred during {operationName}: {ex.Message}", ex);
+                throw new BusinessLogicException("DIAGNOSTIC TEST: PERSONA SERVICE FAILED.", ex);
             }
         }
 
@@ -57,7 +57,7 @@ namespace BusinessLogic.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during {OperationName}", operationName);
-                throw new BusinessLogicException($"An unexpected error occurred during {operationName}: {ex.Message}", ex);
+                throw new BusinessLogicException("DIAGNOSTIC TEST: PERSONA SERVICE FAILED.", ex);
             }
         }
 

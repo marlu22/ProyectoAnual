@@ -17,6 +17,7 @@ namespace Presentation
         private readonly IReferenceDataService _referenceService;
         private readonly IServiceProvider _serviceProvider;
         private readonly DataGridViewManager _userGridManager;
+        private readonly ComboBoxLoader _comboBoxLoader;
         private string _username = string.Empty;
         private PoliticaSeguridadDto? _politica;
         private List<PersonaDto> _allPersonas = new List<PersonaDto>();
@@ -29,6 +30,7 @@ namespace Presentation
             _referenceService = referenceService;
             _serviceProvider = serviceProvider;
             _userGridManager = new DataGridViewManager(managementService, dgvUsuarios);
+            _comboBoxLoader = new ComboBoxLoader(referenceService);
 
             SetupForm();
         }
@@ -41,8 +43,8 @@ namespace Presentation
 
         private void SetupForm()
         {
-            SetupDataGridViewStyles(dgvUsuarios);
-            SetupDataGridViewStyles(dgvPersonas);
+            DataGridViewStyler.ApplyTheme(dgvUsuarios);
+            DataGridViewStyler.ApplyTheme(dgvPersonas);
 
             lblPassword.Visible = false;
             txtPassword.Visible = false;
@@ -77,11 +79,11 @@ namespace Presentation
                 }
             };
 
-            LoadTipoDoc();
-            LoadProvincias();
-            LoadGeneros();
+            _comboBoxLoader.LoadTiposDoc(cbxTipoDoc);
+            _comboBoxLoader.LoadProvincias(cbxProvincia);
+            _comboBoxLoader.LoadGeneros(cbxGenero);
             LoadPersonas();
-            LoadRoles();
+            _comboBoxLoader.LoadRoles(cbxRolUsuario);
 
             cbxProvincia.SelectedIndexChanged += CbxProvincia_SelectedIndexChanged;
             cbxPartido.SelectedIndexChanged += CbxPartido_SelectedIndexChanged;
@@ -211,48 +213,11 @@ namespace Presentation
             MessageBox.Show("Configuración guardada correctamente.", "Info");
         }
 
-        private void LoadTipoDoc()
-        {
-            var tiposDoc = _referenceService.GetTiposDoc();
-            if (tiposDoc == null || !tiposDoc.Any())
-            {
-                MessageBox.Show("No se encontraron tipos de documento.", "Advertencia");
-                cbxTipoDoc.DataSource = null;
-                return;
-            }
-            cbxTipoDoc.DataSource = tiposDoc;
-            cbxTipoDoc.DisplayMember = "Nombre";
-            cbxTipoDoc.ValueMember = "IdTipoDoc";
-        }
-
-        private void LoadProvincias()
-        {
-            var provincias = _referenceService.GetProvincias();
-            if (provincias != null && provincias.Any())
-            {
-                cbxProvincia.DataSource = provincias;
-                cbxProvincia.DisplayMember = "Nombre";
-                cbxProvincia.ValueMember = "IdProvincia";
-            }
-        }
-
         private void CbxProvincia_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (cbxProvincia.SelectedValue is int provinciaId)
             {
-                var partidos = _referenceService.GetPartidosByProvinciaId(provinciaId);
-                if (partidos != null && partidos.Any())
-                {
-                    cbxPartido.DataSource = partidos;
-                    cbxPartido.DisplayMember = "Nombre";
-                    cbxPartido.ValueMember = "IdPartido";
-                    cbxPartido.Enabled = true;
-                }
-                else
-                {
-                    cbxPartido.DataSource = null;
-                    cbxPartido.Enabled = false;
-                }
+                _comboBoxLoader.LoadPartidos(cbxPartido, provinciaId);
             }
             cbxLocalidad.DataSource = null;
             cbxLocalidad.Enabled = false;
@@ -262,39 +227,8 @@ namespace Presentation
         {
             if (cbxPartido.SelectedValue is int partidoId)
             {
-                LoadLocalidadesByPartido(partidoId);
+                _comboBoxLoader.LoadLocalidades(cbxLocalidad, partidoId);
             }
-        }
-
-        private void LoadLocalidadesByPartido(int partidoId)
-        {
-            var localidades = _referenceService.GetLocalidadesByPartidoId(partidoId);
-            if (localidades != null && localidades.Any())
-            {
-                cbxLocalidad.DataSource = localidades;
-                cbxLocalidad.DisplayMember = "Nombre";
-                cbxLocalidad.ValueMember = "IdLocalidad";
-                cbxLocalidad.Enabled = true;
-            }
-            else
-            {
-                cbxLocalidad.DataSource = null;
-                cbxLocalidad.Enabled = false;
-            }
-        }
-
-        private void LoadGeneros()
-        {
-            var generos = _referenceService.GetGeneros();
-            if (generos == null || !generos.Any())
-            {
-                MessageBox.Show("No se encontraron géneros.", "Advertencia");
-                cbxGenero.DataSource = null;
-                return;
-            }
-            cbxGenero.DataSource = generos;
-            cbxGenero.DisplayMember = "Nombre";
-            cbxGenero.ValueMember = "IdGenero";
         }
 
         private void LoadPersonas()
@@ -316,20 +250,6 @@ namespace Presentation
             {
                 MessageBox.Show($"Error al cargar personas: {ex.Message}", "Error");
             }
-        }
-
-        private void LoadRoles()
-        {
-            var roles = _referenceService.GetRoles();
-            if (roles == null || !roles.Any())
-            {
-                MessageBox.Show("No se encontraron roles.", "Advertencia");
-                cbxRolUsuario.DataSource = null;
-                return;
-            }
-            cbxRolUsuario.DataSource = roles;
-            cbxRolUsuario.DisplayMember = "Nombre";
-            cbxRolUsuario.ValueMember = "IdRol";
         }
 
         private void BtnGuardarPersona_Click(object? sender, EventArgs e)
@@ -573,46 +493,5 @@ namespace Presentation
             }
         }
 
-        private void SetupDataGridViewStyles(DataGridView dgv)
-        {
-            // Basic Style
-            dgv.BorderStyle = BorderStyle.None;
-            dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
-            dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(60, 141, 188);
-            dgv.DefaultCellStyle.SelectionForeColor = Color.WhiteSmoke;
-            dgv.BackgroundColor = Color.White;
-            dgv.EnableHeadersVisualStyles = false;
-            dgv.RowHeadersVisible = false;
-            dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10);
-            dgv.DefaultCellStyle.ForeColor = Color.FromArgb(43, 47, 49);
-            dgv.DefaultCellStyle.Padding = new Padding(8, 4, 8, 4);
-
-            // Header Style
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgv.ColumnHeadersHeight = 40;
-            dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(43, 47, 49);
-            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
-
-
-            // Column and Row sizing
-            if (dgv.Name == "dgvPersonas")
-            {
-                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            }
-            else
-            {
-                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            }
-            dgv.RowTemplate.Height = 35;
-
-            // Selection
-            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.MultiSelect = false;
-        }
     }
 }

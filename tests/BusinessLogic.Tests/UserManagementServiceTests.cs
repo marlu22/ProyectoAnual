@@ -109,17 +109,22 @@ namespace BusinessLogic.Tests
         }
 
         [Fact]
-        public void GetAllUsers_WhenUsersExist_ReturnsMappedDtos()
+        public void GetAllUsers_WhenUsersAndPersonasExist_ReturnsCorrectlyMappedDtos()
         {
             // Arrange
-            // In a unit test, we cannot easily mock the Persona navigation property.
-            // The mapper is designed to handle a null Persona, so we test that path.
             var users = new List<Usuario>
             {
-                new Usuario("user1", new byte[0], 1, 1, 1),
-                new Usuario("user2", new byte[0], 2, 2, 1)
+                new Usuario("user1", new byte[0], 1, 1, 1) { IdUsuario = 1 },
+                new Usuario("user2", new byte[0], 2, 2, 1) { IdUsuario = 2 }
             };
+            var personas = new List<Persona>
+            {
+                new Persona(1, "John", "Doe", 1, "123", DateTime.Now, "123", "street", "123", 1, 1, "john.doe@test.com", "123", DateTime.Now) { IdPersona = 1 },
+                new Persona(2, "Jane", "Doe", 1, "456", DateTime.Now, "456", "street", "456", 1, 1, "jane.doe@test.com", "456", DateTime.Now) { IdPersona = 2 }
+            };
+
             _userRepositoryMock.Setup(r => r.GetAllUsers()).Returns(users);
+            _personaRepositoryMock.Setup(r => r.GetAllPersonas()).Returns(personas);
 
             // Act
             var result = _sut.GetAllUsers();
@@ -127,8 +132,16 @@ namespace BusinessLogic.Tests
             // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
-            Assert.Equal("user1", result[0].Username);
-            Assert.Equal("N/A", result[0].NombreCompleto); // Expect "N/A" as Persona is null
+
+            var user1 = result.First(u => u.Username == "user1");
+            Assert.Equal("John", user1.Nombre);
+            Assert.Equal("Doe", user1.Apellido);
+            Assert.Equal("john.doe@test.com", user1.Correo);
+
+            var user2 = result.First(u => u.Username == "user2");
+            Assert.Equal("Jane", user2.Nombre);
+            Assert.Equal("Doe", user2.Apellido);
+            Assert.Equal("jane.doe@test.com", user2.Correo);
         }
 
         [Fact]

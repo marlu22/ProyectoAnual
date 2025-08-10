@@ -506,25 +506,9 @@ BEGIN
         u.Codigo2FAExpiracion,
         u.FechaExpiracion,
         r.id_rol AS rol_id_rol,
-        r.rol,
-        p.id_persona AS persona_id_persona,
-        p.legajo,
-        p.nombre,
-        p.apellido,
-        p.id_tipo_doc,
-        p.num_doc,
-        p.fecha_nacimiento,
-        p.cuil,
-        p.calle,
-        p.altura,
-        p.id_localidad,
-        p.id_genero,
-        p.correo,
-        p.celular,
-        p.fecha_ingreso
+        r.rol
     FROM usuarios u
     INNER JOIN roles r ON u.id_rol = r.id_rol
-    INNER JOIN personas p ON u.id_persona = p.id_persona;
 END
 GO
 

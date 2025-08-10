@@ -65,7 +65,7 @@ A continuación se muestra un diagrama que ilustra la nueva estructura del siste
 
 ### 3. Capa de Acceso a Datos (`DataAccess`)
 - **Propósito:** Encapsular toda la comunicación con la base de datos.
-- **Análisis:** **Correcto.** Esta capa no ha cambiado, ya que su diseño original era correcto. No tiene dependencias de otras capas y su única responsabilidad es la persistencia de datos.
+- **Análisis:** **Correcto.** Esta capa no ha cambiado, ya que su diseño original era correcto. No tiene dependencias de otras capas y su única responsabilidad es la persistencia de datos. Se ha refactorizado `SqlUserRepository` para que el método `GetAllUsers` no devuelva datos de `Persona`, respetando el principio de Responsabilidad Única.
 - **Veredicto:** :white_check_mark: **Correcto.**
 
 ### 4. Capa de Servicios (`Services`)

@@ -10,7 +10,7 @@ namespace DataAccess.Entities
     {
         [Key]
         [Column("id_persona")]
-        public int IdPersona { get; private set; }
+        public int IdPersona { get; set; }
 
         [Required]
         [Column("legajo")]

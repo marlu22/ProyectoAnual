@@ -18,7 +18,7 @@ namespace BusinessLogic.Services
     public class UserManagementService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IPersonaRepository _personaRepository; // This is needed for user creation
+        private readonly IPersonaRepository _personaRepository;
         private readonly IEmailService _emailService;
         private readonly ILogger<UserManagementService> _logger;
         private readonly IUsuarioFactory _usuarioFactory;

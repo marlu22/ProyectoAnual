@@ -100,7 +100,7 @@ namespace Presentation
             }
         }
 
-        private void BtnGuardar_Click(object? sender, EventArgs e)
+        private async void BtnGuardar_Click(object? sender, EventArgs e)
         {
             var respuestas = new Dictionary<int, string>();
             var selectedQuestions = new HashSet<int>();
@@ -135,7 +135,7 @@ namespace Presentation
 
             try
             {
-                _securityQuestionService.GuardarRespuestasSeguridad(_username, respuestas);
+                await _securityQuestionService.GuardarRespuestasSeguridadAsync(_username, respuestas);
                 MessageBox.Show("Respuestas de seguridad guardadas exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
                 Close();

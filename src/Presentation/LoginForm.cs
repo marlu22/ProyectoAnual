@@ -8,10 +8,10 @@ namespace Presentation
 {
     public partial class LoginForm : Form
     {
-        private readonly IUserAuthenticationService _authService;
+        private readonly IAuthenticationService _authService;
         private readonly IServiceProvider _serviceProvider;
 
-        public LoginForm(IUserAuthenticationService authService, IServiceProvider serviceProvider)
+        public LoginForm(IAuthenticationService authService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _authService = authService;

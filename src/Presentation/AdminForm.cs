@@ -652,6 +652,16 @@ namespace Presentation
             {
                 _allPersonas = _userService.GetPersonas();
                 dgvPersonas.DataSource = new List<PersonaDto>(_allPersonas);
+
+                dgvPersonas.Columns["IdPersona"].Visible = false;
+                dgvPersonas.Columns["IdTipoDoc"].Visible = false;
+                dgvPersonas.Columns["IdLocalidad"].Visible = false;
+                dgvPersonas.Columns["IdPartido"].Visible = false;
+                dgvPersonas.Columns["IdProvincia"].Visible = false;
+                dgvPersonas.Columns["IdGenero"].Visible = false;
+                dgvPersonas.Columns["Calle"].Visible = false;
+                dgvPersonas.Columns["Altura"].Visible = false;
+                dgvPersonas.Columns["FechaIngreso"].Visible = false;
             }
             catch (Exception ex)
             {
@@ -686,7 +696,14 @@ namespace Presentation
 
 
             // Column and Row sizing
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            if (dgv.Name == "dgvPersonas")
+            {
+                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            }
+            else
+            {
+                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            }
             dgv.RowTemplate.Height = 35;
 
             // Selection

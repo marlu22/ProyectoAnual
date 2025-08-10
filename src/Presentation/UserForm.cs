@@ -7,12 +7,12 @@ namespace Presentation
 {
     public partial class UserForm : Form
     {
-        private readonly IUserAuthenticationService _authService;
+        private readonly IAuthenticationService _authService;
         private readonly IUserManagementService _managementService;
         private readonly IServiceProvider _serviceProvider;
         private string _username = string.Empty;
 
-        public UserForm(IUserAuthenticationService authService, IUserManagementService managementService, IServiceProvider serviceProvider)
+        public UserForm(IAuthenticationService authService, IUserManagementService managementService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _authService = authService;

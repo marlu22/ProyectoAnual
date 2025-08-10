@@ -8,14 +8,16 @@ namespace Presentation
 {
     public partial class CambioContrasenaForm : Form
     {
-        private readonly IUserAuthenticationService _authService;
+        private readonly IPasswordService _passwordService;
+        private readonly ISecurityQuestionService _securityQuestionService;
         private readonly IServiceProvider _serviceProvider;
         private string _username = string.Empty;
 
-        public CambioContrasenaForm(IUserAuthenticationService authService, IServiceProvider serviceProvider)
+        public CambioContrasenaForm(IPasswordService passwordService, ISecurityQuestionService securityQuestionService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _authService = authService;
+            _passwordService = passwordService;
+            _securityQuestionService = securityQuestionService;
             _serviceProvider = serviceProvider;
             btnCambiar.Click += BtnCambiar_Click;
         }
@@ -47,11 +49,11 @@ namespace Presentation
                     return;
                 }
 
-                _authService.CambiarContrasena(_username, nueva, actual);
+                _passwordService.CambiarContrasena(_username, nueva, actual);
                 MessageBox.Show("Contraseña cambiada correctamente.", "Info");
 
-                var user = _authService.GetPreguntasDeUsuario(_username);
-                if (user == null || user.Count == 0)
+                var userQuestions = _securityQuestionService.GetPreguntasDeUsuario(_username);
+                if (userQuestions == null || userQuestions.Count == 0)
                 {
                     using (var preguntasForm = _serviceProvider.GetRequiredService<PreguntasSeguridadForm>())
                     {

@@ -11,16 +11,16 @@ namespace Presentation
 {
     public partial class PreguntasSeguridadForm : Form
     {
-        private readonly IUserAuthenticationService _authService;
+        private readonly ISecurityQuestionService _securityQuestionService;
         private string _username = string.Empty;
         private List<PreguntaSeguridadDto> _preguntas = new List<PreguntaSeguridadDto>();
         private List<ComboBox> _comboBoxes = new List<ComboBox>();
         private List<RoundedTextBox> _textBoxes = new List<RoundedTextBox>();
 
-        public PreguntasSeguridadForm(IUserAuthenticationService authService)
+        public PreguntasSeguridadForm(ISecurityQuestionService securityQuestionService)
         {
             InitializeComponent();
-            _authService = authService;
+            _securityQuestionService = securityQuestionService;
             btnGuardar.Click += BtnGuardar_Click;
         }
 
@@ -33,8 +33,8 @@ namespace Presentation
         {
             try
             {
-                _preguntas = _authService.GetPreguntasSeguridad();
-                var politica = _authService.GetPoliticaSeguridad();
+                _preguntas = _securityQuestionService.GetPreguntasSeguridad();
+                var politica = _securityQuestionService.GetPoliticaSeguridad();
                 int cantidadPreguntas = politica?.CantPreguntas ?? 3; // Default a 3
 
                 for (int i = 0; i < cantidadPreguntas; i++)
@@ -135,7 +135,7 @@ namespace Presentation
 
             try
             {
-                _authService.GuardarRespuestasSeguridad(_username, respuestas);
+                _securityQuestionService.GuardarRespuestasSeguridad(_username, respuestas);
                 MessageBox.Show("Respuestas de seguridad guardadas exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
                 Close();

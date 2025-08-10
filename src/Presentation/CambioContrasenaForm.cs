@@ -27,7 +27,7 @@ namespace Presentation
             _username = username;
         }
 
-        private void BtnCambiar_Click(object? sender, EventArgs? e)
+        private async void BtnCambiar_Click(object? sender, EventArgs? e)
         {
             try
             {
@@ -49,10 +49,10 @@ namespace Presentation
                     return;
                 }
 
-                _passwordService.CambiarContrasena(_username, nueva, actual);
+                await _passwordService.CambiarContrasenaAsync(_username, nueva, actual);
                 MessageBox.Show("Contraseña cambiada correctamente.", "Info");
 
-                var userQuestions = _securityQuestionService.GetPreguntasDeUsuario(_username);
+                var userQuestions = await _securityQuestionService.GetPreguntasDeUsuarioAsync(_username);
                 if (userQuestions == null || userQuestions.Count == 0)
                 {
                     using (var preguntasForm = _serviceProvider.GetRequiredService<PreguntasSeguridadForm>())

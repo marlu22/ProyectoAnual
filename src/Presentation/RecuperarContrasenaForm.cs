@@ -28,7 +28,7 @@ namespace Presentation
             btnRecuperar.Click += BtnRecuperar_Click;
         }
 
-        private void BtnContinuar_Click(object? sender, EventArgs e)
+        private async void BtnContinuar_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace Presentation
                 }
 
                 var usuario = txtUsuario.Text.Trim();
-                _preguntasUsuario = _securityQuestionService.GetPreguntasDeUsuario(usuario);
+                _preguntasUsuario = await _securityQuestionService.GetPreguntasDeUsuarioAsync(usuario);
 
                 if (_preguntasUsuario != null && _preguntasUsuario.Count > 0)
                 {

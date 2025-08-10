@@ -133,8 +133,8 @@ namespace DataAccess.Repositories
                     )
                     {
                         IdPersona = (int)reader["id_persona"],
-                        TipoDoc = new TipoDoc { IdTipoDoc = (int)reader["id_tipo_doc"], Nombre = reader["TipoDocNombre"].ToString()! },
-                        Genero = new Genero { IdGenero = (int)reader["id_genero"], Nombre = reader["GeneroNombre"].ToString()! }
+                        TipoDoc = new TipoDoc { IdTipoDoc = (int)reader["id_tipo_doc"], Nombre = reader["TipoDocNombre"] as string ?? string.Empty },
+                        Genero = new Genero { IdGenero = (int)reader["id_genero"], Nombre = reader["GeneroNombre"] as string ?? string.Empty }
                     };
 
                     var localidad = new Localidad

@@ -24,7 +24,7 @@ namespace Presentation
             // 
             // lblMessage
             // 
-            lblMessage.BackColor = System.Drawing.Color.FromArgb(43, 47, 49);
+            lblMessage.BackColor = System.Drawing.Color.Transparent;
             lblMessage.Dock = System.Windows.Forms.DockStyle.Fill;
             lblMessage.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             lblMessage.Location = new System.Drawing.Point(0, 0);

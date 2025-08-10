@@ -888,11 +888,11 @@ namespace Presentation
             // txtBuscarUsuario
             //
             txtBuscarUsuario.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtBuscarUsuario.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtBuscarUsuario.BackColor = System.Drawing.SystemColors.Window;
             txtBuscarUsuario.BorderStyle = System.Windows.Forms.BorderStyle.None;
             gestionUsuariosLayout.SetColumnSpan(txtBuscarUsuario, 2);
             txtBuscarUsuario.Font = new System.Drawing.Font("Segoe UI", 10F);
-            txtBuscarUsuario.ForeColor = System.Drawing.Color.White;
+            txtBuscarUsuario.ForeColor = System.Drawing.SystemColors.ControlText;
             txtBuscarUsuario.Location = new System.Drawing.Point(103, 8);
             txtBuscarUsuario.Name = "txtBuscarUsuario";
             txtBuscarUsuario.Size = new System.Drawing.Size(517, 23);
@@ -1023,11 +1023,11 @@ namespace Presentation
             // txtBuscarPersona
             //
             txtBuscarPersona.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtBuscarPersona.BackColor = System.Drawing.Color.FromArgb(40, 40, 56);
+            txtBuscarPersona.BackColor = System.Drawing.SystemColors.Window;
             txtBuscarPersona.BorderStyle = System.Windows.Forms.BorderStyle.None;
             gestionPersonasLayout.SetColumnSpan(txtBuscarPersona, 2);
             txtBuscarPersona.Font = new System.Drawing.Font("Segoe UI", 10F);
-            txtBuscarPersona.ForeColor = System.Drawing.Color.White;
+            txtBuscarPersona.ForeColor = System.Drawing.SystemColors.ControlText;
             txtBuscarPersona.Location = new System.Drawing.Point(103, 8);
             txtBuscarPersona.Name = "txtBuscarPersona";
             txtBuscarPersona.Size = new System.Drawing.Size(517, 23);

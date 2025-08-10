@@ -77,5 +77,22 @@ namespace DataAccess.Entities
             FechaBloqueo = new DateTime(9999, 12, 31);
             NombreUsuarioBloqueo = null;
         }
+
+        public void Update(string username, int idRol, DateTime? fechaExpiracion, bool cambioContrasenaObligatorio, bool habilitado, string adminUsername)
+        {
+            UsuarioNombre = username;
+            IdRol = idRol;
+            FechaExpiracion = fechaExpiracion;
+            CambioContrasenaObligatorio = cambioContrasenaObligatorio;
+
+            if (habilitado)
+            {
+                Habilitar();
+            }
+            else
+            {
+                Deshabilitar(adminUsername);
+            }
+        }
     }
 }

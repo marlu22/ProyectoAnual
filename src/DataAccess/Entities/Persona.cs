@@ -76,5 +76,23 @@ namespace DataAccess.Entities
 
         [ForeignKey("IdGenero")]
         public virtual Genero? Genero { get; set; }
+
+        public void Update(int legajo, string nombre, string apellido, int idTipoDoc, string numDoc, DateTime? fechaNacimiento, string? cuil, string? calle, string? altura, int idLocalidad, int idGenero, string? correo, string? celular, DateTime fechaIngreso)
+        {
+            Legajo = legajo;
+            Nombre = nombre;
+            Apellido = apellido;
+            IdTipoDoc = idTipoDoc;
+            NumDoc = numDoc;
+            FechaNacimiento = fechaNacimiento;
+            Cuil = cuil;
+            Calle = calle;
+            Altura = altura;
+            IdLocalidad = idLocalidad;
+            IdGenero = idGenero;
+            Correo = correo;
+            Celular = celular;
+            FechaIngreso = fechaIngreso;
+        }
     }
 }

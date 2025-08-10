@@ -7,5 +7,6 @@ namespace BusinessLogic.Services
     {
         Task SendPasswordResetEmailAsync(string toEmail, string newPassword);
         Task Send2faCodeEmailAsync(string toEmail, string code);
+        Task SendWelcomeEmailAsync(string toEmail, string username, string password);
     }
 }

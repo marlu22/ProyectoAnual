@@ -328,7 +328,7 @@ namespace Presentation
 
                 var usuario = new UserRequest
                 {
-                    PersonaId = cbxPersona.SelectedValue.ToString()!,
+                    PersonaId = ((int)cbxPersona.SelectedValue).ToString(),
                     Username = txtUsuario.Text,
                     Rol = cbxRolUsuario.Text
                 };

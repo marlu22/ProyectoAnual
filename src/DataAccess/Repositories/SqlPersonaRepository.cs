@@ -134,25 +134,45 @@ namespace DataAccess.Repositories
                     {
                         IdPersona = (int)reader["id_persona"],
                         TipoDoc = new TipoDoc { IdTipoDoc = (int)reader["id_tipo_doc"], Nombre = reader["TipoDocNombre"].ToString()! },
-                        Genero = new Genero { IdGenero = (int)reader["id_genero"], Nombre = reader["GeneroNombre"].ToString()! },
-                        Localidad = new Localidad
-                        {
-                            IdLocalidad = (int)reader["id_localidad"],
-                            Nombre = reader["LocalidadNombre"].ToString()!,
-                            IdPartido = (int)reader["IdPartido"],
-                            Partido = new Partido
-                            {
-                                IdPartido = (int)reader["IdPartido"],
-                                Nombre = reader["PartidoNombre"].ToString()!,
-                                IdProvincia = (int)reader["IdProvincia"],
-                                Provincia = new Provincia
-                                {
-                                    IdProvincia = (int)reader["IdProvincia"],
-                                    Nombre = reader["ProvinciaNombre"].ToString()!
-                                }
-                            }
-                        }
+                        Genero = new Genero { IdGenero = (int)reader["id_genero"], Nombre = reader["GeneroNombre"].ToString()! }
                     };
+
+                    var localidad = new Localidad
+                    {
+                        IdLocalidad = (int)reader["id_localidad"],
+                        Nombre = reader["LocalidadNombre"] as string ?? string.Empty
+                    };
+
+                    if (reader["IdPartido"] != DBNull.Value)
+                    {
+                        var idPartido = (int)reader["IdPartido"];
+                        var partido = new Partido
+                        {
+                            IdPartido = idPartido,
+                            Nombre = reader["PartidoNombre"] as string ?? string.Empty
+                        };
+
+                        if (reader["IdProvincia"] != DBNull.Value)
+                        {
+                            var idProvincia = (int)reader["IdProvincia"];
+                            partido.IdProvincia = idProvincia;
+                            partido.Provincia = new Provincia
+                            {
+                                IdProvincia = idProvincia,
+                                Nombre = reader["ProvinciaNombre"] as string ?? string.Empty
+                            };
+                        }
+
+                        localidad.IdPartido = idPartido;
+                        localidad.Partido = partido;
+                    }
+                    else
+                    {
+                        localidad.IdPartido = 0; // O un valor por defecto que tenga sentido
+                        localidad.Partido = null!;
+                    }
+
+                    persona.Localidad = localidad;
                     personas.Add(persona);
                 }
                 return personas;

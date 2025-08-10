@@ -12,13 +12,13 @@ namespace Presentation
 {
     public partial class RecuperarContrasenaForm : Form
     {
-        private readonly IUserService _userService;
+        private readonly IUserAuthenticationService _authService;
         private List<PreguntaSeguridadDto> _preguntasUsuario;
 
-        public RecuperarContrasenaForm(IUserService userService)
+        public RecuperarContrasenaForm(IUserAuthenticationService authService)
         {
             InitializeComponent();
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _preguntasUsuario = new List<PreguntaSeguridadDto>();
 
             // Wire up events
@@ -37,7 +37,7 @@ namespace Presentation
                 }
 
                 var usuario = txtUsuario.Text.Trim();
-                _preguntasUsuario = _userService.GetPreguntasDeUsuario(usuario);
+                _preguntasUsuario = _authService.GetPreguntasDeUsuario(usuario);
 
                 if (_preguntasUsuario != null && _preguntasUsuario.Count > 0)
                 {
@@ -140,7 +140,7 @@ namespace Presentation
             try
             {
                 string usuario = txtUsuario.Text.Trim();
-                await _userService.RecuperarContrasena(usuario, respuestas);
+                await _authService.RecuperarContrasena(usuario, respuestas);
 
                 MessageBox.Show("Si las respuestas proporcionadas son correctas, se ha enviado una nueva contraseña a su dirección de correo electrónico.", "Recuperación Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;

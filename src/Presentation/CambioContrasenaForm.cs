@@ -8,13 +8,13 @@ namespace Presentation
 {
     public partial class CambioContrasenaForm : Form
     {
-        private readonly IUserService _userService;
+        private readonly IUserAuthenticationService _authService;
         private readonly string _usuario;
 
-        public CambioContrasenaForm(IUserService userService, string usuario)
+        public CambioContrasenaForm(IUserAuthenticationService authService, string usuario)
         {
             InitializeComponent();
-            _userService = userService;
+            _authService = authService;
             _usuario = usuario;
             btnCambiar.Click += BtnCambiar_Click;
         }
@@ -41,15 +41,15 @@ namespace Presentation
                     return;
                 }
 
-                _userService.CambiarContrasena(_usuario, nueva, actual);
+                _authService.CambiarContrasena(_usuario, nueva, actual);
                 MessageBox.Show("Contraseña cambiada correctamente.", "Info");
 
                 // Check if this is the first time the user is changing the password
                 // If so, force them to set security questions.
-                var user = _userService.GetPreguntasDeUsuario(_usuario);
+                var user = _authService.GetPreguntasDeUsuario(_usuario);
                 if (user == null || user.Count == 0)
                 {
-                    var preguntasForm = new PreguntasSeguridadForm(_userService, _usuario);
+                    var preguntasForm = new PreguntasSeguridadForm(_authService, _usuario);
                     preguntasForm.ShowDialog();
                 }
 

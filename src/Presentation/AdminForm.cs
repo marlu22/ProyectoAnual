@@ -12,7 +12,8 @@ namespace Presentation
 {
     public partial class AdminForm : Form
     {
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _managementService;
+        private readonly IReferenceDataService _referenceService;
         private readonly string _username;
         private PoliticaSeguridadDto? _politica;
         private List<UserDto> _allUsers = new List<UserDto>();
@@ -20,7 +21,7 @@ namespace Presentation
         private readonly List<int> _dirtyUserIds = new List<int>();
         private readonly List<int> _dirtyPersonaIds = new List<int>();
 
-        public AdminForm(IUserService userService, string username)
+        public AdminForm(IUserAuthenticationService authService, IUserManagementService managementService, IReferenceDataService referenceService, string username)
         {
             InitializeComponent();
 
@@ -32,7 +33,8 @@ namespace Presentation
             lblPassword.Visible = false;
             txtPassword.Visible = false;
 
-            _userService = userService;
+            _managementService = managementService;
+            _referenceService = referenceService;
 
             btnNavigatePersonas.Click += (s, e) => ShowPanel(panelPersonas);
             btnNavigateUsuarios.Click += (s, e) => ShowPanel(panelUsuarios);
@@ -41,14 +43,14 @@ namespace Presentation
             btnNavigateConfiguracion.Click += (s, e) => ShowPanel(panelConfiguracion);
             btnMiPerfil.Click += (s, e) =>
             {
-                var user = _userService.GetUserByUsername(_username);
+                var user = _managementService.GetUserByUsername(_username);
                 if (user != null)
                 {
-                    var persona = _userService.GetPersonaById(user.IdPersona);
+                    var persona = _managementService.GetPersonaById(user.IdPersona);
                     if (persona != null)
                     {
                         // Assuming ProfileForm is also refactored to accept DTOs
-                        var form = new ProfileForm(user, persona);
+                        var form = new ProfileForm(user, persona); // This will need refactoring too
                         form.ShowDialog();
                     }
                     else
@@ -123,7 +125,7 @@ namespace Presentation
         {
             try
             {
-                _allUsers = _userService.GetAllUsers();
+                _allUsers = _managementService.GetAllUsers();
                 dgvUsuarios.DataSource = new List<UserDto>(_allUsers);
 
                 dgvUsuarios.Columns["IdUsuario"].Visible = false;
@@ -194,7 +196,7 @@ namespace Presentation
                     var usersToUpdate = userDtos.Where(u => _dirtyUserIds.Contains(u.IdUsuario)).ToList();
                     foreach (var userDto in usersToUpdate)
                     {
-                        _userService.UpdateUser(userDto);
+                        _managementService.UpdateUser(userDto);
                     }
 
                     if (usersToUpdate.Any())
@@ -234,7 +236,7 @@ namespace Presentation
             {
                 try
                 {
-                    _userService.DeleteUser(userDto.IdUsuario);
+                    _managementService.DeleteUser(userDto.IdUsuario);
                     MessageBox.Show("Usuario eliminado exitosamente.", "Éxito");
                     LoadUsers();
                 }
@@ -247,7 +249,7 @@ namespace Presentation
 
         private void LoadPoliticaSeguridad()
         {
-            _politica = _userService.GetPoliticaSeguridad();
+            _politica = _managementService.GetPoliticaSeguridad();
             if (_politica != null)
             {
                 chkMayusculasMinusculas.Checked = _politica.MayusYMinus;
@@ -300,13 +302,13 @@ namespace Presentation
             _politica.MinCaracteres = minChars;
             _politica.CantPreguntas = cantPreg;
 
-            _userService.UpdatePoliticaSeguridad(_politica);
+            _managementService.UpdatePoliticaSeguridad(_politica);
             MessageBox.Show("Configuración guardada correctamente.", "Info");
         }
 
         private void LoadTipoDoc()
         {
-            var tiposDoc = _userService.GetTiposDoc();
+            var tiposDoc = _referenceService.GetTiposDoc();
             if (tiposDoc == null || !tiposDoc.Any())
             {
                 MessageBox.Show("No se encontraron tipos de documento.", "Advertencia");
@@ -320,7 +322,7 @@ namespace Presentation
 
         private void LoadProvincias()
         {
-            var provincias = _userService.GetProvincias();
+            var provincias = _referenceService.GetProvincias();
             if (provincias != null && provincias.Any())
             {
                 cbxProvincia.DataSource = provincias;
@@ -333,7 +335,7 @@ namespace Presentation
         {
             if (cbxProvincia.SelectedValue is int provinciaId)
             {
-                var partidos = _userService.GetPartidosByProvinciaId(provinciaId);
+                var partidos = _referenceService.GetPartidosByProvinciaId(provinciaId);
                 if (partidos != null && partidos.Any())
                 {
                     cbxPartido.DataSource = partidos;
@@ -361,7 +363,7 @@ namespace Presentation
 
         private void LoadLocalidadesByPartido(int partidoId)
         {
-            var localidades = _userService.GetLocalidadesByPartidoId(partidoId);
+            var localidades = _referenceService.GetLocalidadesByPartidoId(partidoId);
             if (localidades != null && localidades.Any())
             {
                 cbxLocalidad.DataSource = localidades;
@@ -378,7 +380,7 @@ namespace Presentation
 
         private void LoadGeneros()
         {
-            var generos = _userService.GetGeneros();
+            var generos = _referenceService.GetGeneros();
             if (generos == null || !generos.Any())
             {
                 MessageBox.Show("No se encontraron géneros.", "Advertencia");
@@ -394,7 +396,7 @@ namespace Presentation
         {
             try
             {
-                var personas = _userService.GetPersonas();
+                var personas = _managementService.GetPersonas();
                 if (personas == null || !personas.Any())
                 {
                     MessageBox.Show("No se encontraron personas en la base de datos.", "Advertencia");
@@ -413,7 +415,7 @@ namespace Presentation
 
         private void LoadRoles()
         {
-            var roles = _userService.GetRoles();
+            var roles = _referenceService.GetRoles();
             if (roles == null || !roles.Any())
             {
                 MessageBox.Show("No se encontraron roles.", "Advertencia");
@@ -464,7 +466,7 @@ namespace Presentation
                     Celular = txtCelular.Text,
                     FechaIngreso = dtpFechaIngreso.Value
                 };
-                _userService.CrearPersona(persona);
+                _managementService.CrearPersona(persona);
                 MessageBox.Show("Persona guardada correctamente", "Info");
                 LoadPersonas();
             }
@@ -496,7 +498,7 @@ namespace Presentation
                     Username = txtUsuario.Text,
                     Rol = cbxRolUsuario.Text
                 };
-                _userService.CrearUsuario(usuario);
+                _managementService.CrearUsuario(usuario);
                 MessageBox.Show("Usuario creado correctamente. La contraseña ha sido enviada al correo de la persona.", "Info");
             }
             catch (ValidationException ex)
@@ -590,7 +592,7 @@ namespace Presentation
                     var personasToUpdate = personas.Where(p => _dirtyPersonaIds.Contains(p.IdPersona)).ToList();
                     foreach (var persona in personasToUpdate)
                     {
-                        _userService.UpdatePersona(persona);
+                        _managementService.UpdatePersona(persona);
                     }
 
                     if (personasToUpdate.Any())
@@ -630,7 +632,7 @@ namespace Presentation
             {
                 try
                 {
-                    _userService.DeletePersona(persona.IdPersona);
+                    _managementService.DeletePersona(persona.IdPersona);
                     MessageBox.Show("Persona eliminada exitosamente.", "Éxito");
                     LoadPersonasGrid();
                 }
@@ -650,7 +652,7 @@ namespace Presentation
         {
             try
             {
-                _allPersonas = _userService.GetPersonas();
+                _allPersonas = _managementService.GetPersonas();
                 dgvPersonas.DataSource = new List<PersonaDto>(_allPersonas);
 
                 dgvPersonas.Columns["IdPersona"].Visible = false;

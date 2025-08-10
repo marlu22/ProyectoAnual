@@ -25,8 +25,11 @@ internal static class Program
         try
         {
             // La composición de dependencias ahora se realiza en la capa de lógica de negocio
-            IUserService userService = ServiceFactory.CreateUserService();
-            Application.Run(new LoginForm(userService));
+            var authService = ServiceFactory.CreateUserAuthenticationService();
+            var managementService = ServiceFactory.CreateUserManagementService();
+            var referenceService = ServiceFactory.CreateReferenceDataService();
+
+            Application.Run(new LoginForm(authService, managementService, referenceService));
         }
         catch (Exception ex)
         {

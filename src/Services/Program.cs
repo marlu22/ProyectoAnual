@@ -1,6 +1,8 @@
 using DataAccess;
 using DataAccess.Repositories;
 using BusinessLogic.Services;
+using BusinessLogic.Security;
+using BusinessLogic.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserManagementSystem.Services.Middleware;
@@ -25,8 +27,16 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddSingleton<DatabaseConnectionFactory>();
 builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
+builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<IReferenceDataService, ReferenceDataService>();
+
 
 builder.Services.AddControllers();
 

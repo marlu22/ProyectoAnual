@@ -9,12 +9,12 @@ namespace Services.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IUserAuthenticationService _authService;
         private readonly ITokenService _tokenService;
 
-        public AuthController(IUserService userService, ITokenService tokenService)
+        public AuthController(IUserAuthenticationService authService, ITokenService tokenService)
         {
-            _userService = userService;
+            _authService = authService;
             _tokenService = tokenService;
         }
 
@@ -22,7 +22,7 @@ namespace Services.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var authResult = await _userService.AuthenticateAsync(request.Username, request.Password);
+            var authResult = await _authService.AuthenticateAsync(request.Username, request.Password);
 
             if (!authResult.Success || authResult.User == null)
                 return Unauthorized("Invalid credentials");

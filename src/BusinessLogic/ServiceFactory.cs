@@ -1,28 +1,25 @@
 using BusinessLogic.Configuration;
+using BusinessLogic.Security;
 using BusinessLogic.Services;
 using DataAccess;
 using DataAccess.Repositories;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.IO;
 
 namespace BusinessLogic
 {
     public static class ServiceFactory
     {
-        public static IUserService CreateUserService()
+        private static void SetupDependencies(out IConfiguration config, out ILoggerFactory loggerFactory, out IUserRepository userRepository)
         {
-            // 1. Set up configuration
-            var config = new ConfigurationBuilder()
+            config = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
-            // 2. Set up logging
-            var loggerFactory = LoggerFactory.Create(builder =>
+            loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
                     .AddFilter("Microsoft", LogLevel.Warning)
@@ -30,20 +27,44 @@ namespace BusinessLogic
                     .AddConsole();
             });
 
-            // 3. Create DataAccess components
             var connectionFactory = new DatabaseConnectionFactory(config);
-            ILogger<SqlUserRepository> sqlLogger = loggerFactory.CreateLogger<SqlUserRepository>();
-            IUserRepository userRepository = new SqlUserRepository(connectionFactory, sqlLogger);
+            var sqlLogger = loggerFactory.CreateLogger<SqlUserRepository>();
+            userRepository = new SqlUserRepository(connectionFactory, sqlLogger);
+        }
 
-            // 4. Create BusinessLogic components
+        public static IUserAuthenticationService CreateUserAuthenticationService()
+        {
+            SetupDependencies(out var config, out var loggerFactory, out var userRepository);
+
             var smtpSettings = new SmtpSettings();
             config.GetSection("SmtpSettings").Bind(smtpSettings);
-            IEmailService emailService = new EmailService(Options.Create(smtpSettings));
+            var emailService = new EmailService(Options.Create(smtpSettings));
+            var passwordHasher = new PasswordHasher();
+            var logger = loggerFactory.CreateLogger<UserAuthenticationService>();
 
-            ILogger<UserService> userLogger = loggerFactory.CreateLogger<UserService>();
-            IUserService userService = new UserService(userRepository, emailService, userLogger);
+            return new UserAuthenticationService(userRepository, emailService, logger, passwordHasher);
+        }
 
-            return userService;
+        public static IUserManagementService CreateUserManagementService()
+        {
+            SetupDependencies(out var config, out var loggerFactory, out var userRepository);
+
+            var smtpSettings = new SmtpSettings();
+            config.GetSection("SmtpSettings").Bind(smtpSettings);
+            var emailService = new EmailService(Options.Create(smtpSettings));
+            var passwordHasher = new PasswordHasher();
+            var logger = loggerFactory.CreateLogger<UserManagementService>();
+
+            return new UserManagementService(userRepository, emailService, logger, passwordHasher);
+        }
+
+        public static IReferenceDataService CreateReferenceDataService()
+        {
+            SetupDependencies(out _, out var loggerFactory, out var userRepository);
+
+            var logger = loggerFactory.CreateLogger<ReferenceDataService>();
+
+            return new ReferenceDataService(userRepository, logger);
         }
     }
 }

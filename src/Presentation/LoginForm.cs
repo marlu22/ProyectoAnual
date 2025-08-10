@@ -1,26 +1,21 @@
-// src/Presentation/LoginForm.cs
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
 using BusinessLogic.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Presentation
 {
     public partial class LoginForm : Form
     {
         private readonly IUserAuthenticationService _authService;
-        private readonly IUserManagementService _managementService;
-        private readonly IReferenceDataService _referenceService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public LoginForm(
-            IUserAuthenticationService authService,
-            IUserManagementService managementService,
-            IReferenceDataService referenceService)
+        public LoginForm(IUserAuthenticationService authService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _authService = authService;
-            _managementService = managementService;
-            _referenceService = referenceService;
+            _serviceProvider = serviceProvider;
             btnLogin.Click += BtnLogin_Click;
             btnRecuperarContrasena.Click += BtnRecuperarContrasena_Click;
         }
@@ -41,14 +36,17 @@ namespace Presentation
 
             if (authResult.Requires2fa)
             {
-                var twoFactorForm = new TwoFactorAuthForm(_authService, username);
-                if (twoFactorForm.ShowDialog() == DialogResult.OK)
+                using (var twoFactorForm = _serviceProvider.GetRequiredService<TwoFactorAuthForm>())
                 {
-                    authResult = twoFactorForm.AuthResult;
-                }
-                else
-                {
-                    return; // 2FA cancelled or failed
+                    twoFactorForm.Initialize(username);
+                    if (twoFactorForm.ShowDialog() == DialogResult.OK)
+                    {
+                        authResult = twoFactorForm.AuthResult;
+                    }
+                    else
+                    {
+                        return; // 2FA cancelled or failed
+                    }
                 }
             }
 
@@ -68,22 +66,36 @@ namespace Presentation
             switch (authResult.NextAction)
             {
                 case PostLoginAction.ChangePassword:
-                    new CambioContrasenaForm(_authService, authResult.User.Username).ShowDialog();
+                    using (var form = _serviceProvider.GetRequiredService<CambioContrasenaForm>())
+                    {
+                        form.Initialize(authResult.User.Username);
+                        form.ShowDialog();
+                    }
                     break;
                 case PostLoginAction.ShowAdminDashboard:
-                    new AdminForm(_authService, _managementService, _referenceService, authResult.User.Username).ShowDialog();
+                    using (var form = _serviceProvider.GetRequiredService<AdminForm>())
+                    {
+                        form.Initialize(authResult.User.Username);
+                        form.ShowDialog();
+                    }
                     break;
                 case PostLoginAction.ShowUserDashboard:
-                    new UserForm(_authService, _managementService, authResult.User.Username).ShowDialog();
+                    using (var form = _serviceProvider.GetRequiredService<UserForm>())
+                    {
+                        form.Initialize(authResult.User.Username);
+                        form.ShowDialog();
+                    }
                     break;
             }
-            Show();
+            Close(); // Close login form when another form is shown
         }
 
         private void BtnRecuperarContrasena_Click(object? sender, EventArgs e)
         {
-            var form = new RecuperarContrasenaForm(_authService);
-            form.ShowDialog();
+            using (var form = _serviceProvider.GetRequiredService<RecuperarContrasenaForm>())
+            {
+                form.ShowDialog();
+            }
         }
 
         private void ChkMostrarContrasena_CheckedChanged(object? sender, EventArgs e)

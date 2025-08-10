@@ -1,86 +1,122 @@
-// Assuming this is in your Program.cs or wherever the MainForm is instantiated
 using System;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using BusinessLogic;
-using BusinessLogic.Services;
-using Presentation; // Required for LoginForm, frmError, etc.
 using BusinessLogic.Exceptions;
 using Presentation.Exceptions;
 
-internal static class Program
+namespace Presentation
 {
-    [STAThread]
-    static void Main()
+    internal static class Program
     {
-        Application.SetHighDpiMode(HighDpiMode.SystemAware);
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(false);
+        public static IServiceProvider? ServiceProvider { get; private set; }
 
-        // Global Exception Handling
-        Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
-        AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
-        try
+        [STAThread]
+        static void Main()
         {
-            // La composición de dependencias ahora se realiza en la capa de lógica de negocio
-            var authService = ServiceFactory.CreateUserAuthenticationService();
-            var managementService = ServiceFactory.CreateUserManagementService();
-            var referenceService = ServiceFactory.CreateReferenceDataService();
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(new LoginForm(authService, managementService, referenceService));
-        }
-        catch (Exception ex)
-        {
-            // Captura cualquier excepción durante la inicialización
-            HandleException(ex);
-        }
-    }
+            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-    private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
-    {
-        HandleException(e.Exception);
-    }
+            try
+            {
+                var host = CreateHostBuilder().Build();
+                ServiceProvider = host.Services;
 
-    private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-    {
-        HandleException(e.ExceptionObject as Exception);
-    }
-
-    private static void HandleException(Exception? ex)
-    {
-        if (ex == null) return;
-
-        // Log the exception
-        LogException(ex);
-
-        // Show a friendly message to the user
-        using (var errorForm = new frmError(ex))
-        {
-            errorForm.ShowDialog();
+                Application.Run(ServiceProvider.GetRequiredService<LoginForm>());
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
         }
 
-        if (!(ex is ValidationException) && !(ex is BusinessLogicException) && !(ex is UILayerException))
-        {
-            Environment.Exit(1);
-        }
-    }
+        private static IHostBuilder CreateHostBuilder() =>
+            Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) =>
+                {
+                    // Register services from BusinessLogic layer
+                    services.AddInfrastructure(context.Configuration);
 
-    private static void LogException(Exception ex)
-    {
-        try
+                    // Register Forms
+                    services.AddTransient<LoginForm>();
+                    services.AddTransient<AdminForm>();
+                    services.AddTransient<UserForm>();
+                    services.AddTransient<ProfileForm>();
+                    services.AddTransient<CambioContrasenaForm>();
+                    services.AddTransient<RecuperarContrasenaForm>();
+                    services.AddTransient<PreguntasSeguridadForm>();
+                    services.AddTransient<TwoFactorAuthForm>();
+                    services.AddTransient<frmError>();
+                    services.AddTransient<frmNotification>();
+                });
+
+        private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error_log.txt");
-            string errorMessage = $"[{DateTime.Now}] - {ex.GetType().FullName}:{Environment.NewLine}" +
-                                  $"Message: {ex.Message}{Environment.NewLine}" +
-                                  $"StackTrace:{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}" +
-                                  "--------------------------------------------------" +
-                                  $"{Environment.NewLine}";
-            File.AppendAllText(logPath, errorMessage);
+            HandleException(e.Exception);
         }
-        catch
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            // If logging fails, there's not much else to do.
+            HandleException(e.ExceptionObject as Exception);
+        }
+
+        private static void HandleException(Exception? ex)
+        {
+            if (ex == null) return;
+
+            LogException(ex);
+
+            try
+            {
+                // Try to resolve the error form from DI container
+                var errorForm = ServiceProvider?.GetService<frmError>();
+                if (errorForm != null)
+                {
+                    errorForm.SetError(ex);
+                    errorForm.ShowDialog();
+                }
+                else
+                {
+                    // Fallback if DI fails
+                    MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch
+            {
+                // Fallback if even the error form fails
+                MessageBox.Show($"A critical error occurred and the application cannot continue: {ex.Message}", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+
+            if (!(ex is ValidationException) && !(ex is BusinessLogicException) && !(ex is UILayerException))
+            {
+                Environment.Exit(1);
+            }
+        }
+
+        private static void LogException(Exception ex)
+        {
+            try
+            {
+                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "error_log.txt");
+                string errorMessage = $"[{DateTime.Now}] - {ex.GetType().FullName}:{Environment.NewLine}" +
+                                      $"Message: {ex.Message}{Environment.NewLine}" +
+                                      $"StackTrace:{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}" +
+                                      "--------------------------------------------------" +
+                                      $"{Environment.NewLine}";
+                File.AppendAllText(logPath, errorMessage);
+            }
+            catch
+            {
+                // If logging fails, there's not much else to do.
+            }
         }
     }
 }

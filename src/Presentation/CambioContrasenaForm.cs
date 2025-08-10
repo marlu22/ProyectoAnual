@@ -1,22 +1,28 @@
-// src/Presentation/CambioContrasenaForm.cs
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
 using BusinessLogic.Exceptions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Presentation
 {
     public partial class CambioContrasenaForm : Form
     {
         private readonly IUserAuthenticationService _authService;
-        private readonly string _usuario;
+        private readonly IServiceProvider _serviceProvider;
+        private string _username = string.Empty;
 
-        public CambioContrasenaForm(IUserAuthenticationService authService, string usuario)
+        public CambioContrasenaForm(IUserAuthenticationService authService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _authService = authService;
-            _usuario = usuario;
+            _serviceProvider = serviceProvider;
             btnCambiar.Click += BtnCambiar_Click;
+        }
+
+        public void Initialize(string username)
+        {
+            _username = username;
         }
 
         private void BtnCambiar_Click(object? sender, EventArgs? e)
@@ -41,16 +47,17 @@ namespace Presentation
                     return;
                 }
 
-                _authService.CambiarContrasena(_usuario, nueva, actual);
+                _authService.CambiarContrasena(_username, nueva, actual);
                 MessageBox.Show("Contraseña cambiada correctamente.", "Info");
 
-                // Check if this is the first time the user is changing the password
-                // If so, force them to set security questions.
-                var user = _authService.GetPreguntasDeUsuario(_usuario);
+                var user = _authService.GetPreguntasDeUsuario(_username);
                 if (user == null || user.Count == 0)
                 {
-                    var preguntasForm = new PreguntasSeguridadForm(_authService, _usuario);
-                    preguntasForm.ShowDialog();
+                    using (var preguntasForm = _serviceProvider.GetRequiredService<PreguntasSeguridadForm>())
+                    {
+                        preguntasForm.Initialize(_username);
+                        preguntasForm.ShowDialog();
+                    }
                 }
 
                 DialogResult = DialogResult.OK;
@@ -58,8 +65,9 @@ namespace Presentation
             }
             catch (ValidationException ex)
             {
-                using (var errorForm = new frmNotification(ex.Message))
+                using (var errorForm = _serviceProvider.GetRequiredService<frmNotification>())
                 {
+                    errorForm.SetMessage(ex.Message);
                     errorForm.ShowDialog();
                 }
             }

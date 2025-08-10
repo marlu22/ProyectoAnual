@@ -12,17 +12,21 @@ namespace Presentation
     public partial class PreguntasSeguridadForm : Form
     {
         private readonly IUserAuthenticationService _authService;
-        private readonly string _username;
+        private string _username = string.Empty;
         private List<PreguntaSeguridadDto> _preguntas = new List<PreguntaSeguridadDto>();
         private List<ComboBox> _comboBoxes = new List<ComboBox>();
         private List<RoundedTextBox> _textBoxes = new List<RoundedTextBox>();
 
-        public PreguntasSeguridadForm(IUserAuthenticationService authService, string username)
+        public PreguntasSeguridadForm(IUserAuthenticationService authService)
         {
             InitializeComponent();
             _authService = authService;
-            _username = username;
             btnGuardar.Click += BtnGuardar_Click;
+        }
+
+        public void Initialize(string username)
+        {
+            _username = username;
         }
 
         private void PreguntasSeguridadForm_Load(object sender, EventArgs e)

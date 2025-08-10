@@ -9,10 +9,10 @@ namespace Services.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IUserAuthenticationService _authService;
+        private readonly IAuthenticationService _authService;
         private readonly ITokenService _tokenService;
 
-        public AuthController(IUserAuthenticationService authService, ITokenService tokenService)
+        public AuthController(IAuthenticationService authService, ITokenService tokenService)
         {
             _authService = authService;
             _tokenService = tokenService;

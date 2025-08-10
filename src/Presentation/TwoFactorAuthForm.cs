@@ -7,12 +7,12 @@ namespace Presentation
 {
     public partial class TwoFactorAuthForm : Form
     {
-        private readonly IUserAuthenticationService _authService;
+        private readonly IAuthenticationService _authService;
         private string _username = string.Empty;
 
         public AuthenticationResult? AuthResult { get; private set; }
 
-        public TwoFactorAuthForm(IUserAuthenticationService authService)
+        public TwoFactorAuthForm(IAuthenticationService authService)
         {
             InitializeComponent();
             _authService = authService;

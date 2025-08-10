@@ -121,7 +121,7 @@ namespace DataAccess.Entities
             Codigo2FAExpiracion = expiration;
         }
 
-        private Usuario(int idUsuario, string usuarioNombre, byte[] contrasenaScript, int idPersona, DateTime fechaBloqueo, string? nombreUsuarioBloqueo, DateTime fechaUltimoCambio, int idRol, int? idPolitica, bool cambioContrasenaObligatorio, string? codigo2FA, DateTime? codigo2FAExpiracion, DateTime? fechaExpiracion, Rol rol)
+        public Usuario(int idUsuario, string usuarioNombre, byte[] contrasenaScript, int idPersona, DateTime fechaBloqueo, string? nombreUsuarioBloqueo, DateTime fechaUltimoCambio, int idRol, int? idPolitica, bool cambioContrasenaObligatorio, string? codigo2FA, DateTime? codigo2FAExpiracion, DateTime? fechaExpiracion, Rol rol)
         {
             IdUsuario = idUsuario;
             UsuarioNombre = usuarioNombre;

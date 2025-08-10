@@ -90,13 +90,13 @@ namespace DataAccess.Repositories
             var sql = @"
                 SELECT
                     p.id_persona, p.legajo, p.nombre, p.apellido, p.id_tipo_doc, p.num_doc, p.fecha_nacimiento, p.cuil, p.calle, p.altura, p.id_localidad, p.id_genero, p.correo, p.celular, p.fecha_ingreso,
-                    td.nombre AS TipoDocNombre,
-                    l.nombre AS LocalidadNombre,
+                    td.tipo_doc AS TipoDocNombre,
+                    l.localidad AS LocalidadNombre,
                     pa.id_partido AS IdPartido,
-                    pa.nombre AS PartidoNombre,
+                    pa.partido AS PartidoNombre,
                     pr.id_provincia AS IdProvincia,
-                    pr.nombre AS ProvinciaNombre,
-                    g.nombre AS GeneroNombre
+                    pr.provincia AS ProvinciaNombre,
+                    g.genero AS GeneroNombre
                 FROM
                     personas p
                 LEFT JOIN

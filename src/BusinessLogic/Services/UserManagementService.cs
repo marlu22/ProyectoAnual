@@ -121,8 +121,22 @@ namespace BusinessLogic.Services
         }, "updating security policy");
 
         public List<UserDto> GetAllUsers() => ExecuteServiceOperation(() =>
-            _userRepository.GetAllUsers().Select(u => UserMapper.MapToUserDto(u)!).ToList(),
-            "getting all users");
+        {
+            var usuarios = _userRepository.GetAllUsers();
+            var personas = _personaRepository.GetAllPersonas().ToDictionary(p => p.IdPersona);
+
+            return usuarios.Select(u =>
+            {
+                var userDto = UserMapper.MapToUserDto(u)!;
+                if (personas.TryGetValue(u.IdPersona, out var persona))
+                {
+                    userDto.Nombre = persona.Nombre;
+                    userDto.Apellido = persona.Apellido;
+                    userDto.Correo = persona.Correo;
+                }
+                return userDto;
+            }).ToList();
+        }, "getting all users");
 
         public void UpdateUser(UserDto userDto) => ExecuteServiceOperation(() =>
         {

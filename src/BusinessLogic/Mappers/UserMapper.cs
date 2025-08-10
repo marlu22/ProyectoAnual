@@ -12,7 +12,6 @@ namespace BusinessLogic.Mappers
             {
                 IdUsuario = u.IdUsuario,
                 Username = u.UsuarioNombre,
-                NombreCompleto = u.Persona != null ? $"{u.Persona.Nombre} {u.Persona.Apellido}" : "N/A",
                 Rol = u.Rol?.Nombre,
                 IdRol = u.IdRol,
                 IdPersona = u.IdPersona,

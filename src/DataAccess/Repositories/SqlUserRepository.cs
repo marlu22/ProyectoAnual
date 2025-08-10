@@ -120,23 +120,6 @@ namespace DataAccess.Repositories
             var list = new List<Usuario>();
             while (reader.Read())
             {
-                var persona = new Persona(
-                    (int)reader["legajo"],
-                    reader["nombre"] as string ?? string.Empty,
-                    reader["apellido"] as string ?? string.Empty,
-                    (int)reader["id_tipo_doc"],
-                    reader["num_doc"] as string ?? string.Empty,
-                    reader["fecha_nacimiento"] as DateTime?,
-                    reader["cuil"] as string,
-                    reader["calle"] as string,
-                    reader["altura"] as string,
-                    (int)reader["id_localidad"],
-                    (int)reader["id_genero"],
-                    reader["correo"] as string,
-                    reader["celular"] as string,
-                    (DateTime)reader["fecha_ingreso"]
-                );
-
                 var usuario = new Usuario(
                     reader["usuario"] as string ?? string.Empty,
                     (byte[])reader["contrasena_script"],

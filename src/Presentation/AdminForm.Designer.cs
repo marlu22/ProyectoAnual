@@ -710,7 +710,6 @@ namespace Presentation
             btnGuardarPersona.Size = new System.Drawing.Size(150, 34);
             btnGuardarPersona.TabIndex = 22;
             btnGuardarPersona.Text = "Guardar Persona";
-            btnGuardarPersona.Click += btnGuardarPersona_Click_1;
             // 
             // panelUsuarios
             // 

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using BusinessLogic.Services;
 using BusinessLogic.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 
 namespace Presentation
 {
@@ -72,6 +73,16 @@ namespace Presentation
                     errorForm.SetMessage(ex.Message);
                     errorForm.ShowDialog();
                 }
+            }
+            catch (BusinessLogicException ex)
+            {
+                var errorMessage = new StringBuilder(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    errorMessage.AppendLine();
+                    errorMessage.AppendLine($"Detalles: {ex.InnerException.Message}");
+                }
+                MessageBox.Show(errorMessage.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {

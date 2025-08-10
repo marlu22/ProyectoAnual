@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UserManagementSystem.BusinessLogic.Exceptions
+namespace BusinessLogic.Exceptions
 {
     public class ValidationException : Exception
     {

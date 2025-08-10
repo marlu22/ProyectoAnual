@@ -6,7 +6,7 @@ using BusinessLogic.Services;
 using BusinessLogic.Models;
 using Presentation.Controles;
 using Presentation.Theme;
-using UserManagementSystem.BusinessLogic.Exceptions;
+using BusinessLogic.Exceptions;
 
 namespace Presentation
 {

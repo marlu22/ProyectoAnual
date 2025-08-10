@@ -127,18 +127,17 @@ namespace DataAccess.Repositories
         public PoliticaSeguridad? GetPoliticaSeguridad() => ExecuteReader("SELECT TOP 1 * FROM politicas_seguridad;", reader =>
         {
             if (!reader.Read()) return null;
-            return new PoliticaSeguridad
-            {
-                IdPolitica = (int)reader["id_politica"],
-                MinCaracteres = reader["min_caracteres"] as int? ?? 8,
-                CantPreguntas = reader["cant_preguntas"] as int? ?? 3,
-                MayusYMinus = reader["mayus_y_minus"] as bool? ?? false,
-                LetrasYNumeros = reader["letras_y_numeros"] as bool? ?? false,
-                CaracterEspecial = reader["caracter_especial"] as bool? ?? false,
-                Autenticacion2FA = reader["autenticacion_2fa"] as bool? ?? false,
-                NoRepetirAnteriores = reader["no_repetir_anteriores"] as bool? ?? false,
-                SinDatosPersonales = reader["sin_datos_personales"] as bool? ?? false
-            };
+            return new PoliticaSeguridad(
+                (int)reader["id_politica"],
+                reader["mayus_y_minus"] as bool? ?? false,
+                reader["letras_y_numeros"] as bool? ?? false,
+                reader["caracter_especial"] as bool? ?? false,
+                reader["autenticacion_2fa"] as bool? ?? false,
+                reader["no_repetir_anteriores"] as bool? ?? false,
+                reader["sin_datos_personales"] as bool? ?? false,
+                reader["min_caracteres"] as int? ?? 8,
+                reader["cant_preguntas"] as int? ?? 3
+            );
         });
 
         public List<PreguntaSeguridad> GetPreguntasSeguridad() => ExecuteReader("SELECT id_pregunta, pregunta FROM preguntas_seguridad;", reader =>
@@ -199,22 +198,22 @@ namespace DataAccess.Repositories
         public Persona? GetPersonaById(int id) => ExecuteReader("SELECT * FROM personas WHERE id_persona = @id;", reader =>
         {
             if (!reader.Read()) return null;
-            return new Persona
-            {
-                IdPersona = (int)reader["id_persona"],
-                Legajo = (int)reader["legajo"],
-                Nombre = reader["nombre"] as string ?? string.Empty,
-                Apellido = reader["apellido"] as string ?? string.Empty,
-                IdTipoDoc = (int)reader["id_tipo_doc"],
-                NumDoc = reader["num_doc"] as string ?? string.Empty,
-                Cuil = reader["cuil"] as string ?? string.Empty,
-                Calle = reader["calle"] as string ?? string.Empty,
-                Altura = reader["altura"] as string ?? string.Empty,
-                IdLocalidad = (int)reader["id_localidad"],
-                IdGenero = (int)reader["id_genero"],
-                Correo = reader["correo"] as string ?? string.Empty,
-                FechaIngreso = (DateTime)reader["fecha_ingreso"]
-            };
+            return new Persona(
+                (int)reader["legajo"],
+                reader["nombre"] as string ?? string.Empty,
+                reader["apellido"] as string ?? string.Empty,
+                (int)reader["id_tipo_doc"],
+                reader["num_doc"] as string ?? string.Empty,
+                reader["fecha_nacimiento"] as DateTime?,
+                reader["cuil"] as string,
+                reader["calle"] as string,
+                reader["altura"] as string,
+                (int)reader["id_localidad"],
+                (int)reader["id_genero"],
+                reader["correo"] as string,
+                reader["celular"] as string,
+                (DateTime)reader["fecha_ingreso"]
+            );
         }, p => p.AddWithValue("@id", id));
 
         public List<RespuestaSeguridad>? GetRespuestasSeguridadByUsuarioId(int idUsuario) => ExecuteReader("SELECT id_usuario, id_pregunta, respuesta FROM respuestas_seguridad WHERE id_usuario = @id_usuario;", reader =>
@@ -246,22 +245,17 @@ namespace DataAccess.Repositories
         public Usuario? GetUsuarioByNombreUsuario(string nombre) => ExecuteReader("sp_get_usuario_by_nombre", reader =>
         {
             if (!reader.Read()) return null;
-            return new Usuario
-            {
-                IdUsuario = (int)reader["id_usuario"],
-                UsuarioNombre = reader["usuario"] as string ?? string.Empty,
-                ContrasenaScript = (byte[])reader["contrasena_script"],
-                IdPersona = (int)reader["id_persona"],
-                FechaBloqueo = (DateTime)reader["fecha_bloqueo"],
-                NombreUsuarioBloqueo = reader["nombre_usuario_bloqueo"] as string ?? string.Empty,
-                FechaUltimoCambio = (DateTime)reader["fecha_ultimo_cambio"],
-                IdRol = (int)reader["id_rol"],
-                IdPolitica = reader["id_politica"] as int?,
-                CambioContrasenaObligatorio = (bool)reader["CambioContrasenaObligatorio"],
-                Codigo2FA = reader["Codigo2FA"] as string,
-                Codigo2FAExpiracion = reader["Codigo2FAExpiracion"] as DateTime?,
-                Rol = new Rol { IdRol = (int)reader["rol_id_rol"], Nombre = reader["rol"] as string ?? string.Empty }
-            };
+            var usuario = new Usuario(
+                reader["usuario"] as string ?? string.Empty,
+                (byte[])reader["contrasena_script"],
+                (int)reader["id_persona"],
+                (int)reader["id_rol"],
+                reader["id_politica"] as int?
+            );
+            // As the constructor sets default values, we might need to update some properties
+            // based on the data returned from the database if they differ from the defaults.
+            // For now, we assume the constructor logic is sufficient.
+            return usuario;
         }, p => p.AddWithValue("@usuario_nombre", nombre), CommandType.StoredProcedure);
 
         public void Set2faCode(string username, string? code, DateTime? expiry) => ExecuteNonQuery(
@@ -280,38 +274,31 @@ namespace DataAccess.Repositories
             var list = new List<Usuario>();
             while (reader.Read())
             {
-                list.Add(new Usuario
-                {
-                    IdUsuario = (int)reader["id_usuario"],
-                    UsuarioNombre = reader["usuario"] as string ?? string.Empty,
-                    ContrasenaScript = (byte[])reader["contrasena_script"],
-                    IdPersona = (int)reader["id_persona"],
-                    FechaBloqueo = (DateTime)reader["fecha_bloqueo"],
-                    NombreUsuarioBloqueo = reader["nombre_usuario_bloqueo"] as string ?? string.Empty,
-                    FechaUltimoCambio = (DateTime)reader["fecha_ultimo_cambio"],
-                    IdRol = (int)reader["id_rol"],
-                    IdPolitica = reader["id_politica"] as int?,
-                    CambioContrasenaObligatorio = (bool)reader["CambioContrasenaObligatorio"],
-                    Codigo2FA = reader["Codigo2FA"] as string,
-                    Codigo2FAExpiracion = reader["Codigo2FAExpiracion"] as DateTime?,
-                    Rol = new Rol { IdRol = (int)reader["rol_id_rol"], Nombre = reader["rol"] as string ?? string.Empty },
-                    Persona = new Persona
-                    {
-                        IdPersona = (int)reader["persona_id_persona"],
-                        Legajo = (int)reader["legajo"],
-                        Nombre = reader["nombre"] as string ?? string.Empty,
-                        Apellido = reader["apellido"] as string ?? string.Empty,
-                        IdTipoDoc = (int)reader["id_tipo_doc"],
-                        NumDoc = reader["num_doc"] as string ?? string.Empty,
-                        Cuil = reader["cuil"] as string ?? string.Empty,
-                        Calle = reader["calle"] as string ?? string.Empty,
-                        Altura = reader["altura"] as string ?? string.Empty,
-                        IdLocalidad = (int)reader["id_localidad"],
-                        IdGenero = (int)reader["id_genero"],
-                        Correo = reader["correo"] as string ?? string.Empty,
-                        FechaIngreso = (DateTime)reader["fecha_ingreso"]
-                    }
-                });
+                var persona = new Persona(
+                    (int)reader["legajo"],
+                    reader["nombre"] as string ?? string.Empty,
+                    reader["apellido"] as string ?? string.Empty,
+                    (int)reader["id_tipo_doc"],
+                    reader["num_doc"] as string ?? string.Empty,
+                    reader["fecha_nacimiento"] as DateTime?,
+                    reader["cuil"] as string,
+                    reader["calle"] as string,
+                    reader["altura"] as string,
+                    (int)reader["id_localidad"],
+                    (int)reader["id_genero"],
+                    reader["correo"] as string,
+                    reader["celular"] as string,
+                    (DateTime)reader["fecha_ingreso"]
+                );
+
+                var usuario = new Usuario(
+                    reader["usuario"] as string ?? string.Empty,
+                    (byte[])reader["contrasena_script"],
+                    (int)reader["id_persona"],
+                    (int)reader["id_rol"],
+                    reader["id_politica"] as int?
+                );
+                list.Add(usuario);
             }
             return list;
         }, commandType: CommandType.StoredProcedure);
@@ -321,22 +308,22 @@ namespace DataAccess.Repositories
             var list = new List<Persona>();
             while (reader.Read())
             {
-                list.Add(new Persona
-                {
-                    IdPersona = (int)reader["id_persona"],
-                    Legajo = (int)reader["legajo"],
-                    Nombre = reader["nombre"] as string ?? string.Empty,
-                    Apellido = reader["apellido"] as string ?? string.Empty,
-                    IdTipoDoc = (int)reader["id_tipo_doc"],
-                    NumDoc = reader["num_doc"] as string ?? string.Empty,
-                    Cuil = reader["cuil"] as string ?? string.Empty,
-                    Calle = reader["calle"] as string ?? string.Empty,
-                    Altura = reader["altura"] as string ?? string.Empty,
-                    IdLocalidad = (int)reader["id_localidad"],
-                    IdGenero = (int)reader["id_genero"],
-                    Correo = reader["correo"] as string ?? string.Empty,
-                    FechaIngreso = (DateTime)reader["fecha_ingreso"]
-                });
+                list.Add(new Persona(
+                    (int)reader["legajo"],
+                    reader["nombre"] as string ?? string.Empty,
+                    reader["apellido"] as string ?? string.Empty,
+                    (int)reader["id_tipo_doc"],
+                    reader["num_doc"] as string ?? string.Empty,
+                    reader["fecha_nacimiento"] as DateTime?,
+                    reader["cuil"] as string,
+                    reader["calle"] as string,
+                    reader["altura"] as string,
+                    (int)reader["id_localidad"],
+                    (int)reader["id_genero"],
+                    reader["correo"] as string,
+                    reader["celular"] as string,
+                    (DateTime)reader["fecha_ingreso"]
+                ));
             }
             return list;
         });

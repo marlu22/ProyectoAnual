@@ -4,7 +4,7 @@ using BusinessLogic.Models;
 using DataAccess.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
-using UserManagementSystem.BusinessLogic.Exceptions;
+using BusinessLogic.Exceptions;
 
 namespace BusinessLogic.Services
 {

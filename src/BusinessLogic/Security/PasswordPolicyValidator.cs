@@ -1,7 +1,7 @@
 using DataAccess.Entities;
 using System;
 using System.Linq;
-using UserManagementSystem.BusinessLogic.Exceptions;
+using BusinessLogic.Exceptions;
 
 namespace BusinessLogic.Security
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace UserManagementSystem.BusinessLogic.Exceptions
+namespace BusinessLogic.Exceptions
 {
     public class BusinessLogicException : Exception
     {

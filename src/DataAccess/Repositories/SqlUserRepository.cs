@@ -23,20 +23,28 @@ namespace DataAccess.Repositories
         // Generic helper for executing read operations
         private T ExecuteReader<T>(string sql, Func<SqlDataReader, T> map, Action<SqlParameterCollection>? addParameters = null, CommandType commandType = CommandType.Text)
         {
-            using (var connection = (SqlConnection)_connectionFactory.CreateConnection())
+            try
             {
-                connection.Open();
-                using (var command = connection.CreateCommand())
+                using (var connection = (SqlConnection)_connectionFactory.CreateConnection())
                 {
-                    command.CommandText = sql;
-                    command.CommandType = commandType;
-                    addParameters?.Invoke(command.Parameters);
-
-                    using (var reader = command.ExecuteReader())
+                    connection.Open();
+                    using (var command = connection.CreateCommand())
                     {
-                        return map(reader);
+                        command.CommandText = sql;
+                        command.CommandType = commandType;
+                        addParameters?.Invoke(command.Parameters);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            return map(reader);
+                        }
                     }
                 }
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Ocurrió un error de SQL al ejecutar ExecuteReader para el comando: {sql}", sql);
+                throw new DataAccessLayerException($"Ocurrió un error de SQL al ejecutar {sql}", ex);
             }
         }
 

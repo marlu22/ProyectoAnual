@@ -112,10 +112,11 @@ namespace BusinessLogic.Tests
         public async Task GetAllUsersAsync_WhenUsersAndPersonasExist_ReturnsCorrectlyMappedDtos()
         {
             // Arrange
+            var rol = new Rol { IdRol = 1, Nombre = "User" };
             var users = new List<Usuario>
             {
-                new Usuario("user1", new byte[0], 1, 1, 1) { IdUsuario = 1 },
-                new Usuario("user2", new byte[0], 2, 2, 1) { IdUsuario = 2 }
+                new Usuario(1, "user1", new byte[0], 1, DateTime.Now.AddDays(1), null, DateTime.Now, 1, 1, false, null, null, null, rol),
+                new Usuario(2, "user2", new byte[0], 2, DateTime.Now.AddDays(1), null, DateTime.Now, 1, 1, false, null, null, null, rol)
             };
             var personas = new List<PersonaDto>
             {

@@ -8,15 +8,21 @@ namespace Presentation
     public partial class UserForm : Form
     {
         private readonly IAuthenticationService _authService;
-        private readonly IUserManagementService _managementService;
+        private readonly IUserService _userService;
+        private readonly IPersonaService _personaService;
         private readonly IServiceProvider _serviceProvider;
         private string _username = string.Empty;
 
-        public UserForm(IAuthenticationService authService, IUserManagementService managementService, IServiceProvider serviceProvider)
+        public UserForm(
+            IAuthenticationService authService,
+            IUserService userService,
+            IPersonaService personaService,
+            IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _authService = authService;
-            _managementService = managementService;
+            _userService = userService;
+            _personaService = personaService;
             _serviceProvider = serviceProvider;
 
             btnCambiarContrasena.Click += BtnCambiarContrasena_Click;
@@ -47,12 +53,12 @@ namespace Presentation
             }
         }
 
-        private void BtnMiPerfil_Click(object? sender, EventArgs e)
+        private async void BtnMiPerfil_Click(object? sender, EventArgs e)
         {
-            var user = _managementService.GetUserByUsername(_username);
+            var user = await _userService.GetUserByUsernameAsync(_username);
             if (user != null)
             {
-                var persona = _managementService.GetPersonaById(user.IdPersona);
+                var persona = await _personaService.GetPersonaByIdAsync(user.IdPersona);
                 if (persona != null)
                 {
                     using (var form = _serviceProvider.GetRequiredService<ProfileForm>())

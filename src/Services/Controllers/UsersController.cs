@@ -10,17 +10,17 @@ namespace Services.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserManagementService _managementService;
+        private readonly IUserService _userService;
 
-        public UsersController(IUserManagementService managementService)
+        public UsersController(IUserService userService)
         {
-            _managementService = managementService;
+            _userService = userService;
         }
 
         [HttpGet]
-        public ActionResult<List<UserDto>> GetAllUsers()
+        public async Task<ActionResult<List<UserDto>>> GetAllUsers()
         {
-            var users = _managementService.GetAllUsers();
+            var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
     }

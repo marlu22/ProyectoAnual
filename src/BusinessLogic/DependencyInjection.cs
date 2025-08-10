@@ -53,11 +53,12 @@ namespace BusinessLogic
             // Register new granular services
             services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddTransient<IPasswordService, PasswordService>();
+            services.AddTransient<IPersonaService, PersonaService>();
 
             services.AddTransient<ISecurityQuestionService, SecurityQuestionService>();
             services.AddTransient<ISecurityPolicyService, SecurityPolicyService>();
 
-            services.AddTransient<IUserManagementService, UserManagementService>();
+            services.AddTransient<IUserService, UserManagementService>();
             services.AddTransient<IReferenceDataService, ReferenceDataService>();
 
             return services;

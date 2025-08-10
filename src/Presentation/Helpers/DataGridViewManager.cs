@@ -9,25 +9,25 @@ namespace Presentation.Helpers
 {
     public class DataGridViewManager
     {
-        private readonly IUserManagementService _managementService;
+        private readonly IUserService _userService;
         private readonly DataGridView _dataGridView;
         private List<UserDto> _allUsers;
         private readonly List<int> _dirtyUserIds = new List<int>();
 
-        public DataGridViewManager(IUserManagementService managementService, DataGridView dataGridView)
+        public DataGridViewManager(IUserService userService, DataGridView dataGridView)
         {
-            _managementService = managementService;
+            _userService = userService;
             _dataGridView = dataGridView;
             _allUsers = new List<UserDto>();
 
             _dataGridView.CellEndEdit += DgvUsuarios_CellEndEdit;
         }
 
-        public void LoadUsers()
+        public async void LoadUsers()
         {
             try
             {
-                _allUsers = _managementService.GetAllUsers();
+                _allUsers = await _userService.GetAllUsersAsync();
                 _dataGridView.DataSource = new List<UserDto>(_allUsers);
                 // Configure columns as needed, this might need to be passed in or handled more generically
             }
@@ -66,7 +66,7 @@ namespace Presentation.Helpers
             }
         }
 
-        public void SaveChanges()
+        public async void SaveChanges()
         {
             try
             {
@@ -75,7 +75,7 @@ namespace Presentation.Helpers
                     var usersToUpdate = userDtos.Where(u => _dirtyUserIds.Contains(u.IdUsuario)).ToList();
                     foreach (var userDto in usersToUpdate)
                     {
-                        _managementService.UpdateUser(userDto);
+                        await _userService.UpdateUserAsync(userDto);
                     }
 
                     if (usersToUpdate.Any())
@@ -97,7 +97,7 @@ namespace Presentation.Helpers
             }
         }
 
-        public void DeleteSelectedUser()
+        public async void DeleteSelectedUser()
         {
             if (_dataGridView.SelectedRows.Count == 0)
             {
@@ -115,7 +115,7 @@ namespace Presentation.Helpers
             {
                 try
                 {
-                    _managementService.DeleteUser(userDto.IdUsuario);
+                    await _userService.DeleteUserAsync(userDto.IdUsuario);
                     MessageBox.Show("Usuario eliminado exitosamente.", "Éxito");
                     LoadUsers();
                 }

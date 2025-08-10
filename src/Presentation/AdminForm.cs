@@ -1,4 +1,3 @@
-// src/Presentation/AdminForm.cs
 using System;
 using System.Drawing;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using BusinessLogic.Services;
 using BusinessLogic.Exceptions;
 using BusinessLogic.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Presentation
 {
@@ -14,27 +14,37 @@ namespace Presentation
     {
         private readonly IUserManagementService _managementService;
         private readonly IReferenceDataService _referenceService;
-        private readonly string _username;
+        private readonly IServiceProvider _serviceProvider;
+        private string _username = string.Empty;
         private PoliticaSeguridadDto? _politica;
         private List<UserDto> _allUsers = new List<UserDto>();
         private List<PersonaDto> _allPersonas = new List<PersonaDto>();
         private readonly List<int> _dirtyUserIds = new List<int>();
         private readonly List<int> _dirtyPersonaIds = new List<int>();
 
-        public AdminForm(IUserAuthenticationService authService, IUserManagementService managementService, IReferenceDataService referenceService, string username)
+        public AdminForm(IUserManagementService managementService, IReferenceDataService referenceService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            _managementService = managementService;
+            _referenceService = referenceService;
+            _serviceProvider = serviceProvider;
 
+            SetupForm();
+        }
+
+        public void Initialize(string username)
+        {
+            _username = username;
+            // Any other setup that depends on the username can go here.
+        }
+
+        private void SetupForm()
+        {
             SetupDataGridViewStyles(dgvUsuarios);
             SetupDataGridViewStyles(dgvPersonas);
 
-            _username = username;
-
             lblPassword.Visible = false;
             txtPassword.Visible = false;
-
-            _managementService = managementService;
-            _referenceService = referenceService;
 
             btnNavigatePersonas.Click += (s, e) => ShowPanel(panelPersonas);
             btnNavigateUsuarios.Click += (s, e) => ShowPanel(panelUsuarios);
@@ -49,9 +59,11 @@ namespace Presentation
                     var persona = _managementService.GetPersonaById(user.IdPersona);
                     if (persona != null)
                     {
-                        // Assuming ProfileForm is also refactored to accept DTOs
-                        var form = new ProfileForm(user, persona); // This will need refactoring too
-                        form.ShowDialog();
+                        using (var form = _serviceProvider.GetRequiredService<ProfileForm>())
+                        {
+                            form.Initialize(user, persona);
+                            form.ShowDialog();
+                        }
                     }
                     else
                     {

@@ -6,9 +6,13 @@ namespace Presentation
 {
     public partial class ProfileForm : Form
     {
-        public ProfileForm(UserDto user, PersonaDto persona)
+        public ProfileForm()
         {
             InitializeComponent();
+        }
+
+        public void Initialize(UserDto user, PersonaDto persona)
+        {
             LoadProfileData(user, persona);
         }
 

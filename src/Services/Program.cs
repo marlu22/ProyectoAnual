@@ -1,48 +1,37 @@
-using DataAccess;
-using DataAccess.Repositories;
-using BusinessLogic.Services;
-using BusinessLogic.Security;
-using BusinessLogic.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Services.Middleware;
 using Session;
+using BusinessLogic; // Import the namespace for AddInfrastructure
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar autenticación JWT
+// Configure JWT authentication
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
+        var key = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured.");
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "ClaveSuperSecreta"))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
         };
     });
 
-builder.Services.AddSingleton<DatabaseConnectionFactory>();
-builder.Services.AddScoped<IUserRepository, SqlUserRepository>();
+// Add infrastructure services from the BusinessLogic layer
+builder.Services.AddInfrastructure(builder.Configuration);
+
+// Add services specific to the API layer
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-builder.Services.AddScoped<IEmailService, EmailService>();
-
-builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
-builder.Services.AddScoped<IUserManagementService, UserManagementService>();
-builder.Services.AddScoped<IReferenceDataService, ReferenceDataService>();
-
 
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configurar middleware
+// Configure middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();

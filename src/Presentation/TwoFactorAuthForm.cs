@@ -1,4 +1,3 @@
-// src/Presentation/TwoFactorAuthForm.cs
 using System;
 using System.Windows.Forms;
 using BusinessLogic.Services;
@@ -9,16 +8,20 @@ namespace Presentation
     public partial class TwoFactorAuthForm : Form
     {
         private readonly IUserAuthenticationService _authService;
-        private readonly string _username;
+        private string _username = string.Empty;
 
         public AuthenticationResult? AuthResult { get; private set; }
 
-        public TwoFactorAuthForm(IUserAuthenticationService authService, string username)
+        public TwoFactorAuthForm(IUserAuthenticationService authService)
         {
             InitializeComponent();
             _authService = authService;
-            _username = username;
             btnVerificar.Click += BtnVerificar_Click;
+        }
+
+        public void Initialize(string username)
+        {
+            _username = username;
         }
 
         private async void BtnVerificar_Click(object? sender, EventArgs e)
@@ -38,7 +41,7 @@ namespace Presentation
             }
             else
             {
-                MessageBox.Show(AuthResult.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(AuthResult.ErrorMessage ?? "Error desconocido", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

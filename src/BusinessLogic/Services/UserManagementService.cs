@@ -99,7 +99,7 @@ namespace BusinessLogic.Services
 
             var persona = _personaRepository.GetPersonaById(usuario.IdPersona)!;
 
-            await _emailService.SendWelcomeEmailAsync(persona.Correo!, usuario.NombreUsuario, plainPassword);
+            await _emailService.SendWelcomeEmailAsync(persona.Correo!, usuario.UsuarioNombre, plainPassword);
         }, "creating a user");
 
         public async Task<List<UserDto>> GetAllUsersAsync() => await ExecuteServiceOperationAsync(async () =>

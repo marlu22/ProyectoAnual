@@ -15,34 +15,31 @@ namespace BusinessLogic.Tests
     {
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IPersonaRepository> _personaRepositoryMock;
-        private readonly Mock<ISecurityRepository> _securityRepositoryMock;
         private readonly Mock<IEmailService> _emailServiceMock;
         private readonly Mock<ILogger<UserManagementService>> _loggerMock;
         private readonly Mock<IPasswordHasher> _passwordHasherMock;
         private readonly Mock<IUsuarioFactory> _usuarioFactoryMock;
-        private readonly Mock<IPersonaFactory> _personaFactoryMock;
+        private readonly Mock<IPersonaService> _personaServiceMock;
         private readonly UserManagementService _sut; // System Under Test
 
         public UserManagementServiceTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
             _personaRepositoryMock = new Mock<IPersonaRepository>();
-            _securityRepositoryMock = new Mock<ISecurityRepository>();
             _emailServiceMock = new Mock<IEmailService>();
             _loggerMock = new Mock<ILogger<UserManagementService>>();
             _passwordHasherMock = new Mock<IPasswordHasher>();
             _usuarioFactoryMock = new Mock<IUsuarioFactory>();
-            _personaFactoryMock = new Mock<IPersonaFactory>();
+            _personaServiceMock = new Mock<IPersonaService>();
 
             _sut = new UserManagementService(
                 _userRepositoryMock.Object,
                 _personaRepositoryMock.Object,
-                _securityRepositoryMock.Object,
                 _emailServiceMock.Object,
                 _loggerMock.Object,
+                _usuarioFactoryMock.Object,
                 _passwordHasherMock.Object,
-                _personaFactoryMock.Object,
-                _usuarioFactoryMock.Object
+                _personaServiceMock.Object
             );
         }
 
@@ -120,14 +117,14 @@ namespace BusinessLogic.Tests
                 new Usuario("user1", new byte[0], 1, 1, 1) { IdUsuario = 1 },
                 new Usuario("user2", new byte[0], 2, 2, 1) { IdUsuario = 2 }
             };
-            var personas = new List<Persona>
+            var personas = new List<PersonaDto>
             {
-                new Persona(1, "John", "Doe", 1, "123", DateTime.Now, "123", "street", "123", 1, 1, "john.doe@test.com", "123", DateTime.Now) { IdPersona = 1 },
-                new Persona(2, "Jane", "Doe", 1, "456", DateTime.Now, "456", "street", "456", 1, 1, "jane.doe@test.com", "456", DateTime.Now) { IdPersona = 2 }
+                new PersonaDto { IdPersona = 1, Nombre = "John", Apellido = "Doe", Correo = "john.doe@test.com" },
+                new PersonaDto { IdPersona = 2, Nombre = "Jane", Apellido = "Doe", Correo = "jane.doe@test.com" }
             };
 
             _userRepositoryMock.Setup(r => r.GetAllUsersAsync()).ReturnsAsync(users);
-            _personaRepositoryMock.Setup(r => r.GetAllPersonas()).Returns(personas);
+            _personaServiceMock.Setup(s => s.GetPersonasAsync()).ReturnsAsync(personas);
 
             // Act
             var result = await _sut.GetAllUsersAsync();
@@ -147,37 +144,5 @@ namespace BusinessLogic.Tests
             Assert.Equal("jane.doe@test.com", user2.Correo);
         }
 
-        [Fact]
-        public void UpdatePoliticaSeguridad_WhenPolicyExists_CallsRepository()
-        {
-            // Arrange
-            var politicaDto = new PoliticaSeguridadDto { IdPolitica = 1, MinCaracteres = 10, CantPreguntas = 3 };
-            var politica = new PoliticaSeguridad(1, true, true, true, true, true, true, 8, 3);
-            _securityRepositoryMock.Setup(r => r.GetPoliticaSeguridad()).Returns(politica);
-
-            // Act
-            _sut.UpdatePoliticaSeguridad(politicaDto);
-
-            // Assert
-            _securityRepositoryMock.Verify(r => r.UpdatePoliticaSeguridad(It.Is<PoliticaSeguridad>(p => p.MinCaracteres == 10)), Times.Once);
-        }
-
-        [Fact]
-        public async Task CrearPersonaAsync_WithValidData_CallsFactoryAndRepository()
-        {
-            // Arrange
-            var personaRequest = new PersonaRequest { Nombre = "Test", Apellido = "Person" };
-            var persona = new Persona(1, "Test", "Person", 1, "12345678", System.DateTime.Now, "20123456789", "Test Street", "123", 1, 1, "test@example.com", "1234567890", System.DateTime.Now);
-            _personaFactoryMock.Setup(f => f.Create(personaRequest)).Returns(persona);
-            // AddPersona is still synchronous in the mock, as per the decision to not make all repos async yet
-            _personaRepositoryMock.Setup(r => r.AddPersona(persona));
-
-            // Act
-            await _sut.CrearPersonaAsync(personaRequest);
-
-            // Assert
-            _personaFactoryMock.Verify(f => f.Create(personaRequest), Times.Once);
-            _personaRepositoryMock.Verify(r => r.AddPersona(persona), Times.Once);
-        }
     }
 }

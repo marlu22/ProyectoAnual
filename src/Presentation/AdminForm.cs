@@ -13,7 +13,9 @@ namespace Presentation
 {
     public partial class AdminForm : Form
     {
-        private readonly IUserManagementService _managementService;
+        private readonly IUserService _userService;
+        private readonly IPersonaService _personaService;
+        private readonly ISecurityPolicyService _securityPolicyService;
         private readonly IReferenceDataService _referenceService;
         private readonly IServiceProvider _serviceProvider;
         private readonly DataGridViewManager _userGridManager;
@@ -23,13 +25,20 @@ namespace Presentation
         private List<PersonaDto> _allPersonas = new List<PersonaDto>();
         private readonly List<int> _dirtyPersonaIds = new List<int>();
 
-        public AdminForm(IUserManagementService managementService, IReferenceDataService referenceService, IServiceProvider serviceProvider)
+        public AdminForm(
+            IUserService userService,
+            IPersonaService personaService,
+            ISecurityPolicyService securityPolicyService,
+            IReferenceDataService referenceService,
+            IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _managementService = managementService;
+            _userService = userService;
+            _personaService = personaService;
+            _securityPolicyService = securityPolicyService;
             _referenceService = referenceService;
             _serviceProvider = serviceProvider;
-            _userGridManager = new DataGridViewManager(managementService, dgvUsuarios);
+            _userGridManager = new DataGridViewManager(userService, dgvUsuarios);
             _comboBoxLoader = new ComboBoxLoader(referenceService);
 
             SetupForm();
@@ -54,12 +63,12 @@ namespace Presentation
             btnNavigateGestion.Click += (s, e) => ShowPanel(panelGestionUsuarios);
             btnNavigateGestionPersonas.Click += (s, e) => ShowPanel(panelGestionPersonas);
             btnNavigateConfiguracion.Click += (s, e) => ShowPanel(panelConfiguracion);
-            btnMiPerfil.Click += (s, e) =>
+            btnMiPerfil.Click += async (s, e) =>
             {
-                var user = _managementService.GetUserByUsername(_username);
+                var user = await _userService.GetUserByUsernameAsync(_username);
                 if (user != null)
                 {
-                    var persona = _managementService.GetPersonaById(user.IdPersona);
+                    var persona = await _personaService.GetPersonaByIdAsync(user.IdPersona);
                     if (persona != null)
                     {
                         using (var form = _serviceProvider.GetRequiredService<ProfileForm>())
@@ -156,7 +165,7 @@ namespace Presentation
 
         private void LoadPoliticaSeguridad()
         {
-            _politica = _managementService.GetPoliticaSeguridad();
+            _politica = _securityPolicyService.GetPoliticaSeguridad();
             if (_politica != null)
             {
                 chkMayusculasMinusculas.Checked = _politica.MayusYMinus;
@@ -209,7 +218,7 @@ namespace Presentation
             _politica.MinCaracteres = minChars;
             _politica.CantPreguntas = cantPreg;
 
-            _managementService.UpdatePoliticaSeguridad(_politica);
+            _securityPolicyService.UpdatePoliticaSeguridad(_politica);
             MessageBox.Show("Configuración guardada correctamente.", "Info");
         }
 
@@ -231,11 +240,11 @@ namespace Presentation
             }
         }
 
-        private void LoadPersonas()
+        private async void LoadPersonas()
         {
             try
             {
-                var personas = _managementService.GetPersonas();
+                var personas = await _personaService.GetPersonasAsync();
                 if (personas == null || !personas.Any())
                 {
                     MessageBox.Show("No se encontraron personas en la base de datos.", "Advertencia");
@@ -252,7 +261,7 @@ namespace Presentation
             }
         }
 
-        private void BtnGuardarPersona_Click(object? sender, EventArgs e)
+        private async void BtnGuardarPersona_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -291,7 +300,7 @@ namespace Presentation
                     Celular = txtCelular.Text,
                     FechaIngreso = dtpFechaIngreso.Value
                 };
-                _managementService.CrearPersona(persona);
+                await _personaService.CrearPersonaAsync(persona);
                 MessageBox.Show("Persona guardada correctamente", "Info");
                 LoadPersonas();
             }
@@ -305,7 +314,7 @@ namespace Presentation
             }
         }
 
-        private void BtnCrearUsuario_Click(object? sender, EventArgs e)
+        private async void BtnCrearUsuario_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -323,7 +332,7 @@ namespace Presentation
                     Username = txtUsuario.Text,
                     Rol = cbxRolUsuario.Text
                 };
-                _managementService.CrearUsuario(usuario);
+                await _userService.CrearUsuarioAsync(usuario);
                 MessageBox.Show("Usuario creado correctamente. La contraseña ha sido enviada al correo de la persona.", "Info");
             }
             catch (ValidationException ex)
@@ -405,7 +414,7 @@ namespace Presentation
             }
         }
 
-        private void BtnGuardarCambiosPersona_Click(object? sender, EventArgs e)
+        private async void BtnGuardarCambiosPersona_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -414,7 +423,7 @@ namespace Presentation
                     var personasToUpdate = personas.Where(p => _dirtyPersonaIds.Contains(p.IdPersona)).ToList();
                     foreach (var persona in personasToUpdate)
                     {
-                        _managementService.UpdatePersona(persona);
+                        await _personaService.UpdatePersonaAsync(persona);
                     }
 
                     if (personasToUpdate.Any())
@@ -436,7 +445,7 @@ namespace Presentation
             }
         }
 
-        private void BtnEliminarPersona_Click(object? sender, EventArgs e)
+        private async void BtnEliminarPersona_Click(object? sender, EventArgs e)
         {
             if (dgvPersonas.SelectedRows.Count == 0)
             {
@@ -454,7 +463,7 @@ namespace Presentation
             {
                 try
                 {
-                    _managementService.DeletePersona(persona.IdPersona);
+                    await _personaService.DeletePersonaAsync(persona.IdPersona);
                     MessageBox.Show("Persona eliminada exitosamente.", "Éxito");
                     LoadPersonasGrid();
                 }
@@ -465,11 +474,11 @@ namespace Presentation
             }
         }
 
-        private void LoadPersonasGrid()
+        private async void LoadPersonasGrid()
         {
             try
             {
-                _allPersonas = _managementService.GetPersonas();
+                _allPersonas = await _personaService.GetPersonasAsync();
                 dgvPersonas.DataSource = new List<PersonaDto>(_allPersonas);
 
                 dgvPersonas.Columns["IdPersona"].Visible = false;

@@ -153,8 +153,8 @@ namespace Presentation
             var searchText = txtBuscarUsuario.Text.ToLower().Trim();
 
             var filteredUsers = _allUsers.Where(u =>
-                u.Username.ToLower().Contains(searchText) ||
-                u.NombreCompleto.ToLower().Contains(searchText)
+                (u.Username?.ToLower() ?? "").Contains(searchText) ||
+                (u.NombreCompleto?.ToLower() ?? "").Contains(searchText)
             ).ToList();
 
             dgvUsuarios.DataSource = filteredUsers;
@@ -177,9 +177,9 @@ namespace Presentation
             var searchText = txtBuscarPersona.Text.ToLower().Trim();
 
             var filteredPersonas = _allPersonas.Where(p =>
-                p.Nombre.ToLower().Contains(searchText) ||
-                p.Apellido.ToLower().Contains(searchText) ||
-                p.NumDoc.ToLower().Contains(searchText)
+                (p.Nombre?.ToLower() ?? "").Contains(searchText) ||
+                (p.Apellido?.ToLower() ?? "").Contains(searchText) ||
+                (p.NumDoc?.ToLower() ?? "").Contains(searchText)
             ).ToList();
 
             dgvPersonas.DataSource = filteredPersonas;

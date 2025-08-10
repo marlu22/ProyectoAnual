@@ -89,7 +89,7 @@ namespace DataAccess.Repositories
         {
             var sql = @"
                 SELECT
-                    p.*,
+                    p.id_persona, p.legajo, p.nombre, p.apellido, p.id_tipo_doc, p.num_doc, p.fecha_nacimiento, p.cuil, p.calle, p.altura, p.id_localidad, p.id_genero, p.correo, p.celular, p.fecha_ingreso,
                     td.nombre AS TipoDocNombre,
                     l.nombre AS LocalidadNombre,
                     pa.id_partido AS IdPartido,
@@ -168,7 +168,7 @@ namespace DataAccess.Repositories
                     }
                     else
                     {
-                        localidad.IdPartido = 0; // O un valor por defecto que tenga sentido
+                        localidad.IdPartido = 0;
                         localidad.Partido = null!;
                     }
 
